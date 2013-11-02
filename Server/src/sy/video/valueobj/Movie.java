@@ -1,6 +1,7 @@
 package sy.video.valueobj;
 
 public class Movie {
+	private String MovieId;	
 	private String MovieName;
 	/**
 	 * Production company name
@@ -46,5 +47,11 @@ public class Movie {
 	}
 	public void setAvailableCopies(String availableCopies) {
 		AvailableCopies = availableCopies;
+	}
+	public String getMovieId() {
+		return MovieId;
+	}
+	public void setMovieId(String movieId) {
+		MovieId = movieId;
 	}
 }

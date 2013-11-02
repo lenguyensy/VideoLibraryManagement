@@ -1,6 +1,7 @@
 package sy.video.valueobj;
 
 public class User {
+	private String UserId;
 	private String FirstName;
 	private String LastName;
 	private String Address;
@@ -8,6 +9,8 @@ public class User {
 	private String State;
 	private String ZipCode;
 	private String IssuedMovies;
+	private String Password;
+	private String HashPassword;
 	
 	public String getFirstName() {
 		return FirstName;
@@ -50,5 +53,23 @@ public class User {
 	}
 	public void setIssuedMovies(String issuedMovies) {
 		IssuedMovies = issuedMovies;
+	}
+	public String getUserId() {
+		return UserId;
+	}
+	public void setUserId(String userId) {
+		UserId = userId;
+	}
+	public String getPassword() {
+		return Password;
+	}
+	public void setPassword(String password) {
+		Password = password;
+	}
+	public String getHashPassword() {
+		return HashPassword;
+	}
+	public void setHashPassword(String hashPassword) {
+		HashPassword = hashPassword;
 	}
 }
