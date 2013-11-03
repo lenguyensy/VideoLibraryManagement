@@ -2,6 +2,9 @@
 
 <script>
 	$(function() {
+		//select nav
+		NavUtil.init('#userNav');
+		
 		//populate states
 		for ( var k in ENUM.STATE) {
 			if (ENUM.STATE.hasOwnProperty(k))
@@ -34,7 +37,7 @@
 		//form validation
 		$('#btnsubmitform').click(function() {
 			var success = true;
-			$('#frmUser').find('input').each(function() {
+			$('.form').find('input').each(function() {
 				var isEmpty = FormUtil.emptyHandler.apply(this);
 				if (isEmpty)
 					success = true;
@@ -47,7 +50,7 @@
 	})
 </script>
 
-<div id="frmUser">
+<div id="frmUser" class="form">
 	<h4>Please ensure that all the following field item must be saved.</h4>
 	<fieldset>
 		<div class="control-group">
@@ -108,7 +111,6 @@
 			<span class="help-block text-error errorMsg">Required</span>
 		</div>
 		<button class="btn" id="btnsubmitform">Save</button>
-		<a class="btn" href="usermanagement.jsp">User Management</a>
 	</fieldset>
 </div>
 

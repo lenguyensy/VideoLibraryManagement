@@ -1,30 +1,13 @@
 package sy.video.valueobj;
 
-public class SimpleCustomer {
-	private String MembershipNo;
-	/**
-	 * Amount needs to be taken as the rent of the movies issued
-	 */
-	private String Balance;
-	private String TotalOutstandingMovies;
-	public String getMembershipNo() {
-		return MembershipNo;
+import sy.config.Enum;
+
+/**
+ * 
+ * @author Sy Le lenguyensy@gmail.com
+ */
+public class SimpleCustomer extends User {
+	public SimpleCustomer() {
+		this.setUserType(Enum.USER_TYPE_SIMPLE);
 	}
-	public void setMembershipNo(String membershipNo) {
-		MembershipNo = membershipNo;
-	}
-	public String getBalance() {
-		return Balance;
-	}
-	public void setBalance(String balance) {
-		Balance = balance;
-	}
-	public String getTotalOutstandingMovies() {
-		return TotalOutstandingMovies;
-	}
-	public void setTotalOutstandingMovies(String totalOutstandingMovies) {
-		TotalOutstandingMovies = totalOutstandingMovies;
-	}
-	
-	
 }

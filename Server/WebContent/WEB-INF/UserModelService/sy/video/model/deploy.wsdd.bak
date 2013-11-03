@@ -1,0 +1,50 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from UserModelService WSDL service -->
+
+  <service name="UserModel" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://model.video.sy"/>
+      <parameter name="wsdlServiceElement" value="UserModelService"/>
+      <parameter name="schemaQualified" value="http://valueobj.video.sy,http://model.video.sy"/>
+      <parameter name="wsdlServicePort" value="UserModel"/>
+      <parameter name="className" value="sy.video.model.UserModelSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="UserModel"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="getUser" qname="operNS:getUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:getUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:User" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="saveUser" qname="operNS:saveUser" xmlns:operNS="http://model.video.sy" soapAction="" >
+        <parameter qname="pns:u" xmlns:pns="http://model.video.sy" type="tns:User" xmlns:tns="http://valueobj.video.sy"/>
+      </operation>
+      <operation name="deletUser" qname="operNS:deletUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:deletUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="addUser" qname="operNS:addUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:addUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:u" xmlns:pns="http://model.video.sy" type="tns:User" xmlns:tns="http://valueobj.video.sy"/>
+      </operation>
+      <operation name="getSimpleCustomers" qname="operNS:getSimpleCustomers" xmlns:operNS="http://model.video.sy" returnQName="retNS:getSimpleCustomersReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:User" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+      </operation>
+      <operation name="getPremiumMembers" qname="operNS:getPremiumMembers" xmlns:operNS="http://model.video.sy" returnQName="retNS:getPremiumMembersReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:User" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+      </operation>
+      <parameter name="allowedMethods" value="deletUser getUser getPremiumMembers getSimpleCustomers saveUser addUser"/>
+
+      <typeMapping
+        xmlns:ns="http://valueobj.video.sy"
+        qname="ns:User"
+        type="java:sy.video.valueobj.User"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

@@ -1,56 +1,73 @@
 package sy.video.valueobj;
 
+import java.util.Date;
+
+/**
+ * 
+ * @author Sy Le
+ * lenguyensy@gmail.com
+ */
 public class Movie {
-	private String MovieId;	
+	private String MovieId;
 	private String MovieName;
-	/**
-	 * Production company name
-	 */
 	private String MovieBanner;
-	private String ReleaseDate;
-	private String RentAmount;
+	private int ReleaseDate;
+	private float RentAmount;
 	private String Category;
-	private String AvailableCopies;
-	
+	private int AvailableCopies;
+
 	public String getMovieName() {
 		return MovieName;
 	}
+
 	public void setMovieName(String movieName) {
 		MovieName = movieName;
 	}
+
 	public String getMovieBanner() {
 		return MovieBanner;
 	}
+
 	public void setMovieBanner(String movieBanner) {
 		MovieBanner = movieBanner;
 	}
-	public String getReleaseDate() {
+
+	public int getReleaseDate() {
 		return ReleaseDate;
 	}
-	public void setReleaseDate(String releaseDate) {
+
+	public void setReleaseDate(int releaseDate) {
 		ReleaseDate = releaseDate;
 	}
-	public String getRentAmount() {
+
+	public float getRentAmount() {
 		return RentAmount;
 	}
-	public void setRentAmount(String rentAmount) {
+
+	public void setRentAmount(float rentAmount) {
 		RentAmount = rentAmount;
 	}
+
 	public String getCategory() {
 		return Category;
 	}
+
 	public void setCategory(String category) {
 		Category = category;
 	}
-	public String getAvailableCopies() {
+
+	public int getAvailableCopies() {
 		return AvailableCopies;
 	}
-	public void setAvailableCopies(String availableCopies) {
+
+	public void setAvailableCopies(int availableCopies) {
 		AvailableCopies = availableCopies;
 	}
+
 	public String getMovieId() {
 		return MovieId;
 	}
+
 	public void setMovieId(String movieId) {
 		MovieId = movieId;
 	}

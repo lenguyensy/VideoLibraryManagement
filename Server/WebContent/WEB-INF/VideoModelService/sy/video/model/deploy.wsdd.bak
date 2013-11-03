@@ -1,0 +1,48 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from VideoModelService WSDL service -->
+
+  <service name="VideoModel" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://model.video.sy"/>
+      <parameter name="wsdlServiceElement" value="VideoModelService"/>
+      <parameter name="schemaQualified" value="http://valueobj.video.sy,http://model.video.sy"/>
+      <parameter name="wsdlServicePort" value="VideoModel"/>
+      <parameter name="className" value="sy.video.model.VideoModelSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="VideoModel"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="getMovie" qname="operNS:getMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getMovies" qname="operNS:getMovies" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+      </operation>
+      <operation name="addMovie" qname="operNS:addMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:addMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:m" xmlns:pns="http://model.video.sy" type="tns:Movie" xmlns:tns="http://valueobj.video.sy"/>
+      </operation>
+      <operation name="deletMovie" qname="operNS:deletMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:deletMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="saveMovie" qname="operNS:saveMovie" xmlns:operNS="http://model.video.sy" soapAction="" >
+        <parameter qname="pns:m" xmlns:pns="http://model.video.sy" type="tns:Movie" xmlns:tns="http://valueobj.video.sy"/>
+      </operation>
+      <parameter name="allowedMethods" value="saveMovie getMovies deletMovie addMovie getMovie"/>
+
+      <typeMapping
+        xmlns:ns="http://valueobj.video.sy"
+        qname="ns:Movie"
+        type="java:sy.video.valueobj.Movie"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

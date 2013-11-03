@@ -1,26 +1,13 @@
 package sy.video.valueobj;
 
-public class PremiumMember extends User{
-	private String MembershipNo;
-	private String MonthlySubscriptionFee;
-	private String Total;
-	
-	public String getMembershipNo() {
-		return MembershipNo;
-	}
-	public void setMembershipNo(String membershipNo) {
-		MembershipNo = membershipNo;
-	}
-	public String getMonthlySubscriptionFee() {
-		return MonthlySubscriptionFee;
-	}
-	public void setMonthlySubscriptionFee(String monthlySubscriptionFee) {
-		MonthlySubscriptionFee = monthlySubscriptionFee;
-	}
-	public String getTotal() {
-		return Total;
-	}
-	public void setTotal(String total) {
-		Total = total;
+import sy.config.Enum;
+
+/**
+ * 
+ * @author Sy Le lenguyensy@gmail.com
+ */
+public class PremiumMember extends User {
+	public PremiumMember() {
+		this.setUserType(Enum.USER_TYPE_PREMIUM);
 	}
 }

@@ -1,6 +1,9 @@
 <jsp:include page="header.jsp" />
 <script>
 	$(function() {
+		//select nav
+		NavUtil.init('#userNav');
+		
 		//dummy data
 		var lstDummyUser = [ {
 			MembershipNo : "111111111",
@@ -75,7 +78,10 @@
 <td>{{City}}</td>
 <td>{{Zip}}</td>
 <td>{{UserType}}</td>
-<td><a href="#"><i class="icon-trash btnBeleteUser"></i></a></td>
+<td>
+	<a href="userform.jsp"><i class="icon-edit btnEditUser"></i></a>
+	<a href="#"><i class="icon-trash btnBeleteUser"></i></a>
+</td>
 <tr>
 </script>
 <jsp:include page="footer.jsp" />

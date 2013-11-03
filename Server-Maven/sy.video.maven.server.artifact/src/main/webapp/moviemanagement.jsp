@@ -1,6 +1,9 @@
 <jsp:include page="header.jsp" />
 <script>
 	$(function() {
+		//select nav
+		NavUtil.init('#movieNav');
+		
 		//dummy data
 		var lstDummyMovie = [{
 			MovieName : "Titanic",
@@ -64,7 +67,10 @@
 <td>{{}}</td>
 <td>{{Category}}</td>
 <td>{{AvailableCopies}}</td>
-<td><a href="#"><i class="icon-trash btnDeleteMovie"></i></a></td>
+<td>
+	<a href="movieform.jsp"><i class="icon-edit btnEditMovie"></i></a>
+	<a href="#"><i class="icon-trash btnDeleteMovie"></i></a>
+</td>
 <tr>
 </script>
 <jsp:include page="footer.jsp" />

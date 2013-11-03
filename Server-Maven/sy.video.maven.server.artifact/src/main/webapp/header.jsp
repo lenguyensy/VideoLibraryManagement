@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Bootstrap 101 Template</title>
+<title>Video Management</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -14,12 +14,10 @@
 <body>
 	<div class="container">
 		<div class="masthead">
-		<!-- 
 			<ul class="nav nav-pills pull-right">
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="#">About</a></li>
-				<li><a href="#">Contact</a></li>
+				<li id="userNav"><a href="usermanagement.jsp">User Management</a></li>
+				<li id="movieNav"><a href="moviemanagement.jsp">Movie Management</a></li>
+				<li id="signoutNav"><a href="signout.jsp">Sign Out</a></li>
 			</ul>
-			 -->
 			<h3 class="muted">Video Management</h3>
 		</div>

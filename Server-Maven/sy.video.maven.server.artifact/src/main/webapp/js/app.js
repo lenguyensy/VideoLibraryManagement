@@ -178,7 +178,7 @@ var ENUM = {
 		abbreviation : 'WY'
 	} ],
 	USER_TYPE :{
-		premimum : "Premimum User",
+		premimum : "Premimum Member",
 		simple: "Simple Customer"
 	},
 	MONTHLY_FEE :{
@@ -186,6 +186,14 @@ var ENUM = {
 		30 : "$ 30"
 	}
 };
+
+var NavUtil = (function(){
+	return {
+		init: function(selNav){
+			$(selNav).addClass('active');
+		}
+	}
+})();
 
 var FormUtil = (function() {
 	return {
@@ -196,7 +204,7 @@ var FormUtil = (function() {
 			$(this).next().toggle(isEmpty);
 			
 			//bind tabout to remove error stuffs
-			$(this).on("keypress blur", function(){
+			$(this).on("change", function(){
 				var val = $(this).val(), isEmpty = val.trim() == "";
 				$(this).closest('.control-group').toggleClass('error', isEmpty);
 				$(this).next().toggle(isEmpty);
