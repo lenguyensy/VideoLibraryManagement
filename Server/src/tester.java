@@ -1,10 +1,10 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
+import sy.config.MainConfig;
 import sy.video.model.UserModel;
 import sy.video.model.VideoModel;
 import sy.video.valueobj.Movie;
@@ -21,24 +21,21 @@ public class tester {
 	static VideoModel vm = new VideoModel();
 
 	public static void main(String[] args) {
-		User[] lstUser = um.getPremiumMembers();
-		for (int i = 0; i < 10; i++)
-			System.out.println(lstUser[i]);
+		//importMovie();
+		importUser();
 	}
 
 	public static void importMovie() {
 		int i = 0;
 
-		Hashtable<String, Boolean> hash = new Hashtable<String, Boolean>();
-
-		String[] lstCategory = { "Drama", "Horror", "Comedy", "Cartoon",
-				"Romance" };
+		String lastKey = "";
 		Random rand = new Random();
 
 		BufferedReader br = null;
+		ArrayList<String> lstGenres = null;
 		try {
 			br = new BufferedReader(new FileReader(
-					"/Volumes/BigMac/User/sy/Downloads/movies.list"));
+					"/Volumes/BigMac/User/sy/Downloads/genres.list"));
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 
@@ -46,30 +43,48 @@ public class tester {
 				i++;
 				if (i > 1) {
 					try {
-						String title = line
-								.substring(1, line.lastIndexOf("\""));
-						line = line.substring(line.lastIndexOf("\""));
+						line = line.replace("\"", "");
+
+						String title = line.substring(0, line.lastIndexOf("("));
 						String year = line.substring(line.indexOf("(") + 1,
 								line.indexOf(")"));
+						int releaseyear = Integer.parseInt(year);
+						String genre = line.substring(line.lastIndexOf("\t"))
+								.trim();
 						String key = title + " - " + year;
 
-						int releaseyear = Integer.parseInt(year);
+						if (!lastKey.equals(key)) {
+							// save the old one first
+							String genresString = "";
+							if (lstGenres != null) {
+								genresString = MainConfig.combine(lstGenres
+										.toArray(new String[lstGenres.size()]),
+										",");
 
-						if (!hash.containsKey(key)) {
-							hash.put(key, true);
+								Movie m = new Movie();
+								m.setMovieName(title);
+								m.setMovieBanner(title + " - " + year);
+								m.setReleaseDate(releaseyear);
+								m.setAvailableCopies(rand.nextInt(5));
+								m.setCategory(genresString);
+								m.setRentAmount(rand.nextInt(3));
+
+								// save
+								vm.addMovie(m);
+
+								System.out.println(title + "- " + year + " - "
+										+ genresString);
+							}
+
+							// start the new one
+							lstGenres = new ArrayList<String>();
+							lstGenres.add(genre);
+
+							lastKey = key;
 							System.out.println(title + " - " + year);
-
-							Movie m = new Movie();
-							m.setMovieName(title);
-							m.setMovieBanner(title + " - " + year);
-							m.setReleaseDate(releaseyear);
-							m.setAvailableCopies(rand.nextInt(5));
-							m.setCategory(lstCategory[rand
-									.nextInt(lstCategory.length)]);
-							m.setRentAmount(rand.nextInt(3));
-
-							// save
-							vm.addMovie(m);
+						} else {
+							// add new genre to the list
+							lstGenres.add(genre);
 						}
 						// next line
 						line = br.readLine();
@@ -130,8 +145,8 @@ public class tester {
 						u.setCity(s[4]);
 						u.setState(s[5]);
 						u.setZipCode(zip);
-						u.setHashPassword("password");
-
+						u.setPassword("password");
+						u.setEmail(s[0]);
 						// save
 						um.addUser(u);
 

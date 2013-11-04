@@ -19,6 +19,52 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="getUserByType">
+    <complexType>
+     <sequence>
+      <element name="userType" type="xsd:string"/>
+      <element name="from" type="xsd:int"/>
+      <element name="pagesize" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getUserByTypeResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getUserByTypeReturn" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateUser">
+    <complexType>
+     <sequence>
+      <element name="email" type="xsd:string"/>
+      <element name="password" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateUserResponse">
+    <complexType>
+     <sequence>
+      <element name="authenticateUserReturn" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getUsers">
+    <complexType>
+     <sequence>
+      <element name="from" type="xsd:int"/>
+      <element name="pagesize" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getUsersResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getUsersReturn" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
    <element name="saveUser">
     <complexType>
      <sequence>
@@ -57,26 +103,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="getSimpleCustomers">
-    <complexType/>
-   </element>
-   <element name="getSimpleCustomersResponse">
-    <complexType>
-     <sequence>
-      <element maxOccurs="unbounded" name="getSimpleCustomersReturn" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="getPremiumMembers">
-    <complexType/>
-   </element>
-   <element name="getPremiumMembersResponse">
-    <complexType>
-     <sequence>
-      <element maxOccurs="unbounded" name="getPremiumMembersReturn" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
   </schema>
   <schema elementFormDefault="qualified" targetNamespace="http://valueobj.video.sy" xmlns="http://www.w3.org/2001/XMLSchema">
    <complexType name="User">
@@ -84,8 +110,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="address" nillable="true" type="xsd:string"/>
      <element name="balance" type="xsd:float"/>
      <element name="city" nillable="true" type="xsd:string"/>
+     <element name="email" nillable="true" type="xsd:string"/>
      <element name="firstName" nillable="true" type="xsd:string"/>
-     <element name="hashPassword" nillable="true" type="xsd:string"/>
      <element name="issuedMovies" nillable="true" type="xsd:string"/>
      <element name="lastName" nillable="true" type="xsd:string"/>
      <element name="membershipNo" nillable="true" type="xsd:string"/>
@@ -102,17 +128,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="getPremiumMembersRequest">
+   <wsdl:message name="getUsersRequest">
 
-      <wsdl:part element="impl:getPremiumMembers" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="deletUserRequest">
-
-      <wsdl:part element="impl:deletUser" name="parameters">
+      <wsdl:part element="impl:getUsers" name="parameters">
 
       </wsdl:part>
 
@@ -134,25 +152,73 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getUserRequest">
+
+      <wsdl:part element="impl:getUser" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserByTypeResponse">
+
+      <wsdl:part element="impl:getUserByTypeResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUsersResponse">
+
+      <wsdl:part element="impl:getUsersResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="addUserResponse">
+
+      <wsdl:part element="impl:addUserResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateUserRequest">
+
+      <wsdl:part element="impl:authenticateUser" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserByTypeRequest">
+
+      <wsdl:part element="impl:getUserByType" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="deletUserRequest">
+
+      <wsdl:part element="impl:deletUser" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateUserResponse">
+
+      <wsdl:part element="impl:authenticateUserResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
    <wsdl:message name="getUserResponse">
 
       <wsdl:part element="impl:getUserResponse" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="getSimpleCustomersResponse">
-
-      <wsdl:part element="impl:getSimpleCustomersResponse" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="getSimpleCustomersRequest">
-
-      <wsdl:part element="impl:getSimpleCustomers" name="parameters">
 
       </wsdl:part>
 
@@ -166,33 +232,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getUserRequest">
-
-      <wsdl:part element="impl:getUser" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
    <wsdl:message name="addUserRequest">
 
       <wsdl:part element="impl:addUser" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="getPremiumMembersResponse">
-
-      <wsdl:part element="impl:getPremiumMembersResponse" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="addUserResponse">
-
-      <wsdl:part element="impl:addUserResponse" name="parameters">
 
       </wsdl:part>
 
@@ -207,6 +249,42 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
        </wsdl:input>
 
          <wsdl:output message="impl:getUserResponse" name="getUserResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserByType">
+
+         <wsdl:input message="impl:getUserByTypeRequest" name="getUserByTypeRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getUserByTypeResponse" name="getUserByTypeResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateUser">
+
+         <wsdl:input message="impl:authenticateUserRequest" name="authenticateUserRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:authenticateUserResponse" name="authenticateUserResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUsers">
+
+         <wsdl:input message="impl:getUsersRequest" name="getUsersRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getUsersResponse" name="getUsersResponse">
 
        </wsdl:output>
 
@@ -248,30 +326,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getSimpleCustomers">
-
-         <wsdl:input message="impl:getSimpleCustomersRequest" name="getSimpleCustomersRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:getSimpleCustomersResponse" name="getSimpleCustomersResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="getPremiumMembers">
-
-         <wsdl:input message="impl:getPremiumMembersRequest" name="getPremiumMembersRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:getPremiumMembersResponse" name="getPremiumMembersResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
    </wsdl:portType>
 
    <wsdl:binding name="UserModelSoapBinding" type="impl:UserModel">
@@ -289,6 +343,60 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="getUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserByType">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserByTypeRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserByTypeResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateUserRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUsers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUsersRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUsersResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -343,42 +451,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="addUserResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="getSimpleCustomers">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getSimpleCustomersRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getSimpleCustomersResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="getPremiumMembers">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getPremiumMembersRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getPremiumMembersResponse">
 
             <wsdlsoap:body use="literal"/>
 

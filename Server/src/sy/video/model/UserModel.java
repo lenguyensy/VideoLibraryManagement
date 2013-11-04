@@ -33,7 +33,7 @@ public class UserModel {
 
 		try {
 			while (rs.next()) {
-				User u = new PremiumMember();
+				User u = new User();
 				u.setFirstName(rs.getString("firstname"));
 				u.setLastName(rs.getString("lastname"));
 				u.setAddress(rs.getString("address"));
@@ -47,6 +47,8 @@ public class UserModel {
 				u.setTotal(rs.getFloat("total"));
 				u.setTotalOutstandingMovies(rs.getInt("TotalOutstandingMovies"));
 				u.setUserId(rs.getString("id"));
+				u.setUserType(rs.getString("userType"));
+				u.setEmail(rs.getString("email"));
 
 				lstUsers.add(u);
 			}
@@ -64,13 +66,15 @@ public class UserModel {
 	 * @param userId
 	 * @return
 	 */
-	public User[] getPremiumMembers() {
+	public User[] getUserByType(String userType, int from, int pagesize) {
 		List<User> lstUsers = new ArrayList<User>();
 
 		try {
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE userType = ?");
-			stmt.setString(1, Enum.USER_TYPE_PREMIUM);
+					.prepareStatement("SELECT * FROM users WHERE userType = ? limit ?, ?");
+			stmt.setString(1, userType);
+			stmt.setInt(2, from);
+			stmt.setInt(3, pagesize);
 
 			ResultSet rs = stmt.executeQuery();
 			lstUsers = _getUserList(rs);
@@ -82,17 +86,19 @@ public class UserModel {
 	}
 
 	/**
-	 * get a list of all simple customers
 	 * 
+	 * @param from
+	 * @param pagesize
 	 * @return
 	 */
-	public User[] getSimpleCustomers() {
+	public User[] getUsers(int from, int pagesize) {
 		List<User> lstUsers = new ArrayList<User>();
 
 		try {
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE userType = ?");
-			stmt.setString(1, Enum.USER_TYPE_SIMPLE);
+					.prepareStatement("SELECT * FROM users limit ?, ?");
+			stmt.setInt(1, from);
+			stmt.setInt(2, pagesize);
 
 			ResultSet rs = stmt.executeQuery();
 			lstUsers = _getUserList(rs);
@@ -130,6 +136,34 @@ public class UserModel {
 	}
 
 	/**
+	 * authenticate user
+	 * 
+	 * @param email
+	 * @param password
+	 * @return
+	 */
+	public User authenticateUser(String email, String password) {
+		List<User> lstUsers = new ArrayList<User>();
+
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE email LIKE ? AND password LIKE ?");
+			stmt.setString(1, email);
+			stmt.setString(2, "md5(" + password + ")");
+
+			ResultSet rs = stmt.executeQuery();
+			lstUsers = _getUserList(rs);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		if (lstUsers.size() == 1)
+			return lstUsers.get(0);
+		else
+			return null;
+	}
+
+	/**
 	 * add user
 	 * 
 	 * @param user
@@ -138,21 +172,25 @@ public class UserModel {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("INSERT INTO users (membershipno, usertype,firstname,lastname,"
-							+ "address,state,hashedpassword,totaloutstandingmovies,balance,monthlysubscriptionfee,total,city,zip) "
-							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+							+ "address,state,hashedpassword,totaloutstandingmovies,balance,"
+							+ "monthlysubscriptionfee,total,city,zip, email) "
+							+ "VALUES (?,?,?,?,"
+							+ "?,?,md5(?),?,?,"
+							+ "?,?,?,?,?)");
 			stmt.setString(1, u.getMembershipNo());
 			stmt.setString(2, u.getUserType());
 			stmt.setString(3, u.getFirstName());
 			stmt.setString(4, u.getLastName());
 			stmt.setString(5, u.getAddress());
 			stmt.setString(6, u.getState());
-			stmt.setString(7, u.getHashPassword());
+			stmt.setString(7, u.getPassword());
 			stmt.setInt(8, u.getTotalOutstandingMovies());
 			stmt.setFloat(9, u.getBalance());
 			stmt.setFloat(10, u.getMonthlySubscriptionFee());
 			stmt.setFloat(11, u.getTotal());
 			stmt.setString(12, u.getCity());
 			stmt.setString(13, u.getZipCode());
+			stmt.setString(14, u.getEmail());
 
 			stmt.execute();
 		} catch (Exception ex) {
@@ -171,7 +209,7 @@ public class UserModel {
 	public int deletUser(int userId) {
 		try {
 			PreparedStatement stmt = con
-					.prepareStatement("DELETE * FROM users WHERE id = ?");
+					.prepareStatement("DELETE FROM users WHERE id = ?");
 			stmt.setInt(1, userId);
 
 			stmt.execute();
@@ -196,21 +234,23 @@ public class UserModel {
 							+ " state = ?," + " hashedpassword = ?,"
 							+ " totaloutstandingmovies = ?," + " balance = ?,"
 							+ " monthlysubscriptionfee = ?," + " total = ?,"
-							+ " city = ?," + " zip = ?" + " WHERE id = ?");
+							+ " city = ?," + " zip = ?, email = ?"
+							+ " WHERE id = ?");
 			stmt.setString(1, u.getMembershipNo());
 			stmt.setString(2, u.getUserType());
 			stmt.setString(3, u.getFirstName());
 			stmt.setString(4, u.getLastName());
 			stmt.setString(5, u.getAddress());
 			stmt.setString(6, u.getState());
-			stmt.setString(7, u.getHashPassword());
+			stmt.setString(7, u.getPassword());
 			stmt.setInt(8, u.getTotalOutstandingMovies());
 			stmt.setFloat(9, u.getBalance());
 			stmt.setFloat(10, u.getMonthlySubscriptionFee());
 			stmt.setFloat(11, u.getTotal());
 			stmt.setString(12, u.getCity());
 			stmt.setString(13, u.getZipCode());
-			stmt.setString(14, u.getUserId());
+			stmt.setString(14, u.getEmail());
+			stmt.setString(15, u.getUserId());
 
 			stmt.execute();
 		} catch (Exception ex) {

@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//src/sy/video/model/UserModel.java=UTF-8
+encoding//src/sy/video/model/UserModelService.java=UTF-8
+encoding//src/sy/video/model/UserModelServiceLocator.java=UTF-8
+encoding//src/sy/video/model/UserModelSoapBindingStub.java=UTF-8
+encoding//src/sy/video/model/VideoModel.java=UTF-8
+encoding//src/sy/video/model/VideoModelService.java=UTF-8
+encoding//src/sy/video/model/VideoModelServiceLocator.java=UTF-8
+encoding//src/sy/video/model/VideoModelSoapBindingStub.java=UTF-8
+encoding//src/sy/video/valueobj/Movie.java=UTF-8
+encoding//src/sy/video/valueobj/User.java=UTF-8
