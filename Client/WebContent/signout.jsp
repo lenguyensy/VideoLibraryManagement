@@ -1,6 +1,6 @@
 
 <%
-	//save that into the session and use it later
+	//clear user session
 	session.setAttribute("user", null);
 
 	//redirect user to the login page.

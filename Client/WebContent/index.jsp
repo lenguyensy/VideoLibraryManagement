@@ -1,4 +1,8 @@
 <jsp:include page="header.jsp" />
+
+<%
+	String error = request.getParameter("error");
+%>
 <script>
 	$(function() {
 		//show tabs
@@ -18,7 +22,7 @@
 			}
 		});
 
-		$('#btnsignup').click(function() {
+		$('#myTabContent form').submit(function() {
 			var success = true;
 			$('#signup').find('input').each(function() {
 				var isEmpty = FormUtil.emptyHandler.apply(this)
@@ -28,8 +32,11 @@
 
 			if (success) {
 				//doing form submit
-			}
+			} else
+				return false;
 		});
+		
+		$('#username').focus();
 	});
 </script>
 
@@ -46,40 +53,52 @@
 	<div class="tab-pane active" id="signin">
 		<h4>Please sign in with your username and password.</h4>
 
-		<fieldset>
-			<div class="control-group">
-				<label class="control-label">Username:</label> <input type="text"
-					placeholder="Enter a username" id="username" name="username" /> <span
-					class="help-block text-error errorMsg">Required</span>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Password:</label> <input type="text"
-					placeholder="Enter a password" id="password" name="password" /> <span
-					class="help-block text-error errorMsg">Required</span>
-			</div>
-			<button class="btn" id="btnsignin">Signin</button>
-		</fieldset>
+		<%
+			if (error != null) {
+		%>
+		<p class="text-error"><%=error%></p>
+		<%
+			}
+		%>
+		<form action="signin.jsp" method="get">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label">Username:</label> <input type="text"
+						placeholder="Enter a username" id="username" name="username" /> <span
+						class="help-block text-error errorMsg">Required</span>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Password:</label> <input
+						type="password" placeholder="Enter a password" id="password"
+						name="password" /> <span class="help-block text-error errorMsg">Required</span>
+				</div>
+				<button class="btn" id="btnsignin">Signin</button>
+			</fieldset>
+		</form>
 	</div>
 	<div class="tab-pane" id="signup">
 		<h4>Please enter the following information to sign up.</h4>
-		<fieldset>
-			<div class="control-group">
-				<label class="control-label">Username:</label> <input type="text"
-					placeholder="Enter a username" id="username" name="username" /> <span
-					class="help-block text-error errorMsg">Required</span>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Password:</label> <input type="text"
-					placeholder="Enter a password" id="password" name="password" /> <span
-					class="help-block text-error errorMsg">Required</span>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Company Name:</label> <input
-					type="text" placeholder="Enter a company name" id="company"
-					name="company" /> <span class="help-block text-error errorMsg">Required</span>
-			</div>
-			<button class="btn" id="btnsignup">Sign Up</button>
-		</fieldset>
+
+		<form action="signup.jsp" method="get">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label">Username:</label> <input type="text"
+						placeholder="Enter a username" id="username" name="username" /> <span
+						class="help-block text-error errorMsg">Required</span>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Password:</label> <input
+						type="password" placeholder="Enter a password" id="password"
+						name="password" /> <span class="help-block text-error errorMsg">Required</span>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Company Name:</label> <input
+						type="text" placeholder="Enter a company name" id="company"
+						name="company" /> <span class="help-block text-error errorMsg">Required</span>
+				</div>
+				<button class="btn" id="btnsignup">Sign Up</button>
+			</fieldset>
+		</form>
 	</div>
 </div>
 

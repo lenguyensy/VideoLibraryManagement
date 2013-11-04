@@ -14,8 +14,8 @@ public class MainConfig {
 	public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
 	public static final String JDBC_DBNAME = "video";
 	public static final String JDBC_USERNAME = "sy";
-	public static final String JDBC_PASSWORD = "yourpassword";
-	public static final String JDBC_PORT = "11306";// default is 3306
+	public static final String JDBC_PASSWORD = "lancebass";
+	public static final String JDBC_PORT = "13306";// default is 3306
 	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://localhost:"
 			+ JDBC_PORT
 			+ "/"

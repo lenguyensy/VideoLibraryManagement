@@ -1,6 +1,9 @@
 <jsp:include page="header.jsp" />
 
+<%@ page import="sy.ui.UIUtil"%>
 <%
+	UIUtil.authenticate(session, request, response);
+
 	String searchTerm = "", escapedSearchTerm = "";
 	Boolean isSearchPage = false;
 	try {
@@ -32,16 +35,16 @@
 		$('.btn-show-more').on('click', function() {
 			$.get(URL.MOVIE_CONTROLLER, {
 				cmd : "getmovies",
-				<% if (!isSearchPage){%>
+				<%if (!isSearchPage) {%>
 				genre : $('#genres').val(),
-				<% } else { %>
-				searchTerm : "<%= escapedSearchTerm %>",
-				<% } %>
-				from : $('.btnDeleteMovie').length,
+				<%} else {%>
+				searchTerm : "<%=escapedSearchTerm%>",
+				<%}%>
+				from : $('.entryrow').length,
 				pagesize : 25
 			}, function(lstUsers) {
 				renderList(lstUsers);
-				$('.totalRecord').html($('.btnDeleteMovie').length);
+				$('.totalRecord').html($('.entryrow').length);
 			}, 'json');
 		}).click();
 
@@ -75,21 +78,27 @@
 	<h4>Movie Management</h4>
 	<a class="btn pull-right" href="movieform.jsp">Add Movie</a>
 	<h4>
-		Showing <span class="totalRecord"></span> Users
+		Showing <span class="totalRecord"></span> Movies
 	</h4>
 
-	<div class="control-group" style="margin:15px 0 15px 0">
-		<% if (!isSearchPage){%>
+	<div class="control-group" style="margin: 15px 0 15px 0">
+		<%
+			if (!isSearchPage) {
+		%>
 		<label class="control-label">Genre Filtering:</label> <select
 			id="genres">
 			<option value="">Any Genre</option>
 		</select>
-		<% }%>
-		
+		<%
+			}
+		%>
+
 
 		<div class="input-append pull-right">
 			<form id="frmSearch" method="get" action="moviemanagement.jsp">
-				<input class="span4" id="searchTerm" name="searchTerm" placeholder="Type something to search" type="text" value="<%= searchTerm == null ? "" : searchTerm %>" /> <input
+				<input class="input-xlarge" id="searchTerm" name="searchTerm"
+					placeholder="Type something to search" type="text"
+					value="<%=searchTerm == null ? "" : searchTerm%>" /> <input
 					type="submit" class="btn" value="Search" />
 			</form>
 		</div>
@@ -113,13 +122,13 @@
 	</table>
 
 	<h4>
-		Showing <span class="totalRecord"></span> Users
+		Showing <span class="totalRecord"></span> Movies
 	</h4>
 	<a class="btn btn-show-more">Show more</a>
 </div>
 
 <script id="tmplRowMovie" type="mustache">
-<tr>
+<tr class="entryrow">
 <td>{{movieName}}</td>
 <td>{{movieBanner}}</td>
 <td>{{releaseDate}}</td>

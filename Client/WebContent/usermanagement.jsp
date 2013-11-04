@@ -1,5 +1,10 @@
 <jsp:include page="header.jsp" />
 
+<%@ page import="sy.ui.UIUtil"%>
+<%
+	UIUtil.authenticate(session, request, response);
+%>
+
 <script>
 	$(function() {
 		//select nav

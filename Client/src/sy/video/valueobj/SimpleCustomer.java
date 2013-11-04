@@ -1,6 +1,6 @@
 package sy.video.valueobj;
 
-import sy.config.Enum;
+import sy.config.AppEnum;
 
 /**
  * 
@@ -8,6 +8,6 @@ import sy.config.Enum;
  */
 public class SimpleCustomer extends User {
 	public SimpleCustomer() {
-		this.setUserType(Enum.USER_TYPE_SIMPLE);
+		this.setUserType(AppEnum.USER_TYPE_SIMPLE);
 	}
 }

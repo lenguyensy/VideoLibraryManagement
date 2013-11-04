@@ -7,3 +7,12 @@
 #maincontainer{
 	padding-bottom:20px;
 }
+
+#welcome{
+	clear:both;
+	font-weight:bold;
+}
+#role{
+	color:#c09853;
+	font-weight:normal;
+}

@@ -190,7 +190,8 @@ var ENUM = {
 
 var URL = {
 	USER_CONTROLLER : "userajaxcontroller.jsp",
-	MOVIE_CONTROLLER : "movieajaxcontroller.jsp"
+	MOVIE_CONTROLLER : "movieajaxcontroller.jsp",
+	DASHBOARD_CONTROLLER : "userdashboardajaxcontroller.jsp"
 }
 
 

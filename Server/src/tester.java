@@ -22,7 +22,11 @@ public class tester {
 
 	public static void main(String[] args) {
 		//importMovie();
-		importUser();
+		//importUser();
+		
+		User[] u = um.getUsers(0, 25);
+		for (int i = 0; i < u.length; i++)
+			System.out.println(u[i]);
 	}
 
 	public static void importMovie() {

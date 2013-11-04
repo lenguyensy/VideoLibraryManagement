@@ -147,10 +147,10 @@ public class UserModel {
 
 		try {
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE email LIKE ? AND password LIKE ?");
+					.prepareStatement("SELECT * FROM users WHERE email LIKE ? AND hashedpassword LIKE md5(?)");
 			stmt.setString(1, email);
-			stmt.setString(2, "md5(" + password + ")");
-
+			stmt.setString(2, password);
+			
 			ResultSet rs = stmt.executeQuery();
 			lstUsers = _getUserList(rs);
 		} catch (Exception ex) {
@@ -231,7 +231,7 @@ public class UserModel {
 					.prepareStatement("UPDATE users SET membershipno = ?,"
 							+ " usertype = ?," + " firstname = ?,"
 							+ " lastname = ?," + " address = ?,"
-							+ " state = ?," + " hashedpassword = ?,"
+							+ " state = ?," + " hashedpassword = md5(?),"
 							+ " totaloutstandingmovies = ?," + " balance = ?,"
 							+ " monthlysubscriptionfee = ?," + " total = ?,"
 							+ " city = ?," + " zip = ?, email = ?"

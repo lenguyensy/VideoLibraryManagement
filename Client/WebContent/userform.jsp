@@ -1,6 +1,9 @@
 <jsp:include page="header.jsp" />
 
+<%@ page import="sy.ui.UIUtil"%>
 <%
+	UIUtil.authenticate(session, request, response);
+
 	String userId = "";
 	try {
 		userId = request.getParameter("userId");

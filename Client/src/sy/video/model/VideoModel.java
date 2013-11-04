@@ -14,5 +14,7 @@ public interface VideoModel extends java.rmi.Remote {
     public int addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException;
     public int deletMovie(int movieId) throws java.rmi.RemoteException;
     public void saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException;
+    public sy.video.valueobj.Movie[] getMoviesRentalByUser(int userId) throws java.rmi.RemoteException;
     public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException;
+    public void rentMovie(int userId, int movieId) throws java.rmi.RemoteException;
 }

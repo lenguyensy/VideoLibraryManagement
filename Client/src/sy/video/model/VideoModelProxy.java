@@ -80,10 +80,22 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     videoModel.saveMovie(m);
   }
   
+  public sy.video.valueobj.Movie[] getMoviesRentalByUser(int userId) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.getMoviesRentalByUser(userId);
+  }
+  
   public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     return videoModel.getMoviesBySearchTerm(searchTerm, from, pagesize);
+  }
+  
+  public void rentMovie(int userId, int movieId) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    videoModel.rentMovie(userId, movieId);
   }
   
   

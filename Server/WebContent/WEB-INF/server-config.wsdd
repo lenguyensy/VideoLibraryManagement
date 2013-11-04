@@ -44,20 +44,27 @@
   <ns1:operation name="saveMovie" qname="ns10:saveMovie" soapAction="" xmlns:ns10="http://model.video.sy">
    <ns1:parameter qname="ns10:m" type="ns11:Movie" xmlns:ns11="http://valueobj.video.sy"/>
   </ns1:operation>
-  <ns1:operation name="getMoviesBySearchTerm" qname="ns12:getMoviesBySearchTerm" returnQName="ns12:getMoviesBySearchTermReturn" returnType="ns13:Movie" soapAction="" xmlns:ns12="http://model.video.sy" xmlns:ns13="http://valueobj.video.sy">
-   <ns1:parameter qname="ns12:searchTerm" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns12:from" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns12:pagesize" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <ns1:operation name="getMoviesRentalByUser" qname="ns12:getMoviesRentalByUser" returnQName="ns12:getMoviesRentalByUserReturn" returnType="ns13:Movie" soapAction="" xmlns:ns12="http://model.video.sy" xmlns:ns13="http://valueobj.video.sy">
+   <ns1:parameter qname="ns12:userId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
   </ns1:operation>
-  <ns1:parameter name="allowedMethods" value="getMoviesByGenre saveMovie getMovies deletMovie addMovie getMovie getMoviesBySearchTerm"/>
-  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:operation name="getMoviesBySearchTerm" qname="ns14:getMoviesBySearchTerm" returnQName="ns14:getMoviesBySearchTermReturn" returnType="ns15:Movie" soapAction="" xmlns:ns14="http://model.video.sy" xmlns:ns15="http://valueobj.video.sy">
+   <ns1:parameter qname="ns14:searchTerm" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns14:from" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns14:pagesize" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="rentMovie" qname="ns16:rentMovie" soapAction="" xmlns:ns16="http://model.video.sy">
+   <ns1:parameter qname="ns16:userId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns16:movieId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="getMoviesByGenre saveMovie getMovies deletMovie addMovie getMovie rentMovie getMoviesBySearchTerm getMoviesRentalByUser"/>
   <ns1:parameter name="wsdlPortType" value="VideoModel"/>
-  <ns1:parameter name="className" value="sy.video.model.VideoModel"/>
-  <ns1:parameter name="wsdlServicePort" value="VideoModel"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="schemaQualified" value="http://valueobj.video.sy,http://model.video.sy"/>
+  <ns1:parameter name="wsdlServicePort" value="VideoModel"/>
+  <ns1:parameter name="className" value="sy.video.model.VideoModel"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://model.video.sy"/>
   <ns1:parameter name="wsdlServiceElement" value="VideoModelService"/>
-  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns14:Movie" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:sy.video.valueobj.Movie" xmlns:ns14="http://valueobj.video.sy"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns17:Movie" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:sy.video.valueobj.Movie" xmlns:ns17="http://valueobj.video.sy"/>
  </ns1:service>
  <ns1:service name="AdminService" provider="java:MSG">
   <ns1:parameter name="allowedMethods" value="AdminService"/>
@@ -70,30 +77,30 @@
   <ns1:parameter name="className" value="org.apache.axis.Version"/>
  </ns1:service>
  <ns1:service name="UserModel" provider="java:RPC" style="wrapped" use="literal">
-  <ns1:operation name="getUser" qname="ns15:getUser" returnQName="ns15:getUserReturn" returnType="ns16:User" soapAction="" xmlns:ns15="http://model.video.sy" xmlns:ns16="http://valueobj.video.sy">
-   <ns1:parameter qname="ns15:userId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <ns1:operation name="getUser" qname="ns18:getUser" returnQName="ns18:getUserReturn" returnType="ns19:User" soapAction="" xmlns:ns18="http://model.video.sy" xmlns:ns19="http://valueobj.video.sy">
+   <ns1:parameter qname="ns18:userId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
   </ns1:operation>
-  <ns1:operation name="getUserByType" qname="ns17:getUserByType" returnQName="ns17:getUserByTypeReturn" returnType="ns18:User" soapAction="" xmlns:ns17="http://model.video.sy" xmlns:ns18="http://valueobj.video.sy">
-   <ns1:parameter qname="ns17:userType" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns17:from" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns17:pagesize" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <ns1:operation name="getUserByType" qname="ns20:getUserByType" returnQName="ns20:getUserByTypeReturn" returnType="ns21:User" soapAction="" xmlns:ns20="http://model.video.sy" xmlns:ns21="http://valueobj.video.sy">
+   <ns1:parameter qname="ns20:userType" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns20:from" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns20:pagesize" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
   </ns1:operation>
-  <ns1:operation name="authenticateUser" qname="ns19:authenticateUser" returnQName="ns19:authenticateUserReturn" returnType="ns20:User" soapAction="" xmlns:ns19="http://model.video.sy" xmlns:ns20="http://valueobj.video.sy">
-   <ns1:parameter qname="ns19:email" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns19:password" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <ns1:operation name="authenticateUser" qname="ns22:authenticateUser" returnQName="ns22:authenticateUserReturn" returnType="ns23:User" soapAction="" xmlns:ns22="http://model.video.sy" xmlns:ns23="http://valueobj.video.sy">
+   <ns1:parameter qname="ns22:email" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns22:password" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
   </ns1:operation>
-  <ns1:operation name="getUsers" qname="ns21:getUsers" returnQName="ns21:getUsersReturn" returnType="ns22:User" soapAction="" xmlns:ns21="http://model.video.sy" xmlns:ns22="http://valueobj.video.sy">
-   <ns1:parameter qname="ns21:from" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns21:pagesize" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <ns1:operation name="getUsers" qname="ns24:getUsers" returnQName="ns24:getUsersReturn" returnType="ns25:User" soapAction="" xmlns:ns24="http://model.video.sy" xmlns:ns25="http://valueobj.video.sy">
+   <ns1:parameter qname="ns24:from" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns24:pagesize" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
   </ns1:operation>
-  <ns1:operation name="saveUser" qname="ns23:saveUser" soapAction="" xmlns:ns23="http://model.video.sy">
-   <ns1:parameter qname="ns23:u" type="ns24:User" xmlns:ns24="http://valueobj.video.sy"/>
-  </ns1:operation>
-  <ns1:operation name="deletUser" qname="ns25:deletUser" returnQName="ns25:deletUserReturn" returnType="xsd:int" soapAction="" xmlns:ns25="http://model.video.sy" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <ns1:parameter qname="ns25:userId" type="xsd:int"/>
-  </ns1:operation>
-  <ns1:operation name="addUser" qname="ns26:addUser" returnQName="ns26:addUserReturn" returnType="xsd:int" soapAction="" xmlns:ns26="http://model.video.sy" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ns1:operation name="saveUser" qname="ns26:saveUser" soapAction="" xmlns:ns26="http://model.video.sy">
    <ns1:parameter qname="ns26:u" type="ns27:User" xmlns:ns27="http://valueobj.video.sy"/>
+  </ns1:operation>
+  <ns1:operation name="deletUser" qname="ns28:deletUser" returnQName="ns28:deletUserReturn" returnType="xsd:int" soapAction="" xmlns:ns28="http://model.video.sy" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns28:userId" type="xsd:int"/>
+  </ns1:operation>
+  <ns1:operation name="addUser" qname="ns29:addUser" returnQName="ns29:addUserReturn" returnType="xsd:int" soapAction="" xmlns:ns29="http://model.video.sy" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns29:u" type="ns30:User" xmlns:ns30="http://valueobj.video.sy"/>
   </ns1:operation>
   <ns1:parameter name="allowedMethods" value="getUserByType deletUser getUser saveUser addUser authenticateUser getUsers"/>
   <ns1:parameter name="typeMappingVersion" value="1.2"/>
@@ -103,7 +110,7 @@
   <ns1:parameter name="schemaQualified" value="http://valueobj.video.sy,http://model.video.sy"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://model.video.sy"/>
   <ns1:parameter name="wsdlServiceElement" value="UserModelService"/>
-  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns28:User" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:sy.video.valueobj.User" xmlns:ns28="http://valueobj.video.sy"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns31:User" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:sy.video.valueobj.User" xmlns:ns31="http://valueobj.video.sy"/>
  </ns1:service>
  <ns1:transport name="http">
   <ns1:requestFlow>

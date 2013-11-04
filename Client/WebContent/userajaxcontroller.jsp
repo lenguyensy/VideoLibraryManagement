@@ -3,7 +3,11 @@
 <%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.UserModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
+
+<%@ page import="sy.ui.UIUtil"%>
 <%
+	UIUtil.authenticate(session, request, response);
+
 	UserModelProxy modelProxy = new UserModelProxy();
 	modelProxy.setEndpoint(Config.ENDPOINT_USER);
 
@@ -32,12 +36,13 @@
 	Object ret = null;
 
 	if (command.equalsIgnoreCase("getpremiummembers")) {
-		ret = new JSONArray(modelProxy.getUserByType(sy.config.Enum.USER_TYPE_PREMIUM, from, pagesize));
+		ret = new JSONArray(modelProxy.getUserByType(
+		sy.config.AppEnum.USER_TYPE_PREMIUM, from, pagesize));
 	} else if (command.equalsIgnoreCase("getsimplecustomers")) {
-		ret = new JSONArray(modelProxy.getUserByType(sy.config.Enum.USER_TYPE_SIMPLE, from, pagesize));
+		ret = new JSONArray(modelProxy.getUserByType(
+		sy.config.AppEnum.USER_TYPE_SIMPLE, from, pagesize));
 	} else if (command.equalsIgnoreCase("getallcustomer")) {
-		ret = new JSONArray(modelProxy.getUsers(from,
-		pagesize));
+		ret = new JSONArray(modelProxy.getUsers(from, pagesize));
 	} else if (command.equalsIgnoreCase("deletuser")) {
 		modelProxy.deletUser(userId);
 	} else if (command.equalsIgnoreCase("getuser")) {

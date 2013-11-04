@@ -5,7 +5,7 @@
 
 <%@ page import="sy.ui.UIUtil"%>
 <%
-	UIUtil.authenticate(session, request, response);
+	User u = UIUtil.authenticate(session, request, response);
 
 	VideoModelProxy modelProxy = new VideoModelProxy();
 	modelProxy.setEndpoint(Config.ENDPOINT_MOVIE);
@@ -14,6 +14,7 @@
 			.getParameter("searchTerm"), searchterm = genre = request
 			.getParameter("genre");
 	int from = 0, pagesize = 0, movieId = 0;
+	String userId = u.getUserId();
 	try {
 		from = Integer.parseInt(request.getParameter("from"));
 		pagesize = Integer.parseInt(request.getParameter("pagesize"));
@@ -47,10 +48,14 @@
 		else
 			ret = new JSONArray(modelProxy.getMovies(from, pagesize));
 
-	} else if (command.equalsIgnoreCase("deletemovie")) {
-		modelProxy.deletMovie(movieId);
 	} else if (command.equalsIgnoreCase("getmovie")) {
 		ret = new JSONObject(modelProxy.getMovie(movieId));
+	} else if (command.equalsIgnoreCase("getbillinginfo")) {
+		//get billing information
+	} else if (command.equalsIgnoreCase("rentmovie")) {
+		//rent a movie
+	} else if (command.equalsIgnoreCase("getallrentals")) {
+		//get all rentals movie
 	}
 %>
 

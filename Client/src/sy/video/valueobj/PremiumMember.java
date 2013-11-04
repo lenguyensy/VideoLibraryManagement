@@ -1,6 +1,6 @@
 package sy.video.valueobj;
 
-import sy.config.Enum;
+import sy.config.AppEnum;
 
 /**
  * 
@@ -8,6 +8,6 @@ import sy.config.Enum;
  */
 public class PremiumMember extends User {
 	public PremiumMember() {
-		this.setUserType(Enum.USER_TYPE_PREMIUM);
+		this.setUserType(AppEnum.USER_TYPE_PREMIUM);
 	}
 }
