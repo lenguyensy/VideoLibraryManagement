@@ -266,8 +266,8 @@ public class VideoModel {
 			// reduce user total oustanding count
 			stmt = con
 					.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies - 1, total = total + ? WHERE id = ?");
-			stmt.setInt(1, userId);
-			stmt.setFloat(2, m.getRentAmount());
+			stmt.setFloat(1, m.getRentAmount());
+			stmt.setInt(2, userId);
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();

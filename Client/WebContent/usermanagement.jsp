@@ -1,9 +1,9 @@
-<jsp:include page="header.jsp" />
-
 <%@ page import="sy.ui.UIUtil"%>
 <%
 	UIUtil.authenticate(session, request, response);
 %>
+
+<jsp:include page="header.jsp" />
 
 <script>
 	$(function() {

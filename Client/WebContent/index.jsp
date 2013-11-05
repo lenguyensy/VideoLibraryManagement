@@ -1,8 +1,9 @@
-<jsp:include page="header.jsp" />
-
 <%
 	String error = request.getParameter("error");
 %>
+
+<jsp:include page="header.jsp" />
+
 <script>
 	$(function() {
 		//show tabs

@@ -4,6 +4,7 @@
 <%
 	User u = UIUtil.getCurrentUser(session);
 %>
+
 <!DOCTYPE html>
 <html>
 <head>

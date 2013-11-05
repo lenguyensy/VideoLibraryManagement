@@ -1,8 +1,9 @@
-<jsp:include page="header.jsp" />
-
+<%@ page import="sy.video.valueobj.User"%>
 <%@ page import="sy.ui.UIUtil"%>
+
 <%
 	UIUtil.authenticate(session, request, response);
+	User u = UIUtil.getCurrentUser(session);
 
 	String searchTerm = "", escapedSearchTerm = "";
 	Boolean isSearchPage = false;
@@ -13,6 +14,8 @@
 	} catch (Exception ex) {
 	}
 %>
+
+<jsp:include page="header.jsp" />
 
 <script>
 	$(function() {
@@ -30,9 +33,13 @@
 		
 		function renderList(lstMovie) {
 			for (var i = 0; i < lstMovie.length; i++){
+				lstMovie[i].isAvailable = lstMovie[i].availableCopies > 0;
+				
 				$('#tblMovie tbody').append(
 						Mustache.render(tmplRowMovie, lstMovie[i]));
 				
+				
+				//dummy code to render rentals
 				if (!renderRental && $('#tblRental tbody').children().length < 5)
 					$('#tblRental tbody').append(
 							Mustache.render(tmplRowRental, lstMovie[i]));
@@ -56,7 +63,6 @@
 			}, function(lstUsers) {
 				renderList(lstUsers);
 				$('.totalRecord').html($('.rentry').length);
-				$('.btn-show-more').toggle($('.rentry').length % 25 == 0);
 			}, 'json');
 		}).click();
 
@@ -108,15 +114,15 @@
 		<div id="billinginfo">
 			<h4 class="text-info">Billing Information:</h4>
 			<div class="control-group">
-				<label class="control-label">Monthly Subscription:</label> <span>$
-					15.00</span>
+				<label class="control-label">Monthly Subscription:</label> $<span
+					id="monthlyfee"><%=u.getMonthlySubscriptionFee()%></span>
 			</div>
 			<div class="control-group">
-				<label class="control-label">Balance:</label> <span>$ 2.00</span>
+				<label class="control-label">Balance:</label> $ <span id="balance"><%=u.getBalance()%></span>
 			</div>
 			<div class="control-group">
-				<label class="control-label">Total Outstanding:</label> <span>$
-					5.00</span>
+				<label class="control-label">Total Outstanding Movies:</label> $ <span
+					id="totalmovies"><%=u.getTotalOutstandingMovies()%></span>
 			</div>
 		</div>
 	</div>
@@ -173,14 +179,16 @@
 	</div>
 </div>
 <script id="tmplRowMovie" type="mustache">
-<tr class="rentry">
+<tr class="rentry{{^isAvailable}} error{{/isAvailable}}">
 <td class="name">{{movieName}}</td>
 <td>{{releaseDate}}</td>
 <td>$ {{rentAmount}}</td>
 <td>{{category}}</td>
 <td class="availableCopies">{{availableCopies}}</td>
 <td>
+	{{#isAvailable}}
 	<a><i class="icon-circle-arrow-down btnRent" data-id="{{movieId}}"></i></a>
+	{{/isAvailable}}
 </td>
 <tr>
 </script>
