@@ -11,6 +11,7 @@ import javax.jws.WebService;
 
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
+import sy.video.valueobj.User;
 
 /**
  * 
@@ -232,6 +233,45 @@ public class VideoModel {
 	 */
 	public void rentMovie(int userId, int movieId) {
 		// movie rental logics here....
+		try {
+			PreparedStatement stmt;
+
+			UserModel um = new UserModel();
+			// validate to take place when user is not allowed to make calls.
+			User u = um.getUser(userId);
+			Movie m = this.getMovie(movieId);
+
+			if (u.getTotalOutstandingMovies() <= 0)
+				throw new Exception("User " + u.getEmail()
+						+ " has zero outstanding movie");
+
+			if (m.getAvailableCopies() <= 0)
+				throw new Exception("Movie " + m.getMovieName()
+						+ " has run out of available copies.");
+
+			// insert into the movie renter
+			stmt = con
+					.prepareStatement("INSERT INTO movierenter VALUES(null, ?,?,NOW(), DATE_ADD(NOW(),INTERVAL 1 DAY),?)");
+			stmt.setInt(1, movieId);
+			stmt.setInt(2, userId);
+			stmt.setFloat(3, m.getRentAmount());
+			stmt.execute();
+
+			// reduce the available copy count
+			stmt = con
+					.prepareStatement("UPDATE movies SET AvailableCopies = AvailableCopies - 1 WHERE id = ?");
+			stmt.setInt(1, movieId);
+			stmt.execute();
+
+			// reduce user total oustanding count
+			stmt = con
+					.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies - 1, total = total + ? WHERE id = ?");
+			stmt.setInt(1, userId);
+			stmt.setFloat(2, m.getRentAmount());
+			stmt.execute();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	/**
@@ -241,6 +281,22 @@ public class VideoModel {
 	 * @return
 	 */
 	public Movie[] getMoviesRentalByUser(int userId) {
-		return null;
+		List<Movie> lstMov = new ArrayList<Movie>();
+
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT mr.rentamount, m.id, m.category, m.moviename,m.moviebanner,"
+							+ "m.releasedate,m.availablecopies, m.id FROM movierenter mr "
+							+ "INNER JOIN movies m ON m.id = mr.movieid "
+							+ " WHERE mr.userid = ? limit 0,50;");
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			lstMov = _getMovieList(rs);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return lstMov.toArray(new Movie[lstMov.size()]);
 	}
 }

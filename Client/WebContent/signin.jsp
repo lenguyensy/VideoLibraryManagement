@@ -28,6 +28,6 @@
 		if (u.getUserType().equals(AppEnum.USER_TYPE_ADMIN))//redirect usermanagement
 			response.sendRedirect("usermanagement.jsp");
 		else//redirect to dashboard
-		response.sendRedirect("userdashboard.jsp");
+		response.sendRedirect("dashboard.jsp");
 	}
 %>

@@ -191,7 +191,7 @@ var ENUM = {
 var URL = {
 	USER_CONTROLLER : "userajaxcontroller.jsp",
 	MOVIE_CONTROLLER : "movieajaxcontroller.jsp",
-	DASHBOARD_CONTROLLER : "userdashboardajaxcontroller.jsp"
+	DASHBOARD_CONTROLLER : "dashboardajaxcontroller.jsp"
 }
 
 
@@ -225,4 +225,23 @@ var FormUtil = (function() {
 
 		}
 	}
-})()
+})();
+
+
+//util
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};

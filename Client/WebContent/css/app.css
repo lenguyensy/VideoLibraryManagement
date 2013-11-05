@@ -1,18 +1,28 @@
 /*signin and sign up*/
-.errorMsg{
-	display:none;
+.errorMsg {
+	display: none;
 }
 
-
-#maincontainer{
-	padding-bottom:20px;
+#maincontainer {
+	padding-bottom: 20px;
 }
 
-#welcome{
-	clear:both;
-	font-weight:bold;
+#welcome {
+	clear: both;
+	font-weight: bold;
 }
-#role{
-	color:#c09853;
-	font-weight:normal;
+
+#role {
+	color: #c09853;
+	font-weight: normal;
+	display: block;
+}
+
+#headernav {
+	overflow: hidden;
+	margin-bottom: 10px;
+}
+
+.btnRent,.btnEditMovie,.btnDeleteMovie,.btnEditUser,.btnDeleteUser {
+	cursor: pointer;
 }

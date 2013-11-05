@@ -24,9 +24,7 @@ public class tester {
 		//importMovie();
 		//importUser();
 		
-		User[] u = um.getUsers(0, 25);
-		for (int i = 0; i < u.length; i++)
-			System.out.println(u[i]);
+		vm.rentMovie(1, 2);
 	}
 
 	public static void importMovie() {

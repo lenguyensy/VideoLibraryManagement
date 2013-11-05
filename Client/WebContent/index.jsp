@@ -34,7 +34,7 @@
 				//doing form submit
 			} else
 				return false;
-		});
+		}).find('input').attr({autocomplete: "off"});
 		
 		$('#username').focus();
 	});

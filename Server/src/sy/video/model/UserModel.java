@@ -150,7 +150,7 @@ public class UserModel {
 					.prepareStatement("SELECT * FROM users WHERE email LIKE ? AND hashedpassword LIKE md5(?)");
 			stmt.setString(1, email);
 			stmt.setString(2, password);
-			
+
 			ResultSet rs = stmt.executeQuery();
 			lstUsers = _getUserList(rs);
 		} catch (Exception ex) {
@@ -161,6 +161,26 @@ public class UserModel {
 			return lstUsers.get(0);
 		else
 			return null;
+	}
+
+	/**
+	 * delete a user
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public int deletUser(int userId) {
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("DELETE FROM users WHERE id = ?");
+			stmt.setInt(1, userId);
+
+			stmt.execute();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return 0;
 	}
 
 	/**
@@ -201,26 +221,6 @@ public class UserModel {
 	}
 
 	/**
-	 * delete a user
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public int deletUser(int userId) {
-		try {
-			PreparedStatement stmt = con
-					.prepareStatement("DELETE FROM users WHERE id = ?");
-			stmt.setInt(1, userId);
-
-			stmt.execute();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return 0;
-	}
-
-	/**
 	 * save user (update user)
 	 * 
 	 * @param u
@@ -231,25 +231,39 @@ public class UserModel {
 					.prepareStatement("UPDATE users SET membershipno = ?,"
 							+ " usertype = ?," + " firstname = ?,"
 							+ " lastname = ?," + " address = ?,"
-							+ " state = ?," + " hashedpassword = md5(?),"
-							+ " totaloutstandingmovies = ?," + " balance = ?,"
-							+ " monthlysubscriptionfee = ?," + " total = ?,"
-							+ " city = ?," + " zip = ?, email = ?"
-							+ " WHERE id = ?");
+							+ " state = ?," + " monthlysubscriptionfee = ?,"
+							+ " total = ?," + " city = ?,"
+							+ " zip = ?, email = ?" + " WHERE id = ?");
 			stmt.setString(1, u.getMembershipNo());
 			stmt.setString(2, u.getUserType());
 			stmt.setString(3, u.getFirstName());
 			stmt.setString(4, u.getLastName());
 			stmt.setString(5, u.getAddress());
 			stmt.setString(6, u.getState());
+			stmt.setFloat(7, u.getMonthlySubscriptionFee());
+			stmt.setFloat(8, u.getTotal());
+			stmt.setString(9, u.getCity());
+			stmt.setString(10, u.getZipCode());
+			stmt.setString(11, u.getEmail());
+			stmt.setString(12, u.getUserId());
+
+			stmt.execute();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * reset password
+	 * 
+	 * @param u
+	 */
+	public void resetPassword(User u) {
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("UPDATE users SET hashedpassword = md5(?)"
+							+ " WHERE id = ?");
 			stmt.setString(7, u.getPassword());
-			stmt.setInt(8, u.getTotalOutstandingMovies());
-			stmt.setFloat(9, u.getBalance());
-			stmt.setFloat(10, u.getMonthlySubscriptionFee());
-			stmt.setFloat(11, u.getTotal());
-			stmt.setString(12, u.getCity());
-			stmt.setString(13, u.getZipCode());
-			stmt.setString(14, u.getEmail());
 			stmt.setString(15, u.getUserId());
 
 			stmt.execute();

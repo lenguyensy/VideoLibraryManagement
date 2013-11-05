@@ -35,7 +35,7 @@
 			$('.btn-show-more').click();
 		});
 
-		$('#usermanagement').on('click', '.btnBeleteUser', function() {
+		$('#usermanagement').on('click', '.btnDeleteUser', function() {
 			var cur = $(this).closest('tr');
 			if (confirm('Do you want to delete this user?')) {
 				$.get(URL.USER_CONTROLLER, {
@@ -105,7 +105,7 @@
 <td>{{userType}}</td>
 <td>
 	<a href="userform.jsp?userId={{userId}}"><i class="icon-edit btnEditUser"></i></a>
-	<a href="#"><i class="icon-trash btnBeleteUser" data-id="{{userId}}"></i></a>
+	<a href="#"><i class="icon-trash btnDeleteUser" data-id="{{userId}}"></i></a>
 </td>
 <tr>
 </script>

@@ -44,22 +44,28 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     return videoModel;
   }
   
+  public sy.video.valueobj.Movie[] getMovies(int from, int pagesize) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.getMovies(from, pagesize);
+  }
+  
   public sy.video.valueobj.Movie[] getMoviesByGenre(java.lang.String genre, int from, int pagesize) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     return videoModel.getMoviesByGenre(genre, from, pagesize);
   }
   
+  public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.getMoviesBySearchTerm(searchTerm, from, pagesize);
+  }
+  
   public sy.video.valueobj.Movie getMovie(int movieId) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     return videoModel.getMovie(movieId);
-  }
-  
-  public sy.video.valueobj.Movie[] getMovies(int from, int pagesize) throws java.rmi.RemoteException{
-    if (videoModel == null)
-      _initVideoModelProxy();
-    return videoModel.getMovies(from, pagesize);
   }
   
   public int addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
@@ -80,22 +86,16 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     videoModel.saveMovie(m);
   }
   
-  public sy.video.valueobj.Movie[] getMoviesRentalByUser(int userId) throws java.rmi.RemoteException{
-    if (videoModel == null)
-      _initVideoModelProxy();
-    return videoModel.getMoviesRentalByUser(userId);
-  }
-  
-  public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException{
-    if (videoModel == null)
-      _initVideoModelProxy();
-    return videoModel.getMoviesBySearchTerm(searchTerm, from, pagesize);
-  }
-  
   public void rentMovie(int userId, int movieId) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     videoModel.rentMovie(userId, movieId);
+  }
+  
+  public sy.video.valueobj.Movie[] getMoviesRentalByUser(int userId) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.getMoviesRentalByUser(userId);
   }
   
   

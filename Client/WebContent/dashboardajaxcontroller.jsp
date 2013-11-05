@@ -11,10 +11,10 @@
 	modelProxy.setEndpoint(Config.ENDPOINT_MOVIE);
 
 	String command = request.getParameter("cmd"), genre = request
-			.getParameter("searchTerm"), searchterm = genre = request
-			.getParameter("genre");
-	int from = 0, pagesize = 0, movieId = 0;
-	String userId = u.getUserId();
+			.getParameter("genre"), searchterm = request
+			.getParameter("searchTerm");
+	int from = 0, pagesize = 0, movieId = 0, userId = Integer
+			.parseInt(u.getUserId());
 	try {
 		from = Integer.parseInt(request.getParameter("from"));
 		pagesize = Integer.parseInt(request.getParameter("pagesize"));
@@ -54,8 +54,10 @@
 		//get billing information
 	} else if (command.equalsIgnoreCase("rentmovie")) {
 		//rent a movie
+		modelProxy.rentMovie(userId, movieId);
 	} else if (command.equalsIgnoreCase("getallrentals")) {
 		//get all rentals movie
+		ret = new JSONArray(modelProxy.getMoviesRentalByUser(userId));
 	}
 %>
 

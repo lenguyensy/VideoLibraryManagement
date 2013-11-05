@@ -20,17 +20,22 @@
       <parameter name="className" value="sy.video.model.VideoModelSoapBindingImpl"/>
       <parameter name="wsdlPortType" value="VideoModel"/>
       <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="getMovies" qname="operNS:getMovies" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:from" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:pagesize" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
       <operation name="getMoviesByGenre" qname="operNS:getMoviesByGenre" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesByGenreReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
         <parameter qname="pns:genre" xmlns:pns="http://model.video.sy" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter qname="pns:from" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter qname="pns:pagesize" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
       </operation>
-      <operation name="getMovie" qname="operNS:getMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
-        <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
-      <operation name="getMovies" qname="operNS:getMovies" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+      <operation name="getMoviesBySearchTerm" qname="operNS:getMoviesBySearchTerm" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesBySearchTermReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:searchTerm" xmlns:pns="http://model.video.sy" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter qname="pns:from" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter qname="pns:pagesize" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getMovie" qname="operNS:getMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
       </operation>
       <operation name="addMovie" qname="operNS:addMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:addMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:int" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
         <parameter qname="pns:m" xmlns:pns="http://model.video.sy" type="tns:Movie" xmlns:tns="http://valueobj.video.sy"/>
@@ -41,19 +46,14 @@
       <operation name="saveMovie" qname="operNS:saveMovie" xmlns:operNS="http://model.video.sy" soapAction="" >
         <parameter qname="pns:m" xmlns:pns="http://model.video.sy" type="tns:Movie" xmlns:tns="http://valueobj.video.sy"/>
       </operation>
-      <operation name="getMoviesRentalByUser" qname="operNS:getMoviesRentalByUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesRentalByUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
-        <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
-      <operation name="getMoviesBySearchTerm" qname="operNS:getMoviesBySearchTerm" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesBySearchTermReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
-        <parameter qname="pns:searchTerm" xmlns:pns="http://model.video.sy" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter qname="pns:from" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-        <parameter qname="pns:pagesize" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
-      </operation>
       <operation name="rentMovie" qname="operNS:rentMovie" xmlns:operNS="http://model.video.sy" soapAction="" >
         <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
       </operation>
-      <parameter name="allowedMethods" value="getMoviesByGenre saveMovie getMovies deletMovie addMovie getMovie rentMovie getMoviesBySearchTerm getMoviesRentalByUser"/>
+      <operation name="getMoviesRentalByUser" qname="operNS:getMoviesRentalByUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesRentalByUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Movie" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="getMoviesByGenre saveMovie getMovies deletMovie addMovie getMovie rentMovie getMoviesRentalByUser getMoviesBySearchTerm"/>
 
       <typeMapping
         xmlns:ns="http://valueobj.video.sy"

@@ -29,6 +29,7 @@ public class UIUtil {
 			// permitted here
 			if (url.contains("movieajaxcontroller.jsp")
 					|| url.contains("moviemanagement.jsp")
+					|| url.contains("movieform.jsp")
 					|| url.contains("userajaxcontroller.jsp")
 					|| url.contains("userform.jsp")
 					|| url.contains("usermanagement.jsp")) {

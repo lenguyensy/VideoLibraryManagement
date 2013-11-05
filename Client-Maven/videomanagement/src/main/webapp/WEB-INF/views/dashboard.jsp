@@ -42,8 +42,6 @@
 			renderRental =true;
 		}
 		
-		tmplRowRental
-
 		//hook up events
 		$('.btn-show-more').on('click', function() {
 			$.get(URL.DASHBOARD_CONTROLLER, {
@@ -58,6 +56,7 @@
 			}, function(lstUsers) {
 				renderList(lstUsers);
 				$('.totalRecord').html($('.rentry').length);
+				$('.btn-show-more').toggle($('.rentry').length % 25 == 0);
 			}, 'json');
 		}).click();
 
@@ -113,7 +112,6 @@
 
 	<div id="moviemanagement" class="span7">
 		<h4 class="text-info">Rent A New Movie</h4>
-		<a class="btn pull-right" href="movieform.jsp">Add Movie</a>
 		<h4 class="muted">
 			Showing <span class="totalRecord"></span> Movies
 		</h4>
@@ -132,7 +130,7 @@
 
 
 			<div class="input-append pull-right">
-				<form id="frmSearch" method="get" action="moviemanagement.jsp">
+				<form id="frmSearch" method="get">
 					<input class="input-xlarge" id="searchTerm" name="searchTerm"
 						placeholder="Type something to search" type="text"
 						value="<%=searchTerm == null ? "" : searchTerm%>" /> <input
