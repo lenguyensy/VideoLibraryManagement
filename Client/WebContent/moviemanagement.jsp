@@ -50,13 +50,15 @@
 		}).click();
 
 		$('#moviemanagement').on('click', '.btnDeleteMovie', function() {
-			var cur = $(this).closest('tr');
+			var cur = $(this).closest('tr'), name = cur.find('.name').html();
 			if (confirm('Do you want to delete this user?')) {
 				$.get(URL.MOVIE_CONTROLLER, {
 					cmd : 'deletemovie',
 					movieId : $(this).attr('data-id')
-				}).done(function() {
+				}).done(function(ret) {
 					cur.remove();
+					ret = $.trim(ret);
+					alert(ret === "true" ? 'Delete Movie <b>' + name + '</b> Successful' : ret);
 				});
 			}
 		});
@@ -130,7 +132,7 @@
 
 <script id="tmplRowMovie" type="mustache">
 <tr class="rentry">
-<td>{{movieName}}</td>
+<td class="name">{{movieName}}</td>
 <td>{{movieBanner}}</td>
 <td>{{releaseDate}}</td>
 <td>$ {{rentAmount}}</td>

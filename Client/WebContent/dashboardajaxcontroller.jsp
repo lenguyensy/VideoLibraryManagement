@@ -1,14 +1,21 @@
 <%@ page import="org.json.*"%>
 <%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.VideoModelProxy"%>
+<%@ page import="sy.video.model.RentalModelProxy"%>
+<%@ page import="sy.video.model.UserModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
+<%@ page import="sy.config.WebServiceClientFactory"%>
 
 <%@ page import="sy.ui.UIUtil"%>
 <%
 	User u = UIUtil.authenticate(session, request, response);
 
-	VideoModelProxy modelProxy = new VideoModelProxy();
-	modelProxy.setEndpoint(Config.ENDPOINT_MOVIE);
+	UserModelProxy userProxy = (UserModelProxy) WebServiceClientFactory
+			.getInstance("user");
+	VideoModelProxy videoProxy = (VideoModelProxy) WebServiceClientFactory
+			.getInstance("movie");
+	RentalModelProxy rentalProxy = (RentalModelProxy) WebServiceClientFactory
+			.getInstance("rental");
 
 	String command = request.getParameter("cmd"), genre = request
 			.getParameter("genre"), searchterm = request
@@ -37,27 +44,36 @@
 	//begin get premium user
 	Object ret = null;
 
-	if (command.equalsIgnoreCase("getmovies")
-			|| command.equalsIgnoreCase("getmoviebygenre")) {
-		if (genre != null && !genre.equals(""))
-			ret = new JSONArray(modelProxy.getMoviesByGenre(genre,
-					from, pagesize));
-		else if (searchterm != null && !searchterm.equals(""))
-			ret = new JSONArray(modelProxy.getMoviesBySearchTerm(
-					searchterm, from, pagesize));
-		else
-			ret = new JSONArray(modelProxy.getMovies(from, pagesize));
+	try {
+		if (command.equalsIgnoreCase("getmovies")
+				|| command.equalsIgnoreCase("getmoviebygenre")) {
+			if (genre != null && !genre.equals(""))
+				ret = new JSONArray(videoProxy.getMoviesByGenre(genre,
+						from, pagesize));
+			else if (searchterm != null && !searchterm.equals(""))
+				ret = new JSONArray(videoProxy.getMoviesBySearchTerm(
+						searchterm, from, pagesize));
+			else
+				ret = new JSONArray(
+						videoProxy.getMovies(from, pagesize));
 
-	} else if (command.equalsIgnoreCase("getmovie")) {
-		ret = new JSONObject(modelProxy.getMovie(movieId));
-	} else if (command.equalsIgnoreCase("getbillinginfo")) {
-		//get billing information
-	} else if (command.equalsIgnoreCase("rentmovie")) {
-		//rent a movie
-		modelProxy.rentMovie(userId, movieId);
-	} else if (command.equalsIgnoreCase("getallrentals")) {
-		//get all rentals movie
-		ret = new JSONArray(modelProxy.getMoviesRentalByUser(userId));
+		} else if (command.equalsIgnoreCase("getmovie")) {
+			ret = new JSONObject(videoProxy.getMovie(movieId));
+		} else if (command.equalsIgnoreCase("getbillinginfo")) {
+			//get billing information
+		} else if (command.equalsIgnoreCase("rentmovie")) {
+			//rent a movie
+			ret = rentalProxy.rentMovie(userId, movieId);
+		} else if (command.equalsIgnoreCase("getallrentals")) {
+			//get all rentals movie
+			ret = new JSONArray(
+					rentalProxy.getMoviesRentalByUser(userId));
+		} else if (command.equalsIgnoreCase("getbilling")) {
+			//get all billing information
+			ret = new JSONObject (userProxy.getUser(userId));
+		}
+	} catch (Exception ex) {
+		ret = ret;
 	}
 %>
 

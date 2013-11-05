@@ -1,5 +1,5 @@
 <%@ page import="org.json.*"%>
-<%@ page import="sy.config.AppEnum"%>
+<%@ page import="sy.config.sy.config.AppEnum"%>
 <%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.UserModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
@@ -25,8 +25,8 @@
 		//save that into the session and use it later
 		session.setAttribute("user", u);
 		
-		if (u.getUserType().equals(AppEnum.USER_TYPE_ADMIN))//redirect usermanagement
-			response.sendRedirect("usermanagement");
+		if (u.getUserType().equals(Enum.USER_TYPE_ADMIN))//redirect usermanagement
+	response.sendRedirect("usermanagement");
 		else//redirect to dashboard
 		response.sendRedirect("dashboard");
 	}

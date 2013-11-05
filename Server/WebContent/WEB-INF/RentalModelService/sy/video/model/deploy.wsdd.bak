@@ -1,0 +1,43 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from RentalModelService WSDL service -->
+
+  <service name="RentalModel" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://model.video.sy"/>
+      <parameter name="wsdlServiceElement" value="RentalModelService"/>
+      <parameter name="schemaQualified" value="http://valueobj.video.sy,http://model.video.sy"/>
+      <parameter name="wsdlServicePort" value="RentalModel"/>
+      <parameter name="className" value="sy.video.model.RentalModelSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="RentalModel"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="rentMovie" qname="operNS:rentMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:rentMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getMoviesRentalByUser" qname="operNS:getMoviesRentalByUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesRentalByUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Rental" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="invalidateExpiredRental" qname="operNS:invalidateExpiredRental" xmlns:operNS="http://model.video.sy" soapAction="" >
+      </operation>
+      <parameter name="allowedMethods" value="invalidateExpiredRental rentMovie getMoviesRentalByUser"/>
+
+      <typeMapping
+        xmlns:ns="http://valueobj.video.sy"
+        qname="ns:Rental"
+        type="java:sy.video.valueobj.Rental"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

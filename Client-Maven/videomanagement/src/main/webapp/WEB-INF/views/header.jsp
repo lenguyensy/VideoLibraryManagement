@@ -1,5 +1,5 @@
 <%@ page import="sy.video.valueobj.User"%>
-<%@ page import="sy.config.AppEnum"%>
+<%@ page import="sy.config.sy.config.AppEnum"%>
 <%@ page import="sy.ui.UIUtil"%>
 <%
 	User u = UIUtil.getCurrentUser(session);
@@ -21,7 +21,7 @@
 	<div id="maincontainer" class="container">
 		<div id="headernav" class="masthead">
 			<%
-				if (u != null && u.getUserType().equals(AppEnum.USER_TYPE_ADMIN)) {
+				if (u != null && u.getUserType().equals(Enum.USER_TYPE_ADMIN)) {
 			%>
 			<ul class="nav nav-pills pull-right">
 				<li id="userNav"><a href="usermanagement.jsp">User

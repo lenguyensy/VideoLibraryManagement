@@ -74,12 +74,11 @@
 					//doing form submit
 					$.get(URL.USER_CONTROLLER, $.extend({
 						cmd : "saveuser"
-					}, $('#frm').serializeObject()), function() {
+					}, $('#frm').serializeObject()), function(ret) {
 						$('#btnSubmit').show();
-						$('#msg').html("User is Saved").show(1000);
-						setTimeout(function() {
-							$('#msg').hide(1000);
-						}, 5000);
+						
+						ret = $.trim(ret);
+						alert(ret === "true" ? "Save User Successful" : ret);
 					});
 				}
 				
@@ -119,7 +118,6 @@
 
 <script id="tmplFormUser" type="mustache">
 <h4>Please ensure that all the following field item must be saved.</h4>
-<p id="msg" class="text-info hide"></p>
 <form id="frm">
 <fieldset>
 	<div class="control-group">

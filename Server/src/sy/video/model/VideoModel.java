@@ -159,7 +159,7 @@ public class VideoModel {
 	 * @param m
 	 * @return
 	 */
-	public int addMovie(Movie m) {
+	public String addMovie(Movie m) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("INSERT INTO movies (moviename,moviebanner,releasedate,rentamount,availablecopies,category) "
@@ -174,9 +174,10 @@ public class VideoModel {
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return "Adding Movie Failed";
 		}
 
-		return 0;
+		return "true";
 	}
 
 	/**
@@ -185,7 +186,7 @@ public class VideoModel {
 	 * @param movieId
 	 * @return
 	 */
-	public int deletMovie(int movieId) {
+	public String deletMovie(int movieId) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("DELETE FROM movies WHERE id = ?");
@@ -194,9 +195,10 @@ public class VideoModel {
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return "Deleting Movie failed";
 		}
 
-		return 0;
+		return "true";
 	}
 
 	/**
@@ -204,7 +206,7 @@ public class VideoModel {
 	 * 
 	 * @param m
 	 */
-	public void saveMovie(Movie m) {
+	public String saveMovie(Movie m) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("UPDATE movies SET moviename = ?,"
@@ -222,81 +224,8 @@ public class VideoModel {
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return "Updating Movie Failed.";
 		}
-	}
-
-	/**
-	 * rent a movie
-	 * 
-	 * @param userId
-	 * @param movieId
-	 */
-	public void rentMovie(int userId, int movieId) {
-		// movie rental logics here....
-		try {
-			PreparedStatement stmt;
-
-			UserModel um = new UserModel();
-			// validate to take place when user is not allowed to make calls.
-			User u = um.getUser(userId);
-			Movie m = this.getMovie(movieId);
-
-			if (u.getTotalOutstandingMovies() <= 0)
-				throw new Exception("User " + u.getEmail()
-						+ " has zero outstanding movie");
-
-			if (m.getAvailableCopies() <= 0)
-				throw new Exception("Movie " + m.getMovieName()
-						+ " has run out of available copies.");
-
-			// insert into the movie renter
-			stmt = con
-					.prepareStatement("INSERT INTO movierenter VALUES(null, ?,?,NOW(), DATE_ADD(NOW(),INTERVAL 1 DAY),?)");
-			stmt.setInt(1, movieId);
-			stmt.setInt(2, userId);
-			stmt.setFloat(3, m.getRentAmount());
-			stmt.execute();
-
-			// reduce the available copy count
-			stmt = con
-					.prepareStatement("UPDATE movies SET AvailableCopies = AvailableCopies - 1 WHERE id = ?");
-			stmt.setInt(1, movieId);
-			stmt.execute();
-
-			// reduce user total oustanding count
-			stmt = con
-					.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies - 1, total = total + ? WHERE id = ?");
-			stmt.setFloat(1, m.getRentAmount());
-			stmt.setInt(2, userId);
-			stmt.execute();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	/**
-	 * get a list of all rentals by a user.
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public Movie[] getMoviesRentalByUser(int userId) {
-		List<Movie> lstMov = new ArrayList<Movie>();
-
-		try {
-			PreparedStatement stmt = con
-					.prepareStatement("SELECT mr.rentamount, m.id, m.category, m.moviename,m.moviebanner,"
-							+ "m.releasedate,m.availablecopies, m.id FROM movierenter mr "
-							+ "INNER JOIN movies m ON m.id = mr.movieid "
-							+ " WHERE mr.userid = ? limit 0,50;");
-			stmt.setInt(1, userId);
-			ResultSet rs = stmt.executeQuery();
-			lstMov = _getMovieList(rs);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return lstMov.toArray(new Movie[lstMov.size()]);
+		return "true";
 	}
 }

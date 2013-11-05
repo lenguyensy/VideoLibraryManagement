@@ -68,34 +68,22 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     return videoModel.getMovie(movieId);
   }
   
-  public int addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
+  public java.lang.String addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     return videoModel.addMovie(m);
   }
   
-  public int deletMovie(int movieId) throws java.rmi.RemoteException{
+  public java.lang.String deletMovie(int movieId) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     return videoModel.deletMovie(movieId);
   }
   
-  public void saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
+  public java.lang.String saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
-    videoModel.saveMovie(m);
-  }
-  
-  public void rentMovie(int userId, int movieId) throws java.rmi.RemoteException{
-    if (videoModel == null)
-      _initVideoModelProxy();
-    videoModel.rentMovie(userId, movieId);
-  }
-  
-  public sy.video.valueobj.Movie[] getMoviesRentalByUser(int userId) throws java.rmi.RemoteException{
-    if (videoModel == null)
-      _initVideoModelProxy();
-    return videoModel.getMoviesRentalByUser(userId);
+    return videoModel.saveMovie(m);
   }
   
   

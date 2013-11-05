@@ -2,17 +2,18 @@
 <%@ page import="sy.ui.UIUtil"%>
 
 <%
-	UIUtil.authenticate(session, request, response);
-	User u = UIUtil.getCurrentUser(session);
-
-	String searchTerm = "", escapedSearchTerm = "";
-	Boolean isSearchPage = false;
 	try {
-		searchTerm = request.getParameter("searchTerm");
-		escapedSearchTerm = searchTerm.replace("\"", "\\\"");
-		isSearchPage = true;
-	} catch (Exception ex) {
-	}
+		UIUtil.authenticate(session, request, response);
+		User u = UIUtil.getCurrentUser(session);
+
+		String searchTerm = "", escapedSearchTerm = "";
+		Boolean isSearchPage = false;
+		try {
+			searchTerm = request.getParameter("searchTerm");
+			escapedSearchTerm = searchTerm.replace("\"", "\\\"");
+			isSearchPage = true;
+		} catch (Exception ex) {
+		}
 %>
 
 <jsp:include page="header.jsp" />
@@ -29,28 +30,14 @@
 		//rendering
 		var tmplRowMovie = $('#tmplRowMovie').html(),
 		tmplRowRental = $('#tmplRowRental').html(),
+		tmplBilling = $('#tmplBilling').html(),
 		renderRental = false;
 		
-		function renderList(lstMovie) {
-			for (var i = 0; i < lstMovie.length; i++){
-				lstMovie[i].isAvailable = lstMovie[i].availableCopies > 0;
-				
-				$('#tblMovie tbody').append(
-						Mustache.render(tmplRowMovie, lstMovie[i]));
-				
-				
-				//dummy code to render rentals
-				if (!renderRental && $('#tblRental tbody').children().length < 5)
-					$('#tblRental tbody').append(
-							Mustache.render(tmplRowRental, lstMovie[i]));
-			}
-				
-			
-			renderRental =true;
-		}
 		
-		//hook up events
-		$('.btn-show-more').on('click', function() {
+		/*
+			render movie list
+		*/
+		function renderMovieList() {
 			$.get(URL.DASHBOARD_CONTROLLER, {
 				cmd : "getmovies",
 				<%if (!isSearchPage) {%>
@@ -60,10 +47,21 @@
 				<%}%>
 				from : $('.rentry').length,
 				pagesize : 25
-			}, function(lstUsers) {
-				renderList(lstUsers);
+			}, function(lstMovie) {
+				for (var i = 0; i < lstMovie.length; i++){
+					lstMovie[i].isAvailable = lstMovie[i].availableCopies > 0;
+					
+					$('#tblMovie tbody').append(
+							Mustache.render(tmplRowMovie, lstMovie[i]));
+				}
+				
 				$('.totalRecord').html($('.rentry').length);
 			}, 'json');
+		}
+		
+		//hook up events
+		$('.btn-show-more').on('click', function() {
+			renderMovieList();
 		}).click();
 
 		$('#genres').change(function() {
@@ -85,11 +83,49 @@
 				$.get(URL.DASHBOARD_CONTROLLER, {
 					cmd : 'rentmovie',
 					movieId : movieId
-				}).done(function() {
-					availableCopies.html(availableCopies.html() - 1);
+				}).done(function(ret) {
+					ret  = $.trim(ret);
+					
+					if(ret === "true")
+						availableCopies.html(availableCopies.html() - 1);
+					else
+						alert(ret);
 				});
 			}
 		});
+		
+		//get list of all rentals
+		function renderRentalList(){
+			$.get(URL.DASHBOARD_CONTROLLER, {
+				cmd : "getallrentals"
+			}, function(lstMovie) {
+				$('#tblRental tbody').empty();
+				
+				for (var i = 0; i < lstMovie.length; i++){
+					lstMovie[i].rentedDate = moment(lstMovie[i].rentedDate).format('L');
+					lstMovie[i].expirationDate = moment(lstMovie[i].expirationDate).format('L');
+					
+					$('#tblRental tbody').append(
+							Mustache.render(tmplRowRental, lstMovie[i]));
+				}
+			}, 'json');
+		}
+		renderRentalList();
+		
+		
+		//function render billing information
+		function renderBilling(){
+			$.get(URL.DASHBOARD_CONTROLLER, {
+				cmd : "getbilling"
+			}, function(billingInfo) {
+				$('#billinginfo').html(
+						Mustache.render(tmplBilling, billingInfo));
+			}, 'json');			
+		}
+		renderBilling();
+		
+		//polling calls - rerender every 3 secs
+		setInterval(function(){renderRentalList(); renderBilling();},3000);
 	});
 </script>
 
@@ -111,20 +147,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div id="billinginfo">
-			<h4 class="text-info">Billing Information:</h4>
-			<div class="control-group">
-				<label class="control-label">Monthly Subscription:</label> $<span
-					id="monthlyfee"><%=u.getMonthlySubscriptionFee()%></span>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Balance:</label> $ <span id="balance"><%=u.getBalance()%></span>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Total Outstanding Movies:</label> $ <span
-					id="totalmovies"><%=u.getTotalOutstandingMovies()%></span>
-			</div>
-		</div>
+		<div id="billinginfo"></div>
 	</div>
 
 	<div id="moviemanagement" class="span7">
@@ -199,8 +222,38 @@
 <td>{{movieName}}</td>
 <td>{{releaseDate}}</td>
 <td>{{rentAmount}}</td>
-<td>11/01/2013</td>
-<td>11/02/2013</td>
+<td>{{rentedDate}}</td>
+<td>{{expirationDate}}</td>
 <tr>
 </script>
+
+
+<script id="tmplBilling" type="mustache">
+<h4 class="text-info">Billing Information:</h4>
+<div class="control-group">
+	<label class="control-label">Name:</label><span
+		id="name">{{firstName}} {{lastName}}</span>
+</div>
+<div class="control-group">
+	<label class="control-label">User Type:</label><span
+		id="userType">{{userType}}</span>
+</div>
+<div class="control-group">
+	<label class="control-label">Monthly Subscription:</label> $<span
+		id="monthlyfee">{{monthlySubscriptionFee}}</span>
+</div>
+<div class="control-group">
+	<label class="control-label">Balance:</label> $ <span id="balance">{{balance}}</span>
+</div>
+<div class="control-group">
+	<label class="control-label">Total Outstanding Movies:</label> <span
+		id="totalmovies">{{totalOutstandingMovies}}</span>
+</div>
+</script>
+
+<%
+	} catch (Exception ex) {
+
+	}
+%>
 <jsp:include page="footer.jsp" />

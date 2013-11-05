@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://model.video.sy" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://model.video.sy" xmlns:intf="http://model.video.sy" xmlns:tns1="http://valueobj.video.sy" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://model.video.sy" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://valueobj.video.sy"/>
+   <element name="rentMovie">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:int"/>
+      <element name="movieId" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="rentMovieResponse">
+    <complexType>
+     <sequence>
+      <element name="rentMovieReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getMoviesRentalByUser">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getMoviesRentalByUserResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getMoviesRentalByUserReturn" type="tns1:Rental"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="invalidateExpiredRental">
+    <complexType/>
+   </element>
+   <element name="invalidateExpiredRentalResponse">
+    <complexType/>
+   </element>
+  </schema>
+  <schema elementFormDefault="qualified" targetNamespace="http://valueobj.video.sy" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="Rental">
+    <sequence>
+     <element name="expirationDate" nillable="true" type="xsd:dateTime"/>
+     <element name="movieId" nillable="true" type="xsd:string"/>
+     <element name="movieName" nillable="true" type="xsd:string"/>
+     <element name="releaseDate" type="xsd:int"/>
+     <element name="rentAmount" type="xsd:float"/>
+     <element name="rentedDate" nillable="true" type="xsd:dateTime"/>
+     <element name="userId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="invalidateExpiredRentalResponse">
+
+      <wsdl:part element="impl:invalidateExpiredRentalResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="rentMovieResponse">
+
+      <wsdl:part element="impl:rentMovieResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="rentMovieRequest">
+
+      <wsdl:part element="impl:rentMovie" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="invalidateExpiredRentalRequest">
+
+      <wsdl:part element="impl:invalidateExpiredRental" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMoviesRentalByUserResponse">
+
+      <wsdl:part element="impl:getMoviesRentalByUserResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMoviesRentalByUserRequest">
+
+      <wsdl:part element="impl:getMoviesRentalByUser" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="RentalModel">
+
+      <wsdl:operation name="rentMovie">
+
+         <wsdl:input message="impl:rentMovieRequest" name="rentMovieRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:rentMovieResponse" name="rentMovieResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMoviesRentalByUser">
+
+         <wsdl:input message="impl:getMoviesRentalByUserRequest" name="getMoviesRentalByUserRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getMoviesRentalByUserResponse" name="getMoviesRentalByUserResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="invalidateExpiredRental">
+
+         <wsdl:input message="impl:invalidateExpiredRentalRequest" name="invalidateExpiredRentalRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:invalidateExpiredRentalResponse" name="invalidateExpiredRentalResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="RentalModelSoapBinding" type="impl:RentalModel">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="rentMovie">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="rentMovieRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="rentMovieResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMoviesRentalByUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMoviesRentalByUserRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMoviesRentalByUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="invalidateExpiredRental">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="invalidateExpiredRentalRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="invalidateExpiredRentalResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="RentalModelService">
+
+      <wsdl:port binding="impl:RentalModelSoapBinding" name="RentalModel">
+
+         <wsdlsoap:address location="http://localhost:8080/VideoLibraryServer/services/RentalModel"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

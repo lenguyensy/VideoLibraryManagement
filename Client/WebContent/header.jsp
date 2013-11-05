@@ -16,6 +16,7 @@
 <script src="js/jquery-2.0.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/mustache.js"></script>
+<script src="js/moment.js"></script>
 <script src="js/app.js"></script>
 </head>
 <body>
@@ -56,4 +57,8 @@
 			<%
 				}
 			%>
+		</div>
+		
+		<div>
+			<p id="msg" class="text-info hide"></p>
 		</div>

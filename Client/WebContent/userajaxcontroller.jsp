@@ -3,13 +3,14 @@
 <%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.UserModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
+<%@ page import="sy.config.WebServiceClientFactory"%>
 
 <%@ page import="sy.ui.UIUtil"%>
 <%
 	UIUtil.authenticate(session, request, response);
 
-	UserModelProxy modelProxy = new UserModelProxy();
-	modelProxy.setEndpoint(Config.ENDPOINT_USER);
+	UserModelProxy userProxy = (UserModelProxy) WebServiceClientFactory
+			.getInstance("user");
 
 	String command = request.getParameter("cmd");
 	int from = 0, pagesize = 0, userId = 0;
@@ -36,17 +37,17 @@
 	Object ret = null;
 
 	if (command.equalsIgnoreCase("getpremiummembers")) {
-		ret = new JSONArray(modelProxy.getUserByType(
+		ret = new JSONArray(userProxy.getUserByType(
 				sy.config.AppEnum.USER_TYPE_PREMIUM, from, pagesize));
 	} else if (command.equalsIgnoreCase("getsimplecustomers")) {
-		ret = new JSONArray(modelProxy.getUserByType(
+		ret = new JSONArray(userProxy.getUserByType(
 				sy.config.AppEnum.USER_TYPE_SIMPLE, from, pagesize));
 	} else if (command.equalsIgnoreCase("getallcustomer")) {
-		ret = new JSONArray(modelProxy.getUsers(from, pagesize));
+		ret = new JSONArray(userProxy.getUsers(from, pagesize));
 	} else if (command.equalsIgnoreCase("deletuser")) {
-		modelProxy.deletUser(userId);
+		ret = userProxy.deletUser(userId);
 	} else if (command.equalsIgnoreCase("getuser")) {
-		ret = new JSONObject(modelProxy.getUser(userId));
+		ret = new JSONObject(userProxy.getUser(userId));
 	} else if (command.equalsIgnoreCase("saveuser")) {
 		User u = new User();
 		u.setUserId(request.getParameter("userId"));
@@ -58,14 +59,15 @@
 		u.setZipCode(request.getParameter("zipCode"));
 		u.setEmail(request.getParameter("email"));
 		u.setMembershipNo(request.getParameter("membershipNo"));
-		u.setMonthlySubscriptionFee(Float.parseFloat(request.getParameter("monthlySubscriptionFee")));
-		u.setUserType(request.getParameter("userType"));		
+		u.setMonthlySubscriptionFee(Float.parseFloat(request
+				.getParameter("monthlySubscriptionFee")));
+		u.setUserType(request.getParameter("userType"));
 		u.setPassword(request.getParameter("password"));
-		
+
 		if (u.getUserId() != null && !u.getUserId().trim().equals(""))
-			modelProxy.addUser(u);
+			ret = userProxy.addUser(u);
 		else
-			modelProxy.saveUser(u);
+			ret = userProxy.saveUser(u);
 	}
 %>
 

@@ -2,13 +2,14 @@
 <%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.VideoModelProxy"%>
 <%@ page import="sy.video.valueobj.Movie"%>
+<%@ page import="sy.config.WebServiceClientFactory"%>
 
 <%@ page import="sy.ui.UIUtil"%>
 <%
 	UIUtil.authenticate(session, request, response);
 
-	VideoModelProxy modelProxy = new VideoModelProxy();
-	modelProxy.setEndpoint(Config.ENDPOINT_MOVIE);
+	VideoModelProxy videoProxy = (VideoModelProxy) WebServiceClientFactory
+			.getInstance("movie");
 
 	String command = request.getParameter("cmd"), genre = request
 			.getParameter("genre"), searchterm = request
@@ -39,18 +40,18 @@
 	if (command.equalsIgnoreCase("getmovies")
 			|| command.equalsIgnoreCase("getmoviebygenre")) {
 		if (genre != null && !genre.equals(""))
-			ret = new JSONArray(modelProxy.getMoviesByGenre(genre,
+			ret = new JSONArray(videoProxy.getMoviesByGenre(genre,
 					from, pagesize));
 		else if (searchterm != null && !searchterm.equals(""))
-			ret = new JSONArray(modelProxy.getMoviesBySearchTerm(
+			ret = new JSONArray(videoProxy.getMoviesBySearchTerm(
 					searchterm, from, pagesize));
 		else
-			ret = new JSONArray(modelProxy.getMovies(from, pagesize));
+			ret = new JSONArray(videoProxy.getMovies(from, pagesize));
 
 	} else if (command.equalsIgnoreCase("deletemovie")) {
-		modelProxy.deletMovie(movieId);
+		ret = videoProxy.deletMovie(movieId);
 	} else if (command.equalsIgnoreCase("getmovie")) {
-		ret = new JSONObject(modelProxy.getMovie(movieId));
+		ret = new JSONObject(videoProxy.getMovie(movieId));
 	} else if (command.equalsIgnoreCase("savemovie")) {
 		Movie m = new Movie();
 		m.setCategory(request.getParameter("category"));
@@ -66,9 +67,9 @@
 		
 		//doing the save call.
 		if (m.getMovieId() == null || m.getMovieId().trim().equals(""))
-			modelProxy.addMovie(m);
+			ret = videoProxy.addMovie(m);
 		else
-			modelProxy.saveMovie(m);
+			ret = videoProxy.saveMovie(m);
 	}
 %>
 

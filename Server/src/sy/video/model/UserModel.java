@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.jws.WebService;
 
-import sy.config.Enum;
+import sy.config.AppEnum;
 import sy.config.MainConfig;
 import sy.video.valueobj.PremiumMember;
 import sy.video.valueobj.User;
@@ -162,6 +162,7 @@ public class UserModel {
 		else
 			return null;
 	}
+	
 
 	/**
 	 * delete a user
@@ -169,7 +170,7 @@ public class UserModel {
 	 * @param userId
 	 * @return
 	 */
-	public int deletUser(int userId) {
+	public String deletUser(int userId) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("DELETE FROM users WHERE id = ?");
@@ -178,17 +179,19 @@ public class UserModel {
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return "Delete User Failed";
 		}
 
-		return 0;
+		return "true";
 	}
 
 	/**
 	 * add user
 	 * 
-	 * @param user
+	 * @param u
+	 * @return
 	 */
-	public int addUser(User u) {
+	public String addUser(User u) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("INSERT INTO users (membershipno, usertype,firstname,lastname,"
@@ -215,17 +218,20 @@ public class UserModel {
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return "Add User Failed";
 		}
 
-		return 0;
+		return "true";
 	}
 
+	
 	/**
 	 * save user (update user)
 	 * 
 	 * @param u
+	 * @return
 	 */
-	public void saveUser(User u) {
+	public String saveUser(User u) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("UPDATE users SET membershipno = ?,"
@@ -250,15 +256,17 @@ public class UserModel {
 			stmt.execute();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return "Updating User Failed.";
 		}
+		return "true";
 	}
 
 	/**
 	 * reset password
-	 * 
 	 * @param u
+	 * @return
 	 */
-	public void resetPassword(User u) {
+	public String resetPassword(User u) {
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("UPDATE users SET hashedpassword = md5(?)"
@@ -268,7 +276,9 @@ public class UserModel {
 
 			stmt.execute();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			return "Reset Password Failed.";
 		}
+		
+		return "true";
 	}
 }

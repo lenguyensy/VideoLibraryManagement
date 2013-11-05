@@ -19,6 +19,35 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="authenticateUser">
+    <complexType>
+     <sequence>
+      <element name="email" type="xsd:string"/>
+      <element name="password" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateUserResponse">
+    <complexType>
+     <sequence>
+      <element name="authenticateUserReturn" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="saveUser">
+    <complexType>
+     <sequence>
+      <element name="u" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="saveUserResponse">
+    <complexType>
+     <sequence>
+      <element name="saveUserReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
    <element name="getUserByType">
     <complexType>
      <sequence>
@@ -35,18 +64,45 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="authenticateUser">
+   <element name="deletUser">
     <complexType>
      <sequence>
-      <element name="email" type="xsd:string"/>
-      <element name="password" type="xsd:string"/>
+      <element name="userId" type="xsd:int"/>
      </sequence>
     </complexType>
    </element>
-   <element name="authenticateUserResponse">
+   <element name="deletUserResponse">
     <complexType>
      <sequence>
-      <element name="authenticateUserReturn" type="tns1:User"/>
+      <element name="deletUserReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="resetPassword">
+    <complexType>
+     <sequence>
+      <element name="u" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="resetPasswordResponse">
+    <complexType>
+     <sequence>
+      <element name="resetPasswordReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addUser">
+    <complexType>
+     <sequence>
+      <element name="u" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addUserResponse">
+    <complexType>
+     <sequence>
+      <element name="addUserReturn" type="xsd:string"/>
      </sequence>
     </complexType>
    </element>
@@ -62,44 +118,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <complexType>
      <sequence>
       <element maxOccurs="unbounded" name="getUsersReturn" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="saveUser">
-    <complexType>
-     <sequence>
-      <element name="u" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="saveUserResponse">
-    <complexType/>
-   </element>
-   <element name="deletUser">
-    <complexType>
-     <sequence>
-      <element name="userId" type="xsd:int"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="deletUserResponse">
-    <complexType>
-     <sequence>
-      <element name="deletUserReturn" type="xsd:int"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="addUser">
-    <complexType>
-     <sequence>
-      <element name="u" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="addUserResponse">
-    <complexType>
-     <sequence>
-      <element name="addUserReturn" type="xsd:int"/>
      </sequence>
     </complexType>
    </element>
@@ -131,6 +149,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="getUsersRequest">
 
       <wsdl:part element="impl:getUsers" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="resetPasswordRequest">
+
+      <wsdl:part element="impl:resetPassword" name="parameters">
 
       </wsdl:part>
 
@@ -208,6 +234,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="resetPasswordResponse">
+
+      <wsdl:part element="impl:resetPasswordResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
    <wsdl:message name="authenticateUserResponse">
 
       <wsdl:part element="impl:authenticateUserResponse" name="parameters">
@@ -254,18 +288,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getUserByType">
-
-         <wsdl:input message="impl:getUserByTypeRequest" name="getUserByTypeRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:getUserByTypeResponse" name="getUserByTypeResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="authenticateUser">
 
          <wsdl:input message="impl:authenticateUserRequest" name="authenticateUserRequest">
@@ -273,18 +295,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
        </wsdl:input>
 
          <wsdl:output message="impl:authenticateUserResponse" name="authenticateUserResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="getUsers">
-
-         <wsdl:input message="impl:getUsersRequest" name="getUsersRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:getUsersResponse" name="getUsersResponse">
 
        </wsdl:output>
 
@@ -302,6 +312,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getUserByType">
+
+         <wsdl:input message="impl:getUserByTypeRequest" name="getUserByTypeRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getUserByTypeResponse" name="getUserByTypeResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deletUser">
 
          <wsdl:input message="impl:deletUserRequest" name="deletUserRequest">
@@ -314,6 +336,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="resetPassword">
+
+         <wsdl:input message="impl:resetPasswordRequest" name="resetPasswordRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:resetPasswordResponse" name="resetPasswordResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="addUser">
 
          <wsdl:input message="impl:addUserRequest" name="addUserRequest">
@@ -321,6 +355,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
        </wsdl:input>
 
          <wsdl:output message="impl:addUserResponse" name="addUserResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUsers">
+
+         <wsdl:input message="impl:getUsersRequest" name="getUsersRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getUsersResponse" name="getUsersResponse">
 
        </wsdl:output>
 
@@ -350,24 +396,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getUserByType">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getUserByTypeRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getUserByTypeResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="authenticateUser">
 
          <wsdlsoap:operation soapAction=""/>
@@ -379,24 +407,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="authenticateUserResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="getUsers">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getUsersRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getUsersResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -422,6 +432,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getUserByType">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserByTypeRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserByTypeResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deletUser">
 
          <wsdlsoap:operation soapAction=""/>
@@ -440,6 +468,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="resetPassword">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="resetPasswordRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="resetPasswordResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="addUser">
 
          <wsdlsoap:operation soapAction=""/>
@@ -451,6 +497,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="addUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUsers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUsersRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUsersResponse">
 
             <wsdlsoap:body use="literal"/>
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import sy.config.MainConfig;
+import sy.video.model.RentalModel;
 import sy.video.model.UserModel;
 import sy.video.model.VideoModel;
 import sy.video.valueobj.Movie;
@@ -19,12 +20,14 @@ import sy.video.valueobj.User;
 public class tester {
 	static UserModel um = new UserModel();
 	static VideoModel vm = new VideoModel();
+	static RentalModel rm = new RentalModel();
 
 	public static void main(String[] args) {
-		//importMovie();
-		//importUser();
-		
-		vm.rentMovie(1, 2);
+		// importMovie();
+		// importUser();
+
+		// vm.rentMovie(1, 2);
+		rm.getMoviesRentalByUser(3);
 	}
 
 	public static void importMovie() {

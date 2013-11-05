@@ -41,8 +41,11 @@
 				$.get(URL.USER_CONTROLLER, {
 					cmd : 'deletuser',
 					userId : $(this).attr('data-id')
-				}).done(function() {
+				}).done(function(ret) {
 					cur.remove();
+					
+					ret = $.trim(ret);
+					alert(ret === "true" ? "Delete User Successful" : ret);
 				});
 			}
 		});

@@ -50,40 +50,46 @@ public class UserModelProxy implements sy.video.model.UserModel {
     return userModel.getUser(userId);
   }
   
-  public sy.video.valueobj.User[] getUserByType(java.lang.String userType, int from, int pagesize) throws java.rmi.RemoteException{
-    if (userModel == null)
-      _initUserModelProxy();
-    return userModel.getUserByType(userType, from, pagesize);
-  }
-  
   public sy.video.valueobj.User authenticateUser(java.lang.String email, java.lang.String password) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
     return userModel.authenticateUser(email, password);
   }
   
-  public sy.video.valueobj.User[] getUsers(int from, int pagesize) throws java.rmi.RemoteException{
+  public java.lang.String saveUser(sy.video.valueobj.User u) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
-    return userModel.getUsers(from, pagesize);
+    return userModel.saveUser(u);
   }
   
-  public void saveUser(sy.video.valueobj.User u) throws java.rmi.RemoteException{
+  public sy.video.valueobj.User[] getUserByType(java.lang.String userType, int from, int pagesize) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
-    userModel.saveUser(u);
+    return userModel.getUserByType(userType, from, pagesize);
   }
   
-  public int deletUser(int userId) throws java.rmi.RemoteException{
+  public java.lang.String deletUser(int userId) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
     return userModel.deletUser(userId);
   }
   
-  public int addUser(sy.video.valueobj.User u) throws java.rmi.RemoteException{
+  public java.lang.String resetPassword(sy.video.valueobj.User u) throws java.rmi.RemoteException{
+    if (userModel == null)
+      _initUserModelProxy();
+    return userModel.resetPassword(u);
+  }
+  
+  public java.lang.String addUser(sy.video.valueobj.User u) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
     return userModel.addUser(u);
+  }
+  
+  public sy.video.valueobj.User[] getUsers(int from, int pagesize) throws java.rmi.RemoteException{
+    if (userModel == null)
+      _initUserModelProxy();
+    return userModel.getUsers(from, pagesize);
   }
   
   
