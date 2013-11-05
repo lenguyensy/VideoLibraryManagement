@@ -403,7 +403,7 @@ $.fn.serializeObject = function()
       }
     }, conf);
     domId = conf.id;
-    $("body").append("<div id=\"" + domId + "\" class=\"msgBox modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" data-backdrop=\"static\" data-keyboard=\"false\">" + "<div class=\"modal-header\">" + "<h3>" + conf.header + "</h3>" + "</div>" + "<div class=\"modal-body\">" + "<p>" + conf.body + "</p>" + "</div>" + "<div class=\"modal-footer\">" + "<div class=\"form-actions\"><a class=\"btn btn-primary\">" + conf.btnPrimary.text + "</a><button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" aria-hidden=\"true\">" + conf.btnSecondary.text + "</button></div>" + "</div>" + "</div>");
+    $("body").append("<div id=\"" + domId + "\" class=\"msgBox modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" data-backdrop=\"static\" data-keyboard=\"false\">" + "<div class=\"modal-header\">" + "<h3>" + conf.header + "</h3>" + "</div>" + "<div class=\"modal-body\">" + "<p>" + conf.body + "</p>" + "</div>" + "<div class=\"modal-footer\">" + "<a class=\"btn btn-primary\">" + conf.btnPrimary.text + "</a><button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" aria-hidden=\"true\">" + conf.btnSecondary.text + "</button></div>" + "</div>");
     dom = $("#" + domId);
     hashConfirmBox[domId] = $("#" + domId).modal("show").on("hidden", function() {
       dom.remove();

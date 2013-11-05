@@ -13,6 +13,13 @@
 
 <script>
 	$(function() {
+		//actual rendering
+		var movieId =
+<%=movieId%>
+	, movieData = {}, dfd = $.Deferred();
+		tmplFormMovie = $('#tmplFormMovie').html(), tpmlRowUser = $(
+				'#tpmlRowUser').html();
+
 		//select nav
 		NavUtil.init('#movieNav');
 
@@ -32,7 +39,7 @@
 						cmd : "savemovie"
 					}, $('#frm').serializeObject()), function(ret) {
 						$('#btnSubmit').show();
-						
+
 						ret = $.trim(ret);
 						alert(ret === "true" ? "Save Movie Successful" : ret);
 					});
@@ -41,13 +48,23 @@
 				return false;
 			});
 		}
+		//render users who rented this movie;
+		//rendering
+		function renderList(lstUser) {
+			for (var i = 0; i < lstUser.length; i++)
+				$('#tblUser tbody').append(
+						Mustache.render(tpmlRowUser, lstUser[i]));
+		}
 
-		//actual rendering
-		var movieId =
-<%=movieId%>
-	, movieData = {}, dfd = $.Deferred();
-		tmplFormMovie = $('#tmplFormMovie').html();
+		$.get(URL.MOVIE_CONTROLLER, {
+			cmd : "getuserbymovieid",
+			movieId : movieId
+		}, function(lstUsers) {
+			renderList(lstUsers);
+			$('#tblRental').removeClass("hide");
+		}, 'json');
 
+		//render movief orm
 		if (movieId == null) {
 			//add form
 			dfd.resolve();
@@ -70,11 +87,32 @@
 	})
 </script>
 
-<div id="frmMovie" class="form"></div>
+<div class="row-fluid">
+	<div class="span7">
+		<h4 class="text-info">Movie Form</h4>
+		<div id="frmMovie" class="form"></div>
+	</div>
+	<div id="tblRental" class="span5 hide">
+		<h4 class="text-info">Who Has Rented This Movie</h4>
+		<table id="tblUser" class="table">
+			<thead>
+				<tr>
+					<th>Email</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>State</th>
+					<th>City</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>
+
 
 
 <script id="tmplFormMovie" type="mustache">
-	<h4>Please ensure that all the following field item must be saved.</h4>
 	<form id="frm">
 	<fieldset>
 		<div class="control-group">
@@ -116,5 +154,17 @@
 </form>
 </script>
 
+
+
+
+<script id="tpmlRowUser" type="mustache">
+<tr>
+<td>{{email}}</td>
+<td>{{firstName}}</td>
+<td>{{lastName}}</td>
+<td>{{state}}</td>
+<td>{{city}}</td>
+<tr>
+</script>
 
 <jsp:include page="footer.jsp" />

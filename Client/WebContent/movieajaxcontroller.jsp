@@ -1,6 +1,7 @@
 <%@ page import="org.json.*"%>
 <%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.VideoModelProxy"%>
+<%@ page import="sy.video.model.RentalModelProxy"%>
 <%@ page import="sy.video.valueobj.Movie"%>
 <%@ page import="sy.config.WebServiceClientFactory"%>
 
@@ -10,6 +11,8 @@
 
 	VideoModelProxy videoProxy = (VideoModelProxy) WebServiceClientFactory
 			.getInstance("movie");
+	RentalModelProxy rentalProxy = (RentalModelProxy) WebServiceClientFactory
+			.getInstance("rental");
 
 	String command = request.getParameter("cmd"), genre = request
 			.getParameter("genre"), searchterm = request
@@ -52,7 +55,10 @@
 		ret = videoProxy.deletMovie(movieId);
 	} else if (command.equalsIgnoreCase("getmovie")) {
 		ret = new JSONObject(videoProxy.getMovie(movieId));
-	} else if (command.equalsIgnoreCase("savemovie")) {
+	} else if (command.equalsIgnoreCase("getuserbymovieid")) {
+		ret = new JSONArray(rentalProxy.getUserByMovieId(movieId));
+	}
+	else if (command.equalsIgnoreCase("savemovie")) {
 		Movie m = new Movie();
 		m.setCategory(request.getParameter("category"));
 		m.setMovieBanner(request.getParameter("movieBanner"));
@@ -62,9 +68,9 @@
 				.getParameter("releaseDate")));
 		m.setAvailableCopies(Integer.parseInt(request
 				.getParameter("availableCopies")));
-		m.setRentAmount(Float.parseFloat(request.getParameter("rentAmount")));
-		
-		
+		m.setRentAmount(Float.parseFloat(request
+				.getParameter("rentAmount")));
+
 		//doing the save call.
 		if (m.getMovieId() == null || m.getMovieId().trim().equals(""))
 			ret = videoProxy.addMovie(m);

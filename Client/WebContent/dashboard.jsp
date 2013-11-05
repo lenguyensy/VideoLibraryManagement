@@ -30,8 +30,7 @@
 		//rendering
 		var tmplRowMovie = $('#tmplRowMovie').html(),
 		tmplRowRental = $('#tmplRowRental').html(),
-		tmplBilling = $('#tmplBilling').html(),
-		renderRental = false;
+		tmplBilling = $('#tmplBilling').html();
 		
 		
 		/*
@@ -79,19 +78,35 @@
 		//rent a movie
 		$('#moviemanagement').on('click', '.btnRent', function() {
 			var cur = $(this).closest('tr'), movieId = $(this).attr('data-id'), availableCopies = cur.find('.availableCopies');
-			if (confirm('Do you want to rent "'+ cur.find('.name').html() + '"?')) {
-				$.get(URL.DASHBOARD_CONTROLLER, {
-					cmd : 'rentmovie',
-					movieId : movieId
-				}).done(function(ret) {
-					ret  = $.trim(ret);
-					
-					if(ret === "true")
-						availableCopies.html(availableCopies.html() - 1);
-					else
-						alert(ret);
-				});
-			}
+			
+			$.confirmBox({
+				body:'Do you want to rent <b>'+ cur.find('.name').html() + '</b>?',
+				btnPrimary:{
+					text : "Rent This Movie",
+					cb : function(){
+						var dfd = $.Deferred();
+						
+						$.get(URL.DASHBOARD_CONTROLLER, {
+							cmd : 'rentmovie',
+							movieId : movieId
+						}).done(function(ret) {
+							ret  = $.trim(ret);
+							
+							if(ret === "true"){
+								renderRentalList();
+								renderBilling();
+								availableCopies.html(availableCopies.html() - 1);
+							}
+							else
+								alert(ret);
+							
+							dfd.resolve();
+						});
+						
+						return dfd.promise();
+					}
+				}
+			});
 		});
 		
 		//get list of all rentals
@@ -125,7 +140,7 @@
 		renderBilling();
 		
 		//polling calls - rerender every 3 secs
-		setInterval(function(){renderRentalList(); renderBilling();},3000);
+		setInterval(function(){renderRentalList(); renderBilling();},10000);
 	});
 </script>
 
@@ -231,22 +246,26 @@
 <script id="tmplBilling" type="mustache">
 <h4 class="text-info">Billing Information:</h4>
 <div class="control-group">
-	<label class="control-label">Name:</label><span
+	<label class="control-label text-warning">Name:</label><span
 		id="name">{{firstName}} {{lastName}}</span>
 </div>
 <div class="control-group">
-	<label class="control-label">User Type:</label><span
+	<label class="control-label text-warning">Email:</label><span
+		id="email">{{email}}</span>
+</div>
+<div class="control-group">
+	<label class="control-label text-warning">User Type:</label><span
 		id="userType">{{userType}}</span>
 </div>
 <div class="control-group">
-	<label class="control-label">Monthly Subscription:</label> $<span
+	<label class="control-label text-warning">Monthly Subscription:</label> $<span
 		id="monthlyfee">{{monthlySubscriptionFee}}</span>
 </div>
 <div class="control-group">
-	<label class="control-label">Balance:</label> $ <span id="balance">{{balance}}</span>
+	<label class="control-label text-warning">Balance:</label> $ <span id="balance">{{balance}}</span>
 </div>
 <div class="control-group">
-	<label class="control-label">Total Outstanding Movies:</label> <span
+	<label class="control-label text-warning">Total Outstanding Movies:</label> <span
 		id="totalmovies">{{totalOutstandingMovies}}</span>
 </div>
 </script>

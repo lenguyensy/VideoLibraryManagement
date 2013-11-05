@@ -51,16 +51,28 @@
 
 		$('#moviemanagement').on('click', '.btnDeleteMovie', function() {
 			var cur = $(this).closest('tr'), name = cur.find('.name').html();
-			if (confirm('Do you want to delete this user?')) {
-				$.get(URL.MOVIE_CONTROLLER, {
-					cmd : 'deletemovie',
-					movieId : $(this).attr('data-id')
-				}).done(function(ret) {
-					cur.remove();
-					ret = $.trim(ret);
-					alert(ret === "true" ? 'Delete Movie <b>' + name + '</b> Successful' : ret);
-				});
-			}
+			
+			$.confirmBox({
+				body: 'Delete Movie <b>' + name + '</b>?',
+				btnPrimary:{
+					text : "Delete This Movie",
+					cb : function(){
+						var dfd = $.Deferred();
+						
+						$.get(URL.MOVIE_CONTROLLER, {
+							cmd : 'deletemovie',
+							movieId : $(this).attr('data-id')
+						}).done(function(ret) {
+							cur.remove();
+							ret = $.trim(ret);
+							alert(ret === "true" ? 'Delete Movie <b>' + name + '</b> Successful' : ret);
+							dfd.resolve();
+						});
+						
+						return dfd.promise();
+					}
+				}
+			});
 		});
 
 		$('#genres').change(function() {
@@ -140,7 +152,7 @@
 <td>{{availableCopies}}</td>
 <td>
 	<a href="movieform.jsp?movieId={{movieId}}"><i class="icon-edit btnEditMovie"></i></a>
-	<a href="#"><i class="icon-trash btnDeleteMovie" data-id="{{movieId}}"></i></a>
+	<a><i class="icon-trash btnDeleteMovie" data-id="{{movieId}}"></i></a>
 </td>
 <tr>
 </script>

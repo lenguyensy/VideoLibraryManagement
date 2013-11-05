@@ -20,6 +20,11 @@
       <parameter name="className" value="sy.video.model.RentalModelSoapBindingImpl"/>
       <parameter name="wsdlPortType" value="RentalModel"/>
       <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="invalidateExpiredRental" qname="operNS:invalidateExpiredRental" xmlns:operNS="http://model.video.sy" soapAction="" >
+      </operation>
+      <operation name="getUserByMovieId" qname="operNS:getUserByMovieId" xmlns:operNS="http://model.video.sy" returnQName="retNS:getUserByMovieIdReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:User" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
+        <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
       <operation name="rentMovie" qname="operNS:rentMovie" xmlns:operNS="http://model.video.sy" returnQName="retNS:rentMovieReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
         <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter qname="pns:movieId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
@@ -27,10 +32,16 @@
       <operation name="getMoviesRentalByUser" qname="operNS:getMoviesRentalByUser" xmlns:operNS="http://model.video.sy" returnQName="retNS:getMoviesRentalByUserReturn" xmlns:retNS="http://model.video.sy" returnType="rtns:Rental" xmlns:rtns="http://valueobj.video.sy" soapAction="" >
         <parameter qname="pns:userId" xmlns:pns="http://model.video.sy" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
       </operation>
-      <operation name="invalidateExpiredRental" qname="operNS:invalidateExpiredRental" xmlns:operNS="http://model.video.sy" soapAction="" >
-      </operation>
-      <parameter name="allowedMethods" value="invalidateExpiredRental rentMovie getMoviesRentalByUser"/>
+      <parameter name="allowedMethods" value="invalidateExpiredRental getUserByMovieId rentMovie getMoviesRentalByUser"/>
 
+      <typeMapping
+        xmlns:ns="http://valueobj.video.sy"
+        qname="ns:User"
+        type="java:sy.video.valueobj.User"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
       <typeMapping
         xmlns:ns="http://valueobj.video.sy"
         qname="ns:Rental"

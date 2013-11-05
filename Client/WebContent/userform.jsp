@@ -16,6 +16,27 @@
 		//select nav
 		NavUtil.init('#userNav');
 
+		//get list of all rentals
+		var tmplRowRental = $('#tmplRowRental').html();
+		function renderRentalList() {
+			$.get(URL.USER_CONTROLLER, {
+				cmd : "getallrentals",
+				userId : userId
+			}, function(lstMovie) {
+				$('#tblRental tbody').empty();
+
+				for (var i = 0; i < lstMovie.length; i++) {
+					lstMovie[i].rentedDate = moment(lstMovie[i].rentedDate)
+							.format('L');
+					lstMovie[i].expirationDate = moment(
+							lstMovie[i].expirationDate).format('L');
+
+					$('#tblRental tbody').append(
+							Mustache.render(tmplRowRental, lstMovie[i]));
+				}
+			}, 'json');
+		}
+
 		function render() {
 			//populate states
 			for ( var k in ENUM.STATE) {
@@ -48,7 +69,7 @@
 						userData.monthlySubscriptionFee);
 
 			//change user type show different fields.
-			$('#usertype')
+			$('#userType')
 					.change(
 							function() {
 								var isPremium = $(this).find(':selected').val() == ENUM.USER_TYPE.premimum;
@@ -56,6 +77,13 @@
 										.toggle(isPremium);
 								$('#frmUser').find('.simple')
 										.toggle(!isPremium);
+
+								$('#totalOutstandingMoviesSpan').html(
+										isPremium ? "10" : "2");
+
+								if ($('#totalOutstandingMovies').val().length == 0)
+									$('#totalOutstandingMovies').val(
+											isPremium ? "10" : "2");
 							}).change();
 
 			//form validation
@@ -76,12 +104,12 @@
 						cmd : "saveuser"
 					}, $('#frm').serializeObject()), function(ret) {
 						$('#btnSubmit').show();
-						
+
 						ret = $.trim(ret);
 						alert(ret === "true" ? "Save User Successful" : ret);
 					});
 				}
-				
+
 				return false;
 			});
 		}
@@ -102,6 +130,8 @@
 				userId : userId
 			}, function(retUserData) {
 				userData = retUserData;
+				$("#lstRental").removeClass('hide');
+				renderRentalList();
 				dfd.resolve();
 			}, 'json');
 		}
@@ -111,13 +141,40 @@
 			$('#frmUser').html(Mustache.render(tmplFormUser, userData));
 			render();
 		});
+
+		//polling calls - rerender every 3 secs
+		setInterval(function() {
+			renderRentalList();
+		}, 6000);
 	})
 </script>
 
-<div id="frmUser" class="form"></div>
+<div class="row-fluid">
+	<div class="span4">
+		<div id="frmUser" class="form"></div>
+	</div>
+	<div id="lstRental" class="hide span8">
+		<div id="yourrental">
+			<h4 class="text-info">Movies you rented</h4>
+			<table id="tblRental" class="table">
+				<thead>
+					<tr>
+						<th>Movie Name</th>
+						<th>Release Date</th>
+						<th>Rent Amount</th>
+						<th>Rented Date</th>
+						<th>Expiration Date</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 
 <script id="tmplFormUser" type="mustache">
-<h4>Please ensure that all the following field item must be saved.</h4>
+<h4 class="text-info">User Form</h4>
 <form id="frm">
 <fieldset>
 	<div class="control-group">
@@ -133,7 +190,7 @@
 				class="help-block text-error errorMsg">Required</span>
 		</div>
 		<div class="control-group">
-			<label class="control-label">Total Outstanding Movies:</label> <input
+			<label class="control-label">Total Outstanding Movies (Max = <span id="totalOutstandingMoviesSpan"></span>):</label> <input
 				type="text" placeholder="Enter an outstanding movies"
 				id="totalOutstandingMovies" name="totalOutstandingMovies" maxlength="9" value="{{totalOutstandingMovies}}" /> <span
 				class="help-block text-error errorMsg">Required</span>
@@ -187,5 +244,19 @@
 		<input type="submit" class="btn" id="btnSubmit" value="Save" />
 </fieldset>
 </form>
+</script>
+
+
+
+
+
+<script id="tmplRowRental" type="mustache">
+<tr class="rentry">
+<td>{{movieName}}</td>
+<td>{{releaseDate}}</td>
+<td>{{rentAmount}}</td>
+<td>{{rentedDate}}</td>
+<td>{{expirationDate}}</td>
+<tr>
 </script>
 <jsp:include page="footer.jsp" />

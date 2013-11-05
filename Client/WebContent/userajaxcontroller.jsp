@@ -1,7 +1,7 @@
 <%@ page import="org.json.*"%>
 <%@ page import="sy.video.model.Config"%>
-<%@ page import="sy.video.model.Config"%>
 <%@ page import="sy.video.model.UserModelProxy"%>
+<%@ page import="sy.video.model.RentalModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
 <%@ page import="sy.config.WebServiceClientFactory"%>
 
@@ -11,6 +11,8 @@
 
 	UserModelProxy userProxy = (UserModelProxy) WebServiceClientFactory
 			.getInstance("user");
+	RentalModelProxy rentalProxy = (RentalModelProxy) WebServiceClientFactory
+			.getInstance("rental");
 
 	String command = request.getParameter("cmd");
 	int from = 0, pagesize = 0, userId = 0;
@@ -68,6 +70,9 @@
 			ret = userProxy.addUser(u);
 		else
 			ret = userProxy.saveUser(u);
+	} else if (command.equalsIgnoreCase("getallrentals")) {
+		//get all rentals movie
+		ret = new JSONArray(rentalProxy.getMoviesRentalByUser(userId));
 	}
 %>
 

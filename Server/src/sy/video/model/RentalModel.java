@@ -46,6 +46,38 @@ public class RentalModel {
 		return lstRental;
 	}
 
+	private List<User> _getUserList(ResultSet rs) {
+		List<User> lstUsers = new ArrayList<User>();
+
+		try {
+			while (rs.next()) {
+				User u = new User();
+				u.setFirstName(rs.getString("firstname"));
+				u.setLastName(rs.getString("lastname"));
+				u.setAddress(rs.getString("address"));
+				u.setCity(rs.getString("city"));
+				u.setState(rs.getString("state"));
+				u.setZipCode(rs.getString("zip"));
+				u.setBalance(rs.getFloat("balance"));
+				u.setMembershipNo(rs.getString("MembershipNo"));
+				u.setMonthlySubscriptionFee(rs
+						.getFloat("MonthlySubscriptionFee"));
+				u.setTotal(rs.getFloat("total"));
+				u.setTotalOutstandingMovies(rs.getInt("TotalOutstandingMovies"));
+				u.setUserId(rs.getString("id"));
+				u.setUserType(rs.getString("userType"));
+				u.setEmail(rs.getString("email"));
+
+				lstUsers.add(u);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return lstUsers;
+	}
+
 	/**
 	 * rent a movie
 	 * 
@@ -70,8 +102,8 @@ public class RentalModel {
 			if (m.getAvailableCopies() <= 0)
 				return "Movie " + m.getMovieName()
 						+ " has run out of available copies.";
-			
-			//check to see if user already rented this movie.
+
+			// check to see if user already rented this movie.
 			stmt = con
 					.prepareStatement("SELECT id FROM movierenter WHERE userid = ? AND movieid = ? AND expirationdate > NOW() LIMIT 0,1");
 			stmt.setInt(1, userId);
@@ -79,7 +111,6 @@ public class RentalModel {
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next())
 				return "You already rented this movie. Please check your rental and watch the movie instead of renting it again.";
-			
 
 			// insert into the movie renter
 			stmt = con
@@ -135,6 +166,33 @@ public class RentalModel {
 		return lstRental.toArray(new Rental[lstRental.size()]);
 	}
 
+	
+	/**
+	 * get a list of users who retned the movies.
+	 * @param movieId
+	 * @return
+	 */
+	public User[] getUserByMovieId(int movieId) {
+		List<User> lstUser = new ArrayList<User>();
+
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT u.* from users u INNER JOIN movierenter mr ON u.id = mr.userId WHERE mr.movieid = ? ORDER BY mr.renteddate, u.firstname limit 0,1000;");
+			stmt.setInt(1, movieId);
+			ResultSet rs = stmt.executeQuery();
+			lstUser = _getUserList(rs);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return lstUser.toArray(new User[lstUser.size()]);
+	}
+
+	
+	/**
+	 * invalidate expired stuffs
+	 */
 	public void invalidateExpiredRental() {
 
 	}

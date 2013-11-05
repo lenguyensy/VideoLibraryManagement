@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class tester {
 		// importUser();
 
 		// vm.rentMovie(1, 2);
-		rm.getMoviesRentalByUser(3);
+		rm.getUserByMovieId(2);
 	}
 
 	public static void importMovie() {

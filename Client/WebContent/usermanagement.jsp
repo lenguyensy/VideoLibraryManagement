@@ -36,18 +36,31 @@
 		});
 
 		$('#usermanagement').on('click', '.btnDeleteUser', function() {
-			var cur = $(this).closest('tr');
-			if (confirm('Do you want to delete this user?')) {
-				$.get(URL.USER_CONTROLLER, {
-					cmd : 'deletuser',
-					userId : $(this).attr('data-id')
-				}).done(function(ret) {
-					cur.remove();
-					
-					ret = $.trim(ret);
-					alert(ret === "true" ? "Delete User Successful" : ret);
-				});
-			}
+			var cur = $(this).closest('tr'), name = cur.find('.name').html();
+			
+			$.confirmBox({
+				body: 'Delete User <b>' + name + '</b>?',
+				btnPrimary:{
+					text : "Delete This User",
+					cb : function(){
+						var dfd = $.Deferred();
+						
+						$.get(URL.USER_CONTROLLER, {
+							cmd : 'deletuser',
+							userId : $(this).attr('data-id')
+						}).done(function(ret) {
+							cur.remove();
+							
+							ret = $.trim(ret);
+							alert(ret === "true" ? "Delete User Successful" : ret);
+							
+							dfd.resolve();
+						});
+						
+						return dfd.promise();
+					}
+				}
+			});
 		});
 	})
 </script>
@@ -99,7 +112,7 @@
 <script id="tpmlRowUser" type="mustache">
 <tr>
 <td>{{membershipNo}}</td>
-<td>{{email}}</td>
+<td class="name">{{email}}</td>
 <td>{{firstName}}</td>
 <td>{{lastName}}</td>
 <td>{{state}}</td>
@@ -108,7 +121,7 @@
 <td>{{userType}}</td>
 <td>
 	<a href="userform.jsp?userId={{userId}}"><i class="icon-edit btnEditUser"></i></a>
-	<a href="#"><i class="icon-trash btnDeleteUser" data-id="{{userId}}"></i></a>
+	<a><i class="icon-trash btnDeleteUser" data-id="{{userId}}"></i></a>
 </td>
 <tr>
 </script>

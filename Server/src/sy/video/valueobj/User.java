@@ -1,5 +1,7 @@
 package sy.video.valueobj;
 
+import sy.config.AppEnum;
+
 
 /**
  * 

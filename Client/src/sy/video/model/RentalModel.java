@@ -8,7 +8,8 @@
 package sy.video.model;
 
 public interface RentalModel extends java.rmi.Remote {
+    public void invalidateExpiredRental() throws java.rmi.RemoteException;
+    public sy.video.valueobj.User[] getUserByMovieId(int movieId) throws java.rmi.RemoteException;
     public java.lang.String rentMovie(int userId, int movieId) throws java.rmi.RemoteException;
     public sy.video.valueobj.Rental[] getMoviesRentalByUser(int userId) throws java.rmi.RemoteException;
-    public void invalidateExpiredRental() throws java.rmi.RemoteException;
 }
