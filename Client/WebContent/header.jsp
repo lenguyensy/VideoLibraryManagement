@@ -41,7 +41,7 @@
 				} else if (u != null) {
 			%>
 			<ul class="nav nav-pills pull-right">
-				<li id="movieNav"><a href="userdashboard.jsp">User
+				<li id="movieNav"><a href="dashboard.jsp">User
 						Dashboard</a></li>
 				<li id="signoutNav"><a href="signout.jsp">Sign Out</a></li>
 			</ul>
