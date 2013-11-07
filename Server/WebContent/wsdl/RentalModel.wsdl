@@ -11,20 +11,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <element name="invalidateExpiredRentalResponse">
     <complexType/>
    </element>
-   <element name="getUserByMovieId">
-    <complexType>
-     <sequence>
-      <element name="movieId" type="xsd:int"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="getUserByMovieIdResponse">
-    <complexType>
-     <sequence>
-      <element maxOccurs="unbounded" name="getUserByMovieIdReturn" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
    <element name="rentMovie">
     <complexType>
      <sequence>
@@ -54,37 +40,51 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="getUserByMovieId">
+    <complexType>
+     <sequence>
+      <element name="movieId" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getUserByMovieIdResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getUserByMovieIdReturn" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
   </schema>
   <schema elementFormDefault="qualified" targetNamespace="http://valueobj.video.sy" xmlns="http://www.w3.org/2001/XMLSchema">
-   <complexType name="User">
-    <sequence>
-     <element name="address" nillable="true" type="xsd:string"/>
-     <element name="balance" type="xsd:float"/>
-     <element name="city" nillable="true" type="xsd:string"/>
-     <element name="email" nillable="true" type="xsd:string"/>
-     <element name="firstName" nillable="true" type="xsd:string"/>
-     <element name="issuedMovies" nillable="true" type="xsd:string"/>
-     <element name="lastName" nillable="true" type="xsd:string"/>
-     <element name="membershipNo" nillable="true" type="xsd:string"/>
-     <element name="monthlySubscriptionFee" type="xsd:float"/>
-     <element name="password" nillable="true" type="xsd:string"/>
-     <element name="state" nillable="true" type="xsd:string"/>
-     <element name="total" type="xsd:float"/>
-     <element name="totalOutstandingMovies" type="xsd:int"/>
-     <element name="userId" nillable="true" type="xsd:string"/>
-     <element name="userType" nillable="true" type="xsd:string"/>
-     <element name="zipCode" nillable="true" type="xsd:string"/>
-    </sequence>
-   </complexType>
    <complexType name="Rental">
     <sequence>
      <element name="expirationDate" nillable="true" type="xsd:dateTime"/>
      <element name="movieId" nillable="true" type="xsd:string"/>
      <element name="movieName" nillable="true" type="xsd:string"/>
      <element name="releaseDate" type="xsd:int"/>
-     <element name="rentAmount" type="xsd:float"/>
+     <element name="rentAmount" type="xsd:double"/>
      <element name="rentedDate" nillable="true" type="xsd:dateTime"/>
      <element name="userId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="User">
+    <sequence>
+     <element name="address" nillable="true" type="xsd:string"/>
+     <element name="balance" type="xsd:double"/>
+     <element name="city" nillable="true" type="xsd:string"/>
+     <element name="email" nillable="true" type="xsd:string"/>
+     <element name="firstName" nillable="true" type="xsd:string"/>
+     <element name="issuedMovies" nillable="true" type="xsd:string"/>
+     <element name="lastName" nillable="true" type="xsd:string"/>
+     <element name="membershipNo" nillable="true" type="xsd:string"/>
+     <element name="monthlySubscriptionFee" type="xsd:double"/>
+     <element name="password" nillable="true" type="xsd:string"/>
+     <element name="state" nillable="true" type="xsd:string"/>
+     <element name="total" type="xsd:double"/>
+     <element name="totalOutstandingMovies" type="xsd:int"/>
+     <element name="userId" nillable="true" type="xsd:string"/>
+     <element name="userType" nillable="true" type="xsd:string"/>
+     <element name="zipCode" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
   </schema>
@@ -93,6 +93,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="invalidateExpiredRentalResponse">
 
       <wsdl:part element="impl:invalidateExpiredRentalResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserByMovieIdRequest">
+
+      <wsdl:part element="impl:getUserByMovieId" name="parameters">
 
       </wsdl:part>
 
@@ -109,14 +117,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="rentMovieRequest">
 
       <wsdl:part element="impl:rentMovie" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="getUserByMovieIdRequest">
-
-      <wsdl:part element="impl:getUserByMovieId" name="parameters">
 
       </wsdl:part>
 
@@ -168,18 +168,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getUserByMovieId">
-
-         <wsdl:input message="impl:getUserByMovieIdRequest" name="getUserByMovieIdRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:getUserByMovieIdResponse" name="getUserByMovieIdResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="rentMovie">
 
          <wsdl:input message="impl:rentMovieRequest" name="rentMovieRequest">
@@ -204,6 +192,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getUserByMovieId">
+
+         <wsdl:input message="impl:getUserByMovieIdRequest" name="getUserByMovieIdRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getUserByMovieIdResponse" name="getUserByMovieIdResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="RentalModelSoapBinding" type="impl:RentalModel">
@@ -221,24 +221,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="invalidateExpiredRentalResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="getUserByMovieId">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getUserByMovieIdRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getUserByMovieIdResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -275,6 +257,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="getMoviesRentalByUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserByMovieId">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserByMovieIdRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserByMovieIdResponse">
 
             <wsdlsoap:body use="literal"/>
 

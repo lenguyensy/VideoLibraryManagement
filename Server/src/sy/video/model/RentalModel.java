@@ -15,6 +15,7 @@ import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
 import sy.video.valueobj.Rental;
+import sy.video.valueobj.SerializerUtil;
 import sy.video.valueobj.User;
 
 /**

@@ -19,35 +19,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="authenticateUser">
-    <complexType>
-     <sequence>
-      <element name="email" type="xsd:string"/>
-      <element name="password" type="xsd:string"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="authenticateUserResponse">
-    <complexType>
-     <sequence>
-      <element name="authenticateUserReturn" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="saveUser">
-    <complexType>
-     <sequence>
-      <element name="u" type="tns1:User"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="saveUserResponse">
-    <complexType>
-     <sequence>
-      <element name="saveUserReturn" type="xsd:string"/>
-     </sequence>
-    </complexType>
-   </element>
    <element name="getUserByType">
     <complexType>
      <sequence>
@@ -78,6 +49,34 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="addUser">
+    <complexType>
+     <sequence>
+      <element name="u" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addUserResponse">
+    <complexType>
+     <sequence>
+      <element name="addUserReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="saveUser">
+    <complexType>
+     <sequence>
+      <element name="u" type="tns1:User"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="saveUserResponse">
+    <complexType>
+     <sequence>
+      <element name="saveUserReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
    <element name="resetPassword">
     <complexType>
      <sequence>
@@ -92,17 +91,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="addUser">
+   <element name="authenticateUser">
     <complexType>
      <sequence>
-      <element name="u" type="tns1:User"/>
+      <element name="email" type="xsd:string"/>
+      <element name="password" type="xsd:string"/>
      </sequence>
     </complexType>
    </element>
-   <element name="addUserResponse">
+   <element name="authenticateUserResponse">
     <complexType>
      <sequence>
-      <element name="addUserReturn" type="xsd:string"/>
+      <element name="authenticateUserReturn" type="tns1:User"/>
      </sequence>
     </complexType>
    </element>
@@ -126,17 +126,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="User">
     <sequence>
      <element name="address" nillable="true" type="xsd:string"/>
-     <element name="balance" type="xsd:float"/>
+     <element name="balance" type="xsd:double"/>
      <element name="city" nillable="true" type="xsd:string"/>
      <element name="email" nillable="true" type="xsd:string"/>
      <element name="firstName" nillable="true" type="xsd:string"/>
      <element name="issuedMovies" nillable="true" type="xsd:string"/>
      <element name="lastName" nillable="true" type="xsd:string"/>
      <element name="membershipNo" nillable="true" type="xsd:string"/>
-     <element name="monthlySubscriptionFee" type="xsd:float"/>
+     <element name="monthlySubscriptionFee" type="xsd:double"/>
      <element name="password" nillable="true" type="xsd:string"/>
      <element name="state" nillable="true" type="xsd:string"/>
-     <element name="total" type="xsd:float"/>
+     <element name="total" type="xsd:double"/>
      <element name="totalOutstandingMovies" type="xsd:int"/>
      <element name="userId" nillable="true" type="xsd:string"/>
      <element name="userType" nillable="true" type="xsd:string"/>
@@ -202,17 +202,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="addUserResponse">
+   <wsdl:message name="authenticateUserRequest">
 
-      <wsdl:part element="impl:addUserResponse" name="parameters">
+      <wsdl:part element="impl:authenticateUser" name="parameters">
 
       </wsdl:part>
 
    </wsdl:message>
 
-   <wsdl:message name="authenticateUserRequest">
+   <wsdl:message name="addUserResponse">
 
-      <wsdl:part element="impl:authenticateUser" name="parameters">
+      <wsdl:part element="impl:addUserResponse" name="parameters">
 
       </wsdl:part>
 
@@ -288,30 +288,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="authenticateUser">
-
-         <wsdl:input message="impl:authenticateUserRequest" name="authenticateUserRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:authenticateUserResponse" name="authenticateUserResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="saveUser">
-
-         <wsdl:input message="impl:saveUserRequest" name="saveUserRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:saveUserResponse" name="saveUserResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="getUserByType">
 
          <wsdl:input message="impl:getUserByTypeRequest" name="getUserByTypeRequest">
@@ -336,6 +312,30 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="addUser">
+
+         <wsdl:input message="impl:addUserRequest" name="addUserRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:addUserResponse" name="addUserResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="saveUser">
+
+         <wsdl:input message="impl:saveUserRequest" name="saveUserRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:saveUserResponse" name="saveUserResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="resetPassword">
 
          <wsdl:input message="impl:resetPasswordRequest" name="resetPasswordRequest">
@@ -348,13 +348,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="addUser">
+      <wsdl:operation name="authenticateUser">
 
-         <wsdl:input message="impl:addUserRequest" name="addUserRequest">
+         <wsdl:input message="impl:authenticateUserRequest" name="authenticateUserRequest">
 
        </wsdl:input>
 
-         <wsdl:output message="impl:addUserResponse" name="addUserResponse">
+         <wsdl:output message="impl:authenticateUserResponse" name="authenticateUserResponse">
 
        </wsdl:output>
 
@@ -389,42 +389,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="getUserResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="authenticateUser">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="authenticateUserRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="authenticateUserResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="saveUser">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="saveUserRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="saveUserResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -468,6 +432,42 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="addUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addUserRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="saveUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="saveUserRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="saveUserResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="resetPassword">
 
          <wsdlsoap:operation soapAction=""/>
@@ -486,17 +486,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="addUser">
+      <wsdl:operation name="authenticateUser">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="addUserRequest">
+         <wsdl:input name="authenticateUserRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="addUserResponse">
+         <wsdl:output name="authenticateUserResponse">
 
             <wsdlsoap:body use="literal"/>
 

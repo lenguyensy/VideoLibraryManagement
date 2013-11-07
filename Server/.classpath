@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/mysql-connector-java-5.1.26-bin.jar"/>
 	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/commons-pool-1.5.5.jar"/>
 	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/jedis-2.0.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

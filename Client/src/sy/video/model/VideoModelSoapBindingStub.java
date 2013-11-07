@@ -24,6 +24,17 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getMovie");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "movieId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://valueobj.video.sy", "Movie"));
+        oper.setReturnClass(sy.video.valueobj.Movie.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "getMovieReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[0] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMovies");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "from"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false);
         oper.addParameter(param);
@@ -34,7 +45,18 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesReturn"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[0] = oper;
+        _operations[1] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("addMovie");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "m"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://valueobj.video.sy", "Movie"), sy.video.valueobj.Movie.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        oper.setReturnClass(java.lang.String.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "addMovieReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[2] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMoviesByGenre");
@@ -49,7 +71,18 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesByGenreReturn"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[1] = oper;
+        _operations[3] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("saveMovie");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "m"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://valueobj.video.sy", "Movie"), sy.video.valueobj.Movie.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        oper.setReturnClass(java.lang.String.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "saveMovieReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[4] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getMoviesBySearchTerm");
@@ -64,29 +97,7 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesBySearchTermReturn"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[2] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("getMovie");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "movieId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false);
-        oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://valueobj.video.sy", "Movie"));
-        oper.setReturnClass(sy.video.valueobj.Movie.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "getMovieReturn"));
-        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
-        oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[3] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("addMovie");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "m"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://valueobj.video.sy", "Movie"), sy.video.valueobj.Movie.class, false, false);
-        oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "addMovieReturn"));
-        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
-        oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[4] = oper;
+        _operations[5] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("deletMovie");
@@ -95,17 +106,6 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "deletMovieReturn"));
-        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
-        oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[5] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("saveMovie");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://model.video.sy", "m"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://valueobj.video.sy", "Movie"), sy.video.valueobj.Movie.class, false, false);
-        oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("http://model.video.sy", "saveMovieReturn"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
         _operations[6] = oper;
@@ -214,114 +214,12 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         }
     }
 
-    public sy.video.valueobj.Movie[] getMovies(int from, int pagesize) throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[0]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setEncodingStyle(null);
-        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
-        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "getMovies"));
-
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(from), new java.lang.Integer(pagesize)});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            try {
-                return (sy.video.valueobj.Movie[]) _resp;
-            } catch (java.lang.Exception _exception) {
-                return (sy.video.valueobj.Movie[]) org.apache.axis.utils.JavaUtils.convert(_resp, sy.video.valueobj.Movie[].class);
-            }
-        }
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
-
-    public sy.video.valueobj.Movie[] getMoviesByGenre(java.lang.String genre, int from, int pagesize) throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[1]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setEncodingStyle(null);
-        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
-        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesByGenre"));
-
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {genre, new java.lang.Integer(from), new java.lang.Integer(pagesize)});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            try {
-                return (sy.video.valueobj.Movie[]) _resp;
-            } catch (java.lang.Exception _exception) {
-                return (sy.video.valueobj.Movie[]) org.apache.axis.utils.JavaUtils.convert(_resp, sy.video.valueobj.Movie[].class);
-            }
-        }
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
-
-    public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[2]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setEncodingStyle(null);
-        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
-        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesBySearchTerm"));
-
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {searchTerm, new java.lang.Integer(from), new java.lang.Integer(pagesize)});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            try {
-                return (sy.video.valueobj.Movie[]) _resp;
-            } catch (java.lang.Exception _exception) {
-                return (sy.video.valueobj.Movie[]) org.apache.axis.utils.JavaUtils.convert(_resp, sy.video.valueobj.Movie[].class);
-            }
-        }
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
-
     public sy.video.valueobj.Movie getMovie(int movieId) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[3]);
+        _call.setOperation(_operations[0]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -350,12 +248,46 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
 }
     }
 
+    public sy.video.valueobj.Movie[] getMovies(int from, int pagesize) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[1]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "getMovies"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(from), new java.lang.Integer(pagesize)});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (sy.video.valueobj.Movie[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (sy.video.valueobj.Movie[]) org.apache.axis.utils.JavaUtils.convert(_resp, sy.video.valueobj.Movie[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
     public java.lang.String addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[4]);
+        _call.setOperation(_operations[2]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -384,23 +316,57 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
 }
     }
 
-    public java.lang.String deletMovie(int movieId) throws java.rmi.RemoteException {
+    public sy.video.valueobj.Movie[] getMoviesByGenre(java.lang.String genre, int from, int pagesize) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[5]);
+        _call.setOperation(_operations[3]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "deletMovie"));
+        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesByGenre"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(movieId)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {genre, new java.lang.Integer(from), new java.lang.Integer(pagesize)});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (sy.video.valueobj.Movie[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (sy.video.valueobj.Movie[]) org.apache.axis.utils.JavaUtils.convert(_resp, sy.video.valueobj.Movie[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public java.lang.String saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[4]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "saveMovie"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {m});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -418,7 +384,41 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
 }
     }
 
-    public java.lang.String saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException {
+    public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[5]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "getMoviesBySearchTerm"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {searchTerm, new java.lang.Integer(from), new java.lang.Integer(pagesize)});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (sy.video.valueobj.Movie[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (sy.video.valueobj.Movie[]) org.apache.axis.utils.JavaUtils.convert(_resp, sy.video.valueobj.Movie[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public java.lang.String deletMovie(int movieId) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -430,11 +430,11 @@ public class VideoModelSoapBindingStub extends org.apache.axis.client.Stub imple
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "saveMovie"));
+        _call.setOperationName(new javax.xml.namespace.QName("http://model.video.sy", "deletMovie"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {m});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(movieId)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

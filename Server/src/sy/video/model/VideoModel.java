@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
+import sy.video.valueobj.SerializerUtil;
 
 /**
  * 
@@ -60,7 +61,7 @@ public class VideoModel {
 			e.printStackTrace();
 		}
 
-		return null;
+		return ret;
 	}
 
 	/**

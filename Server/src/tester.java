@@ -28,16 +28,20 @@ public class tester {
 		// importMovie();
 		// importUser();
 
-		// vm.rentMovie(1, 2);
-		//rm.getUserByMovieId(2);
+		//doing all the tests
+		Object [] lst;
+		Object o;
+		System.out.println("getUsers");
+		User [] ul = um.getUsers(0, 5);
+		print(ul);
 		
 		
-		//System.out.println(MainConfig.getCache("9390cd904838976682e5bab70ff0640f"));
-		
-		//um.getUsers(0, 2);
-		//vm.getMovies(0, 25);
-		rm.getMoviesRentalByUser(2);
 		System.out.println("End");
+	}
+	
+	public static void print(Object [] ol){
+		for (int i =0; i < ol.length; i++)
+			System.out.println(ol[i]);
 	}
 
 	public static void importMovie() {

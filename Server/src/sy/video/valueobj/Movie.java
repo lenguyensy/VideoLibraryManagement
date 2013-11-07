@@ -4,10 +4,9 @@ import java.util.Date;
 
 /**
  * 
- * @author Sy Le
- * lenguyensy@gmail.com
+ * @author Sy Le lenguyensy@gmail.com
  */
-public class Movie {
+public class Movie extends BaseValueObj {
 	public String MovieId;
 	public String MovieName;
 	public String MovieBanner;

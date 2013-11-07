@@ -11,7 +11,7 @@ public class Rental {
 	public String MovieId;
 	public String MovieName;
 	public int ReleaseDate;
-	public float RentAmount;
+	public double RentAmount;
 	public Date RentedDate;
 	public Date ExpirationDate;
 	
@@ -39,10 +39,10 @@ public class Rental {
 	public void setReleaseDate(int releaseDate) {
 		ReleaseDate = releaseDate;
 	}
-	public float getRentAmount() {
+	public double getRentAmount() {
 		return RentAmount;
 	}
-	public void setRentAmount(float rentAmount) {
+	public void setRentAmount(double rentAmount) {
 		RentAmount = rentAmount;
 	}
 	public Date getRentedDate() {

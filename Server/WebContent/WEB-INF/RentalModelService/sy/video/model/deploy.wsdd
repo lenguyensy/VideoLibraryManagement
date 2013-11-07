@@ -12,15 +12,15 @@
       <parameter name="typeMappingVersion" value="1.2"/>
       <operation xmlns:operNS="http://model.video.sy" name="invalidateExpiredRental" qname="operNS:invalidateExpiredRental" soapAction="">
       </operation>
-      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUserByMovieId" qname="operNS:getUserByMovieId" returnQName="retNS:getUserByMovieIdReturn" returnType="rtns:User" soapAction="">
-        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:movieId" type="tns:int"/>
-      </operation>
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="rentMovie" qname="operNS:rentMovie" returnQName="retNS:rentMovieReturn" returnType="rtns:string" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userId" type="tns:int"/>
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:movieId" type="tns:int"/>
       </operation>
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getMoviesRentalByUser" qname="operNS:getMoviesRentalByUser" returnQName="retNS:getMoviesRentalByUserReturn" returnType="rtns:Rental" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userId" type="tns:int"/>
+      </operation>
+      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUserByMovieId" qname="operNS:getUserByMovieId" returnQName="retNS:getUserByMovieIdReturn" returnType="rtns:User" soapAction="">
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:movieId" type="tns:int"/>
       </operation>
       <parameter name="allowedMethods" value="invalidateExpiredRental getUserByMovieId rentMovie getMoviesRentalByUser"/>
 

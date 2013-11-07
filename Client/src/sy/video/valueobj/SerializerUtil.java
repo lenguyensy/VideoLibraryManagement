@@ -1,4 +1,4 @@
-package sy.video.model;
+package sy.video.valueobj;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,10 +9,6 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import sy.video.valueobj.Movie;
-import sy.video.valueobj.Rental;
-import sy.video.valueobj.User;
 
 public class SerializerUtil {
 	/**
