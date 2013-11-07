@@ -3,15 +3,15 @@ package sy.video.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.WebService;
 
-import sy.config.AppEnum;
+import org.json.JSONArray;
+
+import sy.config.Cache;
 import sy.config.MainConfig;
-import sy.video.valueobj.PremiumMember;
 import sy.video.valueobj.User;
 
 /**
@@ -23,51 +23,13 @@ public class UserModel {
 	Connection con = MainConfig.getConnection();
 
 	/**
-	 * private method that grabs rs
-	 * 
-	 * @param rs
-	 * @return
-	 */
-	private List<User> _getUserList(ResultSet rs) {
-		List<User> lstUsers = new ArrayList<User>();
-
-		try {
-			while (rs.next()) {
-				User u = new User();
-				u.setFirstName(rs.getString("firstname"));
-				u.setLastName(rs.getString("lastname"));
-				u.setAddress(rs.getString("address"));
-				u.setCity(rs.getString("city"));
-				u.setState(rs.getString("state"));
-				u.setZipCode(rs.getString("zip"));
-				u.setBalance(rs.getFloat("balance"));
-				u.setMembershipNo(rs.getString("MembershipNo"));
-				u.setMonthlySubscriptionFee(rs
-						.getFloat("MonthlySubscriptionFee"));
-				u.setTotal(rs.getFloat("total"));
-				u.setTotalOutstandingMovies(rs.getInt("TotalOutstandingMovies"));
-				u.setUserId(rs.getString("id"));
-				u.setUserType(rs.getString("userType"));
-				u.setEmail(rs.getString("email"));
-
-				lstUsers.add(u);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return lstUsers;
-	}
-
-	/**
 	 * get a list of all active premium members
 	 * 
 	 * @param userId
 	 * @return
 	 */
 	public User[] getUserByType(String userType, int from, int pagesize) {
-		List<User> lstUsers = new ArrayList<User>();
+		List<User> lstUsers;
 
 		try {
 			PreparedStatement stmt = con
@@ -76,13 +38,27 @@ public class UserModel {
 			stmt.setInt(2, from);
 			stmt.setInt(3, pagesize);
 
-			ResultSet rs = stmt.executeQuery();
-			lstUsers = _getUserList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstUsers = SerializerUtil.getUsers(rs);
+
+				// save it to cache
+				User[] ret = SerializerUtil.getUsers(lstUsers);
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key,
+						(new JSONArray(ret)).toString());
+				return ret;
+			} else {
+				lstUsers = SerializerUtil.getUsers(new JSONArray(fromCache));
+				return SerializerUtil.getUsers(lstUsers);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
-		return lstUsers.toArray(new User[lstUsers.size()]);
+		return null;
 	}
 
 	/**
@@ -92,7 +68,7 @@ public class UserModel {
 	 * @return
 	 */
 	public User[] getUsers(int from, int pagesize) {
-		List<User> lstUsers = new ArrayList<User>();
+		List<User> lstUsers = null;
 
 		try {
 			PreparedStatement stmt = con
@@ -100,13 +76,27 @@ public class UserModel {
 			stmt.setInt(1, from);
 			stmt.setInt(2, pagesize);
 
-			ResultSet rs = stmt.executeQuery();
-			lstUsers = _getUserList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstUsers = SerializerUtil.getUsers(rs);
+
+				// save it to cache
+				User[] ret = SerializerUtil.getUsers(lstUsers);
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key,
+						(new JSONArray(ret)).toString());
+				return ret;
+			} else {
+				lstUsers = SerializerUtil.getUsers(new JSONArray(fromCache));
+				return SerializerUtil.getUsers(lstUsers);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
-		return lstUsers.toArray(new User[lstUsers.size()]);
+		return null;
 	}
 
 	/**
@@ -123,8 +113,20 @@ public class UserModel {
 					.prepareStatement("SELECT * FROM users WHERE id = ?");
 			stmt.setInt(1, userId);
 
-			ResultSet rs = stmt.executeQuery();
-			lstUsers = _getUserList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstUsers = SerializerUtil.getUsers(rs);
+
+				// save it to cache
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key, (new JSONArray(
+						SerializerUtil.getUsers(lstUsers))).toString());
+			} else {
+				lstUsers = SerializerUtil.getUsers(new JSONArray(fromCache));
+			}
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -152,7 +154,7 @@ public class UserModel {
 			stmt.setString(2, password);
 
 			ResultSet rs = stmt.executeQuery();
-			lstUsers = _getUserList(rs);
+			lstUsers = SerializerUtil.getUsers(rs);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -162,7 +164,6 @@ public class UserModel {
 		else
 			return null;
 	}
-	
 
 	/**
 	 * delete a user
@@ -177,6 +178,8 @@ public class UserModel {
 			stmt.setInt(1, userId);
 
 			stmt.execute();
+
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Delete User Failed";
@@ -208,14 +211,16 @@ public class UserModel {
 			stmt.setString(6, u.getState());
 			stmt.setString(7, u.getPassword());
 			stmt.setInt(8, u.getTotalOutstandingMovies());
-			stmt.setFloat(9, u.getBalance());
-			stmt.setFloat(10, u.getMonthlySubscriptionFee());
-			stmt.setFloat(11, u.getTotal());
+			stmt.setDouble(9, u.getBalance());
+			stmt.setDouble(10, u.getMonthlySubscriptionFee());
+			stmt.setDouble(11, u.getTotal());
 			stmt.setString(12, u.getCity());
 			stmt.setString(13, u.getZipCode());
 			stmt.setString(14, u.getEmail());
 
 			stmt.execute();
+
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Add User Failed";
@@ -224,7 +229,6 @@ public class UserModel {
 		return "true";
 	}
 
-	
 	/**
 	 * save user (update user)
 	 * 
@@ -246,14 +250,16 @@ public class UserModel {
 			stmt.setString(4, u.getLastName());
 			stmt.setString(5, u.getAddress());
 			stmt.setString(6, u.getState());
-			stmt.setFloat(7, u.getMonthlySubscriptionFee());
-			stmt.setFloat(8, u.getTotal());
+			stmt.setDouble(7, u.getMonthlySubscriptionFee());
+			stmt.setDouble(8, u.getTotal());
 			stmt.setString(9, u.getCity());
 			stmt.setString(10, u.getZipCode());
 			stmt.setString(11, u.getEmail());
 			stmt.setString(12, u.getUserId());
 
 			stmt.execute();
+
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Updating User Failed.";
@@ -263,6 +269,7 @@ public class UserModel {
 
 	/**
 	 * reset password
+	 * 
 	 * @param u
 	 * @return
 	 */
@@ -275,10 +282,12 @@ public class UserModel {
 			stmt.setString(15, u.getUserId());
 
 			stmt.execute();
+
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			return "Reset Password Failed.";
 		}
-		
+
 		return "true";
 	}
 }

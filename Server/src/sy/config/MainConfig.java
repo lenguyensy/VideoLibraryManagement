@@ -2,6 +2,10 @@ package sy.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import redis.clients.jedis.Jedis;
 
 /**
  * 
@@ -35,6 +39,13 @@ public class MainConfig {
 		return con;
 	}
 
+	/**
+	 * combine array to csv by glue
+	 * 
+	 * @param s
+	 * @param glue
+	 * @return
+	 */
 	public static String combine(String[] s, String glue) {
 		int k = s.length;
 		if (k == 0)

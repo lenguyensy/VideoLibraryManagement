@@ -9,6 +9,9 @@ import java.util.List;
 
 import javax.jws.WebService;
 
+import org.json.JSONArray;
+
+import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
 import sy.video.valueobj.Rental;
@@ -21,62 +24,6 @@ import sy.video.valueobj.User;
 @WebService
 public class RentalModel {
 	Connection con = MainConfig.getConnection();
-
-	private List<Rental> _getRentalList(ResultSet rs) {
-		List<Rental> lstRental = new ArrayList<Rental>();
-
-		try {
-			while (rs.next()) {
-				Rental r = new Rental();
-				r.setUserId(rs.getString("userid"));
-				r.setMovieId(rs.getString("movieid"));
-				r.setMovieName(rs.getString("moviename"));
-				r.setRentAmount(rs.getFloat("rentamount"));
-				r.setReleaseDate(rs.getInt("releasedate"));
-				r.setRentedDate(rs.getDate("renteddate"));
-				r.setExpirationDate(rs.getDate("expirationdate"));
-
-				lstRental.add(r);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return lstRental;
-	}
-
-	private List<User> _getUserList(ResultSet rs) {
-		List<User> lstUsers = new ArrayList<User>();
-
-		try {
-			while (rs.next()) {
-				User u = new User();
-				u.setFirstName(rs.getString("firstname"));
-				u.setLastName(rs.getString("lastname"));
-				u.setAddress(rs.getString("address"));
-				u.setCity(rs.getString("city"));
-				u.setState(rs.getString("state"));
-				u.setZipCode(rs.getString("zip"));
-				u.setBalance(rs.getFloat("balance"));
-				u.setMembershipNo(rs.getString("MembershipNo"));
-				u.setMonthlySubscriptionFee(rs
-						.getFloat("MonthlySubscriptionFee"));
-				u.setTotal(rs.getFloat("total"));
-				u.setTotalOutstandingMovies(rs.getInt("TotalOutstandingMovies"));
-				u.setUserId(rs.getString("id"));
-				u.setUserType(rs.getString("userType"));
-				u.setEmail(rs.getString("email"));
-
-				lstUsers.add(u);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return lstUsers;
-	}
 
 	/**
 	 * rent a movie
@@ -117,7 +64,7 @@ public class RentalModel {
 					.prepareStatement("INSERT INTO movierenter VALUES(null, ?,?,NOW(), DATE_ADD(NOW(),INTERVAL 1 DAY),?)");
 			stmt.setInt(1, movieId);
 			stmt.setInt(2, userId);
-			stmt.setFloat(3, m.getRentAmount());
+			stmt.setDouble(3, m.getRentAmount());
 			stmt.execute();
 
 			// reduce the available copy count
@@ -129,9 +76,12 @@ public class RentalModel {
 			// reduce user total oustanding count
 			stmt = con
 					.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies - 1, total = total + ? WHERE id = ?");
-			stmt.setFloat(1, m.getRentAmount());
+			stmt.setDouble(1, m.getRentAmount());
 			stmt.setInt(2, userId);
 			stmt.execute();
+
+			// clear cache
+			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Renting Failed";
@@ -148,7 +98,6 @@ public class RentalModel {
 	 */
 	public Rental[] getMoviesRentalByUser(int userId) {
 		List<Rental> lstRental = new ArrayList<Rental>();
-
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT mr.rentamount, mr.userid, mr.movieid, mr.renteddate,mr.expirationdate,"
@@ -156,19 +105,32 @@ public class RentalModel {
 							+ "INNER JOIN movies m ON m.id = mr.movieid "
 							+ " WHERE mr.userid = ? ORDER BY mr.renteddate, m.moviename limit 0,1000;");
 			stmt.setInt(1, userId);
-			ResultSet rs = stmt.executeQuery();
-			lstRental = _getRentalList(rs);
+
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_RENTAL, key);
+
+			if (fromCache == null) {
+
+				ResultSet rs = stmt.executeQuery();
+				lstRental = SerializerUtil.getRentals(rs);
+
+				Rental[] ret = SerializerUtil.getRentals(lstRental);
+				Cache.set(Cache.REDIS_NAMESPACE_RENTAL, key,
+						(new JSONArray(ret)).toString());
+			} else {
+				lstRental = SerializerUtil.getRentals(new JSONArray(fromCache));
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return lstRental.toArray(new Rental[lstRental.size()]);
+		return SerializerUtil.getRentals(lstRental);
 	}
 
-	
 	/**
 	 * get a list of users who retned the movies.
+	 * 
 	 * @param movieId
 	 * @return
 	 */
@@ -179,21 +141,35 @@ public class RentalModel {
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT u.* from users u INNER JOIN movierenter mr ON u.id = mr.userId WHERE mr.movieid = ? ORDER BY mr.renteddate, u.firstname limit 0,1000;");
 			stmt.setInt(1, movieId);
-			ResultSet rs = stmt.executeQuery();
-			lstUser = _getUserList(rs);
+			
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstUser = SerializerUtil.getUsers(rs);
+
+				// save it to cache
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key,
+						(new JSONArray(SerializerUtil.getUsers(lstUser))).toString());
+			} else {
+				lstUser = SerializerUtil.getUsers(new JSONArray(fromCache));
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return lstUser.toArray(new User[lstUser.size()]);
+		return SerializerUtil.getUsers(lstUser);
 	}
 
-	
 	/**
 	 * invalidate expired stuffs
 	 */
 	public void invalidateExpiredRental() {
-
+		//invalidate bad one
+		
+		// clear cache
+		Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
 	}
 }

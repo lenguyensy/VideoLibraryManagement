@@ -9,9 +9,12 @@ import java.util.List;
 
 import javax.jws.WebService;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
-import sy.video.valueobj.User;
 
 /**
  * 
@@ -21,37 +24,13 @@ import sy.video.valueobj.User;
 public class VideoModel {
 	Connection con = MainConfig.getConnection();
 
-	private List<Movie> _getMovieList(ResultSet rs) {
-		List<Movie> lstMovie = new ArrayList<Movie>();
-
-		try {
-			while (rs.next()) {
-				Movie m = new Movie();
-				m.setCategory(rs.getString("category"));
-				m.setMovieName(rs.getString("moviename"));
-				m.setMovieBanner(rs.getString("moviebanner"));
-				m.setReleaseDate(rs.getInt("releasedate"));
-				m.setRentAmount(rs.getFloat("rentamount"));
-				m.setAvailableCopies(rs.getInt("availablecopies"));
-				m.setMovieId(rs.getString("id"));
-
-				lstMovie.add(m);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return lstMovie;
-	}
-
 	/**
 	 * get a list of available movies
 	 * 
 	 * @return
 	 */
 	public Movie[] getMovies(int from, int pagesize) {
-		List<Movie> lstMov = new ArrayList<Movie>();
+		Movie[] ret = null;
 
 		try {
 			PreparedStatement stmt = con
@@ -59,14 +38,29 @@ public class VideoModel {
 			stmt.setInt(1, from);
 			stmt.setInt(2, pagesize);
 
-			ResultSet rs = stmt.executeQuery();
-			lstMov = _getMovieList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			List<Movie> lstMov;
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstMov = SerializerUtil.getMovies(rs);
+
+				// save it to cache
+				ret = SerializerUtil.getMovies(lstMov);
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key,
+						(new JSONArray(ret)).toString());
+			} else {
+
+				lstMov = SerializerUtil.getMovies(new JSONArray(fromCache));
+				ret = SerializerUtil.getMovies(lstMov);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return lstMov.toArray(new Movie[lstMov.size()]);
+		return null;
 	}
 
 	/**
@@ -78,7 +72,7 @@ public class VideoModel {
 	 * @return
 	 */
 	public Movie[] getMoviesByGenre(String genre, int from, int pagesize) {
-		List<Movie> lstMov = new ArrayList<Movie>();
+		Movie[] ret = null;
 
 		try {
 			PreparedStatement stmt = con
@@ -87,14 +81,28 @@ public class VideoModel {
 			stmt.setInt(2, from);
 			stmt.setInt(3, pagesize);
 
-			ResultSet rs = stmt.executeQuery();
-			lstMov = _getMovieList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			List<Movie> lstMov;
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstMov = SerializerUtil.getMovies(rs);
+
+				// save it to cache
+				ret = SerializerUtil.getMovies(lstMov);
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key,
+						(new JSONArray(ret)).toString());
+			} else {
+				lstMov = SerializerUtil.getMovies(new JSONArray(fromCache));
+				ret = SerializerUtil.getMovies(lstMov);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return lstMov.toArray(new Movie[lstMov.size()]);
+		return ret;
 	}
 
 	/**
@@ -107,7 +115,7 @@ public class VideoModel {
 	 */
 	public Movie[] getMoviesBySearchTerm(String searchTerm, int from,
 			int pagesize) {
-		List<Movie> lstMov = new ArrayList<Movie>();
+		Movie[] ret = null;
 
 		try {
 			PreparedStatement stmt = con
@@ -116,14 +124,29 @@ public class VideoModel {
 			stmt.setInt(2, from);
 			stmt.setInt(3, pagesize);
 
-			ResultSet rs = stmt.executeQuery();
-			lstMov = _getMovieList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			List<Movie> lstMov;
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstMov = SerializerUtil.getMovies(rs);
+
+				// save it to cache
+				ret = SerializerUtil.getMovies(lstMov);
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key,
+						(new JSONArray(ret)).toString());
+			} else {
+
+				lstMov = SerializerUtil.getMovies(new JSONArray(fromCache));
+				ret = SerializerUtil.getMovies(lstMov);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return lstMov.toArray(new Movie[lstMov.size()]);
+		return ret;
 	}
 
 	/**
@@ -140,8 +163,19 @@ public class VideoModel {
 					.prepareStatement("SELECT * FROM movies WHERE id = ?");
 			stmt.setInt(1, movieId);
 
-			ResultSet rs = stmt.executeQuery();
-			lstMov = _getMovieList(rs);
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				lstMov = SerializerUtil.getMovies(rs);
+
+				// save it to cache
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key, (new JSONArray(
+						SerializerUtil.getMovies(lstMov))).toString());
+			} else {
+				lstMov = SerializerUtil.getMovies(new JSONArray(fromCache));
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -167,11 +201,14 @@ public class VideoModel {
 			stmt.setString(1, m.getMovieName());
 			stmt.setString(2, m.getMovieBanner());
 			stmt.setInt(3, m.getReleaseDate());
-			stmt.setFloat(4, m.getRentAmount());
+			stmt.setDouble(4, m.getRentAmount());
 			stmt.setInt(5, m.getAvailableCopies());
 			stmt.setString(6, m.getCategory());
 
 			stmt.execute();
+
+			// clear movie cache
+			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Adding Movie Failed";
@@ -193,6 +230,9 @@ public class VideoModel {
 			stmt.setInt(1, movieId);
 
 			stmt.execute();
+
+			// clear movie cache
+			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Deleting Movie failed";
@@ -216,12 +256,15 @@ public class VideoModel {
 			stmt.setString(1, m.getMovieName());
 			stmt.setString(2, m.getMovieBanner());
 			stmt.setInt(3, m.getReleaseDate());
-			stmt.setFloat(4, m.getRentAmount());
+			stmt.setDouble(4, m.getRentAmount());
 			stmt.setInt(5, m.getAvailableCopies());
 			stmt.setString(6, m.getCategory());
 			stmt.setString(7, m.getMovieId());
 
 			stmt.execute();
+
+			// clear movie cache
+			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Updating Movie Failed.";

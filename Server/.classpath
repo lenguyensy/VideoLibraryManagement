@@ -13,14 +13,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/hibernate-commons-annotations-4.0.2.Final.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/hibernate-core-4.2.7.SP1.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/javassist-3.18.1-GA.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/jboss-logging-3.1.0.GA.jar"/>
-	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/Hibernate/jboss-transaction-api_1.1_spec-1.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/mysql-connector-java-5.1.26-bin.jar"/>
+	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/commons-pool-1.5.5.jar"/>
+	<classpathentry kind="lib" path="/Volumes/BigMac/User/sy/git/VideoLibraryManagement/_Lib/jedis-2.0.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

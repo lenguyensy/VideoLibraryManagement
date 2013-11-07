@@ -24,11 +24,20 @@ public class tester {
 	static RentalModel rm = new RentalModel();
 
 	public static void main(String[] args) {
+		System.out.println("Start");
 		// importMovie();
 		// importUser();
 
 		// vm.rentMovie(1, 2);
-		rm.getUserByMovieId(2);
+		//rm.getUserByMovieId(2);
+		
+		
+		//System.out.println(MainConfig.getCache("9390cd904838976682e5bab70ff0640f"));
+		
+		//um.getUsers(0, 2);
+		//vm.getMovies(0, 25);
+		rm.getMoviesRentalByUser(2);
+		System.out.println("End");
 	}
 
 	public static void importMovie() {

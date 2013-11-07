@@ -20,9 +20,9 @@ public class User {
 	private String Password;
 	private String MembershipNo;
 	private String Email;
-	private float MonthlySubscriptionFee = 15f;
-	private float Total = 20f;
-	private float Balance = 0f;
+	private double MonthlySubscriptionFee = 15f;
+	private double Total = 20f;
+	private double Balance = 0f;
 	private int TotalOutstandingMovies = 5;
 
 	public String getMembershipNo() {
@@ -33,11 +33,11 @@ public class User {
 		MembershipNo = membershipNo;
 	}
 
-	public float getBalance() {
+	public double getBalance() {
 		return Balance;
 	}
 
-	public void setBalance(float balance) {
+	public void setBalance(double balance) {
 		Balance = balance;
 	}
 
@@ -49,19 +49,19 @@ public class User {
 		TotalOutstandingMovies = totalOutstandingMovies;
 	}
 
-	public float getMonthlySubscriptionFee() {
+	public double getMonthlySubscriptionFee() {
 		return MonthlySubscriptionFee;
 	}
 
-	public void setMonthlySubscriptionFee(float monthlySubscriptionFee) {
+	public void setMonthlySubscriptionFee(double monthlySubscriptionFee) {
 		MonthlySubscriptionFee = monthlySubscriptionFee;
 	}
 
-	public float getTotal() {
+	public double getTotal() {
 		return Total;
 	}
 
-	public void setTotal(float total) {
+	public void setTotal(double total) {
 		Total = total;
 	}
 

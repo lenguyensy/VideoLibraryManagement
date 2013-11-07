@@ -12,7 +12,7 @@ public class Movie {
 	public String MovieName;
 	public String MovieBanner;
 	public int ReleaseDate;
-	public float RentAmount;
+	public double RentAmount;
 	public String Category;
 	public int AvailableCopies;
 
@@ -40,11 +40,11 @@ public class Movie {
 		ReleaseDate = releaseDate;
 	}
 
-	public float getRentAmount() {
+	public double getRentAmount() {
 		return RentAmount;
 	}
 
-	public void setRentAmount(float rentAmount) {
+	public void setRentAmount(double rentAmount) {
 		RentAmount = rentAmount;
 	}
 
