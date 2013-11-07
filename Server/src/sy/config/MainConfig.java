@@ -19,11 +19,10 @@ public class MainConfig {
 	public static final String JDBC_DBNAME = "video";
 	public static final String JDBC_USERNAME = "sy";
 	public static final String JDBC_PASSWORD = "lancebass";
-	public static final String JDBC_PORT = "13306";// default is 3306
-	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://localhost:"
-			+ JDBC_PORT
-			+ "/"
-			+ JDBC_DBNAME
+	public static final String JDBC_PORT = "3306";// default is 3306
+	public static final String JDBC_HOST = "192.168.1.222";
+	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
+			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
 
 	public static Connection getConnection() {

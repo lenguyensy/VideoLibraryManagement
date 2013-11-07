@@ -3,6 +3,7 @@ package sy.video.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,48 @@ import sy.video.valueobj.User;
 @WebService
 public class UserModel {
 	Connection con = MainConfig.getConnection();
+
+	/**
+	 * check to see if ssn is unique
+	 * 
+	 * @param ssn
+	 * @return
+	 */
+	private boolean _isSSNUnique(String ssn) {
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE ssn = ?");
+			stmt.setString(1, ssn);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * check to see if ssn is unique
+	 * 
+	 * @param ssn
+	 * @param userId
+	 * @return
+	 */
+	private boolean _isSSNUnique(String ssn, String userId) {
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE ssn = ? AND id != ?");
+			stmt.setString(1, ssn);
+			stmt.setString(2, userId);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 
 	/**
 	 * get a list of all active premium members
@@ -197,10 +240,14 @@ public class UserModel {
 	 */
 	public String addUser(User u) {
 		try {
+			// check to see if ssn unique
+			if (!_isSSNUnique(u.getMembershipNo()))
+				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
 			PreparedStatement stmt = con
 					.prepareStatement("INSERT INTO users (membershipno, usertype,firstname,lastname,"
 							+ "address,state,hashedpassword,totaloutstandingmovies,balance,"
-							+ "monthlysubscriptionfee,total,city,zip, email) "
+							+ "monthlysubscriptionfee,total,city,zipCode, email) "
 							+ "VALUES (?,?,?,?,"
 							+ "?,?,md5(?),?,?,"
 							+ "?,?,?,?,?)");
@@ -238,13 +285,16 @@ public class UserModel {
 	 */
 	public String saveUser(User u) {
 		try {
+			if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
+				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
 			PreparedStatement stmt = con
 					.prepareStatement("UPDATE users SET membershipno = ?,"
 							+ " usertype = ?," + " firstname = ?,"
 							+ " lastname = ?," + " address = ?,"
 							+ " state = ?," + " monthlysubscriptionfee = ?,"
 							+ " total = ?," + " city = ?,"
-							+ " zip = ?, email = ?" + " WHERE id = ?");
+							+ " zipCode = ?, email = ?" + " WHERE id = ?");
 			stmt.setString(1, u.getMembershipNo());
 			stmt.setString(2, u.getUserType());
 			stmt.setString(3, u.getFirstName());

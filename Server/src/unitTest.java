@@ -6,6 +6,7 @@ import sy.config.AppEnum;
 import sy.video.model.RentalModel;
 import sy.video.model.UserModel;
 import sy.video.model.VideoModel;
+import sy.video.valueobj.User;
 
 /**
  * unit test for server side code
@@ -34,6 +35,7 @@ public class unitTest {
 		System.out.println(o);
 	}
 
+	// test all the get calls
 	@Test
 	public void getUsers() {
 		Object[] o = um.getUsers(from, pagesize);
@@ -87,18 +89,35 @@ public class unitTest {
 		assertNotNull("getMovie " + movieId, o);
 		print(o);
 	}
-	
+
 	@Test
 	public void getUserByMovieId() {
-		Object []o = rm.getUserByMovieId(userId);
+		Object[] o = rm.getUserByMovieId(userId);
 		assertNotNull("getUserByMovieId " + movieId, o);
 		print(o);
 	}
-	
+
 	@Test
 	public void getMoviesRentalByUser() {
-		Object []o = rm.getMoviesRentalByUser(userId);
+		Object[] o = rm.getMoviesRentalByUser(userId);
 		assertNotNull("getMoviesRentalByUser " + userId, o);
 		print(o);
-	}	
+	}
+
+	@Test
+	public void saveUsers() {
+		User u;
+		u = um.getUser(userId);
+		u.setFirstName("Premium");
+		assertEquals("saveUsers", um.saveUser(u), "true");
+	}
+
+	@Test
+	public void addUsers() {
+		User u;
+		u = um.getUser(userId);
+		u.setFirstName("premium");
+		u.setPassword("password");
+		assertEquals("addUser", um.addUser(u), "true");
+	}
 }
