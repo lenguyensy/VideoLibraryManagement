@@ -1,13 +1,11 @@
 package sy.video.valueobj;
 
-import sy.config.AppEnum;
-
 
 /**
  * 
  * @author Sy Le lenguyensy@gmail.com
  */
-public class User {
+public class User extends BaseValueObj{
 	private String UserId;
 	private String UserType;
 	private String FirstName;
@@ -136,7 +134,7 @@ public class User {
 	public void setPassword(String password) {
 		Password = password;
 	}
-	
+
 	public String getUserType() {
 		return UserType;
 	}
@@ -152,5 +150,4 @@ public class User {
 	public void setEmail(String email) {
 		Email = email;
 	}
-
 }

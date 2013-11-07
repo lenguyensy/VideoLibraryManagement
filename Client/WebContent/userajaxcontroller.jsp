@@ -64,7 +64,10 @@
 		u.setMonthlySubscriptionFee(Float.parseFloat(request
 				.getParameter("monthlySubscriptionFee")));
 		u.setUserType(request.getParameter("userType"));
+		
 		u.setPassword(request.getParameter("password"));
+		if (u.getPassword() == null || u.getPassword().trim().equals(""))
+			u.setPassword("password");
 
 		if (u.getUserId() != null && !u.getUserId().trim().equals(""))
 			ret = userProxy.addUser(u);
