@@ -8,7 +8,9 @@ public class Cache {
 	public static final String REDIS_NAMESPACE_MOVIE = "movie.";
 	public static final String REDIS_NAMESPACE_USER = "user.";
 	public static final String REDIS_NAMESPACE_RENTAL = "rental.";
-	public static final String REDIS_HOST = "localhost";// default 6379
+	public static final String REDIS_HOST = "192.168.1.222";// default 6379
+	
+	public static final int EXPIRED_SECONDS = 60 * 15;//used for time based (15 minutes)
 
 	public static String getKey(PreparedStatement stmt) {
 		String md5 = stmt.toString().substring(stmt.toString().indexOf(": "));
@@ -34,10 +36,11 @@ public class Cache {
 	 * @return
 	 */
 	public static String get(String namespace, String key) {
-		System.out.println("GET CACHE: " + namespace + key);
+		String combinedKey = namespace + key;
+		System.out.println("GET CACHE: " + combinedKey);
 		
 		Jedis jedis = new Jedis(REDIS_HOST);
-		return jedis.get(namespace + key);
+		return jedis.get(combinedKey);
 	}
 
 	/**
@@ -48,17 +51,22 @@ public class Cache {
 	 * @param value
 	 */
 	public static void set(String namespace, String key, String value) {
-		System.out.println("UPDATE CACHE: " + namespace + key);
+		String combinedKey = namespace + key;
+		
+		System.out.println("UPDATE CACHE: " + combinedKey);
 		Jedis jedis = new Jedis(REDIS_HOST);
-		jedis.set(namespace + key, value);
+		jedis.set(combinedKey, value);
+		
+		//set expiration
+		jedis.expire(combinedKey, EXPIRED_SECONDS);
 
 		// append to namespace (update list of all previous cache)
 		String old = jedis.get(namespace);
 		if (old == null)
 			old = "";
 
-		if (old.indexOf(key) == -1) {
-			old += key + ",";
+		if (old.indexOf(combinedKey) == -1) {
+			old += combinedKey + ",";
 
 			jedis.set(namespace, old);
 		}
@@ -70,10 +78,15 @@ public class Cache {
 	 * @param namespace
 	 */
 	public static void clear(String namespace) {
+		System.out.println("CLEAR CACHE: " + namespace);
+		
 		Jedis jedis = new Jedis(REDIS_HOST);
 		String old = jedis.get(namespace);
 		String[] keys = old.split(",");
 		for (int i = 0; i < keys.length; i++)
-			jedis.set(keys[i], null);
+			jedis.del(keys[i]);
+		
+		//set namesapce to be empty now
+		jedis.set(namespace, "");
 	}
 }

@@ -68,9 +68,26 @@
 			//get all rentals movie
 			ret = new JSONArray(
 					rentalProxy.getMoviesRentalByUser(userId));
+		} else if (command.equalsIgnoreCase("getuser")) {
+			ret = new JSONObject(userProxy.getUser(userId));
+		} else if (command.equalsIgnoreCase("saveuser")) {
+			u.setFirstName(request.getParameter("firstName"));
+			u.setLastName(request.getParameter("lastName"));
+			u.setAddress(request.getParameter("address"));
+			u.setCity(request.getParameter("city"));
+			u.setState(request.getParameter("state"));
+			u.setZipCode(request.getParameter("zipCode"));
+			u.setEmail(request.getParameter("email"));
+			u.setMembershipNo(request.getParameter("membershipNo"));
+			u.setMonthlySubscriptionFee(Float.parseFloat(request
+					.getParameter("monthlySubscriptionFee")));
+			u.setUserType(request.getParameter("userType"));
+			u.setPassword(request.getParameter("password"));
+
+			ret = userProxy.saveUser(u);
 		} else if (command.equalsIgnoreCase("getbilling")) {
 			//get all billing information
-			ret = new JSONObject (userProxy.getUser(userId));
+			ret = new JSONObject(userProxy.getUser(userId));
 		}
 	} catch (Exception ex) {
 		ret = ret;

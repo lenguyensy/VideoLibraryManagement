@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="/Users/praneeth/SJSU/272-SWPlatforms/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/axis.jar"/>
 	<classpathentry kind="lib" path="/Users/praneeth/SJSU/272-SWPlatforms/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/commons-discovery-0.2.jar"/>
 	<classpathentry kind="lib" path="/Users/praneeth/SJSU/272-SWPlatforms/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/commons-logging.jar"/>
@@ -14,12 +15,19 @@
 	<classpathentry kind="lib" path="/Users/praneeth/SJSU/272-SWPlatforms/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/mysql-connector-java-5.1.26-bin.jar"/>
 	<classpathentry kind="lib" path="/Users/praneeth/SJSU/272-SWPlatforms/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/saaj.jar"/>
 	<classpathentry kind="lib" path="/Users/praneeth/SJSU/272-SWPlatforms/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/wsdl4j.jar"/>
+=======
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/Server/WebContent/WEB-INF/lib"/>
+>>>>>>> 8964e0f369db8b902ff8e865e3bc41f71c3829a0
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 6 (MacOS X Default)">
+=======
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 [1.7.0_45]">
+>>>>>>> 8964e0f369db8b902ff8e865e3bc41f71c3829a0
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>

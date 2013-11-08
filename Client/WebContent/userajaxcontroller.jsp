@@ -3,6 +3,7 @@
 <%@ page import="sy.video.model.UserModelProxy"%>
 <%@ page import="sy.video.model.RentalModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
+<%@ page import="sy.config.AppEnum"%>
 <%@ page import="sy.config.WebServiceClientFactory"%>
 
 <%@ page import="sy.ui.UIUtil"%>
@@ -64,12 +65,9 @@
 		u.setMonthlySubscriptionFee(Float.parseFloat(request
 				.getParameter("monthlySubscriptionFee")));
 		u.setUserType(request.getParameter("userType"));
-		
-		u.setPassword(request.getParameter("password"));
-		if (u.getPassword() == null || u.getPassword().trim().equals(""))
-			u.setPassword("password");
+		u.setPassword(AppEnum.DUMMY_PASSWORD);//add dummy password
 
-		if (u.getUserId() != null && !u.getUserId().trim().equals(""))
+		if (u.getUserId() == null || u.getUserId().trim().equals(""))
 			ret = userProxy.addUser(u);
 		else
 			ret = userProxy.saveUser(u);

@@ -3,7 +3,6 @@ package sy.video.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import sy.video.valueobj.User;
 @WebService
 public class RentalModel {
 	Connection con = MainConfig.getConnection();
+	Logger logger = new Logger(RentalModel.class);
 
 	/**
 	 * rent a movie
@@ -84,7 +84,7 @@ public class RentalModel {
 			// clear cache
 			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 			return "Renting Failed";
 		}
 
@@ -121,9 +121,9 @@ public class RentalModel {
 			} else {
 				lstRental = SerializerUtil.getRentals(new JSONArray(fromCache));
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(e);
 		}
 
 		return SerializerUtil.getRentals(lstRental);
@@ -142,7 +142,7 @@ public class RentalModel {
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT u.* from users u INNER JOIN movierenter mr ON u.id = mr.userId WHERE mr.movieid = ? ORDER BY mr.renteddate, u.firstname limit 0,1000;");
 			stmt.setInt(1, movieId);
-			
+
 			String key = Cache.getKey(stmt);
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
@@ -151,14 +151,14 @@ public class RentalModel {
 				lstUser = SerializerUtil.getUsers(rs);
 
 				// save it to cache
-				Cache.set(Cache.REDIS_NAMESPACE_USER, key,
-						(new JSONArray(SerializerUtil.getUsers(lstUser))).toString());
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key, (new JSONArray(
+						SerializerUtil.getUsers(lstUser))).toString());
 			} else {
 				lstUser = SerializerUtil.getUsers(new JSONArray(fromCache));
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(e);
 		}
 
 		return SerializerUtil.getUsers(lstUser);
@@ -168,9 +168,50 @@ public class RentalModel {
 	 * invalidate expired stuffs
 	 */
 	public void invalidateExpiredRental() {
-		//invalidate bad one
-		
+		// invalidate bad one
+		List<Rental> lstRental = null;
+
+		try {
+			PreparedStatement stmt;
+			stmt = con
+					.prepareStatement("SELECT * FROM movierenter WHERE expirationdate < NOW()");
+
+			lstRental = SerializerUtil.getRentals(stmt.executeQuery());
+
+			// doing adjustment here
+			for (int i = 0; i < lstRental.size(); i++) {
+				Rental r = lstRental.get(i);
+
+				// increase movie count
+				stmt = con
+						.prepareStatement("UPDATE movies SET AvailableCopies = AvailableCopies + 1 WHERE id = ?;");
+				stmt.setString(1, r.getMovieId());
+				stmt.execute();
+
+				// increase user outsanding movie
+				stmt = con
+						.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies + 1 WHERE id = ?;");
+				stmt.setString(1, r.getUserId());
+				stmt.execute();
+			}
+
+			// move stuffs over
+			stmt = con
+					.prepareStatement("INSERT INTO movierenterexp SELECT * FROM movierenter WHERE expirationdate < NOW();");
+			stmt.execute();
+			stmt = con
+					.prepareStatement("DELETE FROM movierenter WHERE expirationdate < NOW();");
+			stmt.execute();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.log(e);
+		}
+
 		// clear cache
-		Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
+		if (lstRental != null) {
+			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
+			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
+		}
 	}
 }

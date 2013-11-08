@@ -10,6 +10,7 @@ import javax.jws.WebService;
 
 import org.json.JSONArray;
 
+import sy.config.AppEnum;
 import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.valueobj.SerializerUtil;
@@ -22,6 +23,49 @@ import sy.video.valueobj.User;
 @WebService
 public class UserModel {
 	Connection con = MainConfig.getConnection();
+	Logger logger = new Logger(UserModel.class);
+
+	/**
+	 * check to see if ssn is unique
+	 * 
+	 * @param ssn
+	 * @return
+	 */
+	private boolean _isSSNUnique(String ssn) {
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE ssn = ?");
+			stmt.setString(1, ssn);
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.log(e);
+		}
+
+		return false;
+	}
+
+	/**
+	 * check to see if ssn is unique
+	 * 
+	 * @param ssn
+	 * @param userId
+	 * @return
+	 */
+	private boolean _isSSNUnique(String ssn, String userId) {
+		try {
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE ssn = ? AND id != ?");
+			stmt.setString(1, ssn);
+			stmt.setString(2, userId);
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.log(e);
+		}
+
+		return false;
+	}
 
 	/**
 	 * get a list of all active premium members
@@ -56,7 +100,7 @@ public class UserModel {
 				return SerializerUtil.getUsers(lstUsers);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 		}
 
 		return null;
@@ -94,7 +138,7 @@ public class UserModel {
 				return SerializerUtil.getUsers(lstUsers);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 		}
 
 		return null;
@@ -129,7 +173,7 @@ public class UserModel {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 		}
 
 		if (lstUsers.size() == 1)
@@ -157,7 +201,7 @@ public class UserModel {
 			ResultSet rs = stmt.executeQuery();
 			lstUsers = SerializerUtil.getUsers(rs);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 		}
 
 		if (lstUsers.size() == 1)
@@ -182,7 +226,7 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 			return "Delete User Failed";
 		}
 
@@ -197,10 +241,14 @@ public class UserModel {
 	 */
 	public String addUser(User u) {
 		try {
+			// check to see if ssn unique
+			if (!_isSSNUnique(u.getMembershipNo()))
+				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
 			PreparedStatement stmt = con
 					.prepareStatement("INSERT INTO users (membershipno, usertype,firstname,lastname,"
 							+ "address,state,hashedpassword,totaloutstandingmovies,balance,"
-							+ "monthlysubscriptionfee,total,city,zip, email) "
+							+ "monthlysubscriptionfee,total,city,zipCode, email) "
 							+ "VALUES (?,?,?,?,"
 							+ "?,?,md5(?),?,?,"
 							+ "?,?,?,?,?)");
@@ -223,7 +271,7 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 			return "Add User Failed";
 		}
 
@@ -238,31 +286,66 @@ public class UserModel {
 	 */
 	public String saveUser(User u) {
 		try {
-			PreparedStatement stmt = con
-					.prepareStatement("UPDATE users SET membershipno = ?,"
-							+ " usertype = ?," + " firstname = ?,"
-							+ " lastname = ?," + " address = ?,"
-							+ " state = ?," + " monthlysubscriptionfee = ?,"
-							+ " total = ?," + " city = ?,"
-							+ " zip = ?, email = ?" + " WHERE id = ?");
-			stmt.setString(1, u.getMembershipNo());
-			stmt.setString(2, u.getUserType());
-			stmt.setString(3, u.getFirstName());
-			stmt.setString(4, u.getLastName());
-			stmt.setString(5, u.getAddress());
-			stmt.setString(6, u.getState());
-			stmt.setDouble(7, u.getMonthlySubscriptionFee());
-			stmt.setDouble(8, u.getTotal());
-			stmt.setString(9, u.getCity());
-			stmt.setString(10, u.getZipCode());
-			stmt.setString(11, u.getEmail());
-			stmt.setString(12, u.getUserId());
+			if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
+				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
+			// admin updates user
+			PreparedStatement stmt;
+			if (u.getPassword() == null || u.getPassword().equals(AppEnum.DUMMY_PASSWORD)) {
+				stmt = con
+						.prepareStatement("UPDATE users SET membershipno = ?,"
+								+ " usertype = ?," + " firstname = ?,"
+								+ " lastname = ?," + " address = ?,"
+								+ " state = ?,"
+								+ " monthlysubscriptionfee = ?,"
+								+ " total = ?," + " city = ?,"
+								+ " zipCode = ?, email = ?" + " WHERE id = ?");
+				stmt.setString(1, u.getMembershipNo());
+				stmt.setString(2, u.getUserType());
+				stmt.setString(3, u.getFirstName());
+				stmt.setString(4, u.getLastName());
+				stmt.setString(5, u.getAddress());
+				stmt.setString(6, u.getState());
+				stmt.setDouble(7, u.getMonthlySubscriptionFee());
+				stmt.setDouble(8, u.getTotal());
+				stmt.setString(9, u.getCity());
+				stmt.setString(10, u.getZipCode());
+				stmt.setString(11, u.getEmail());
+				stmt.setString(12, u.getUserId());
+			} else {
+				// user update themselves
+				stmt = con
+						.prepareStatement("UPDATE users SET membershipno = ?,"
+								+ " usertype = ?,"
+								+ " firstname = ?,"
+								+ " lastname = ?,"
+								+ " address = ?,"
+								+ " state = ?,"
+								+ " monthlysubscriptionfee = ?,"
+								+ " total = ?,"
+								+ " city = ?,"
+								+ " zipCode = ?, email = ?, hashedpassword = md(?)"
+								+ " WHERE id = ?");
+				stmt.setString(1, u.getMembershipNo());
+				stmt.setString(2, u.getUserType());
+				stmt.setString(3, u.getFirstName());
+				stmt.setString(4, u.getLastName());
+				stmt.setString(5, u.getAddress());
+				stmt.setString(6, u.getState());
+				stmt.setDouble(7, u.getMonthlySubscriptionFee());
+				stmt.setDouble(8, u.getTotal());
+				stmt.setString(9, u.getCity());
+				stmt.setString(10, u.getZipCode());
+				stmt.setString(11, u.getEmail());
+				stmt.setString(12, u.getPassword());
+				stmt.setString(13, u.getUserId());
+			}
 
 			stmt.execute();
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.log(ex);
 			return "Updating User Failed.";
 		}
 		return "true";

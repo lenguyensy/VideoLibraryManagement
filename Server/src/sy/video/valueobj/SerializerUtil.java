@@ -211,11 +211,15 @@ public class SerializerUtil {
 				Rental r = new Rental();
 				r.setUserId(rs.getString("userId"));
 				r.setMovieId(rs.getString("movieId"));
-				r.setMovieName(rs.getString("movieName"));
-				r.setRentAmount(rs.getDouble("rentAmount"));
-				r.setReleaseDate(rs.getInt("releaseDate"));
-				r.setRentedDate(rs.getDate("rentedDate"));
-				r.setExpirationDate(rs.getDate("expirationDate"));
+				try {
+					r.setMovieName(rs.getString("movieName"));
+					r.setRentAmount(rs.getDouble("rentAmount"));
+					r.setReleaseDate(rs.getInt("releaseDate"));
+					r.setRentedDate(rs.getDate("rentedDate"));
+					r.setExpirationDate(rs.getDate("expirationDate"));
+				} catch (Exception ex) {
+
+				}
 
 				lstRental.add(r);
 			}
@@ -227,9 +231,9 @@ public class SerializerUtil {
 		return lstRental;
 	}
 
-	
 	/**
 	 * json array to list
+	 * 
 	 * @param rs
 	 * @return
 	 */
@@ -245,9 +249,9 @@ public class SerializerUtil {
 		return lst;
 	}
 
-	
 	/**
 	 * json to rental
+	 * 
 	 * @param rs
 	 * @return
 	 */

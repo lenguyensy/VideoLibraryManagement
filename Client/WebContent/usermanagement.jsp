@@ -35,33 +35,52 @@
 			$('.btn-show-more').click();
 		});
 
-		$('#usermanagement').on('click', '.btnDeleteUser', function() {
-			var cur = $(this).closest('tr'), name = cur.find('.name').html();
-			
-			$.confirmBox({
-				body: 'Delete User <b>' + name + '</b>?',
-				btnPrimary:{
-					text : "Delete This User",
-					cb : function(){
-						var dfd = $.Deferred();
-						
-						$.get(URL.USER_CONTROLLER, {
-							cmd : 'deletuser',
-							userId : $(this).attr('data-id')
-						}).done(function(ret) {
-							cur.remove();
-							
-							ret = $.trim(ret);
-							alert(ret === "true" ? "Delete User Successful" : ret);
-							
-							dfd.resolve();
+		$('#usermanagement')
+				.on(
+						'click',
+						'.btnDeleteUser',
+						function() {
+							var cur = $(this).closest('tr'), name = cur.find(
+									'.name').html();
+
+							$
+									.confirmBox({
+										body : 'Delete User <b>' + name
+												+ '</b>?',
+										btnPrimary : {
+											text : "Delete This User",
+											cb : function() {
+												var dfd = $.Deferred();
+
+												$
+														.get(
+																URL.USER_CONTROLLER,
+																{
+																	cmd : 'deletuser',
+																	userId : $(
+																			this)
+																			.attr(
+																					'data-id')
+																})
+														.done(
+																function(ret) {
+																	cur
+																			.remove();
+
+																	ret = $
+																			.trim(ret);
+																	alert(ret === "true" ? "Delete User Successful"
+																			: ret);
+
+																	dfd
+																			.resolve();
+																});
+
+												return dfd.promise();
+											}
+										}
+									});
 						});
-						
-						return dfd.promise();
-					}
-				}
-			});
-		});
 	})
 </script>
 
@@ -75,9 +94,9 @@
 	<div class="control-group">
 		<label class="control-label">User Type Filtering:</label> <select
 			id="selUserType">
+			<option value="getallcustomer">All</option>
 			<option value="getpremiummembers">Premium Users</option>
 			<option value="getsimplecustomers">Simple Customers</option>
-			<option value="getallcustomer">All</option>
 		</select>
 	</div>
 

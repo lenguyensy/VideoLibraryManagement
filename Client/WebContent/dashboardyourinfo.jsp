@@ -1,12 +1,8 @@
+<%@ page import="sy.video.valueobj.User"%>
 <%@ page import="sy.ui.UIUtil"%>
+
 <%
 	UIUtil.authenticate(session, request, response);
-
-	String userId = "";
-	try {
-		userId = request.getParameter("userId");
-	} catch (Exception ex) {
-	}
 %>
 
 <jsp:include page="header.jsp" />
@@ -19,9 +15,8 @@
 		//get list of all rentals
 		var tmplRowRental = $('#tmplRowRental').html();
 		function renderRentalList() {
-			$.get(URL.USER_CONTROLLER, {
-				cmd : "getallrentals",
-				userId : userId
+			$.get(URL.DASHBOARD_CONTROLLER, {
+				cmd : "getallrentals"
 			}, function(lstMovie) {
 				$('#tblRental tbody').empty();
 
@@ -100,7 +95,7 @@
 				if (success) {
 					//doing form submit
 					//doing form submit
-					$.get(URL.USER_CONTROLLER, $.extend({
+					$.get(URL.DASHBOARD_CONTROLLER, $.extend({
 						cmd : "saveuser"
 					}, $('#frm').serializeObject()), function(ret) {
 						$('#btnSubmit').show();
@@ -115,26 +110,18 @@
 		}
 
 		//actual rendering
-		var userId =
-<%=userId%>
-	, userData = {}, dfd = $.Deferred();
+		var userData = {}, dfd = $.Deferred();
 		tmplFormUser = $('#tmplFormUser').html();
 
-		if (userId == null) {
-			//add form
+		//save form, make an ajax call, then do rendering
+		$.get(URL.DASHBOARD_CONTROLLER, {
+			cmd : "getuser"
+		}, function(retUserData) {
+			userData = retUserData;
+			$("#lstRental").removeClass('hide');
+			renderRentalList();
 			dfd.resolve();
-		} else {
-			//save form, make an ajax call, then do rendering
-			$.get(URL.USER_CONTROLLER, {
-				cmd : "getuser",
-				userId : userId
-			}, function(retUserData) {
-				userData = retUserData;
-				$("#lstRental").removeClass('hide');
-				renderRentalList();
-				dfd.resolve();
-			}, 'json');
-		}
+		}, 'json');
 
 		//render form
 		dfd.done(function() {
@@ -190,14 +177,20 @@
 				class="help-block text-error errorMsg">Required</span>
 		</div>
 		<div class="control-group">
+			<label class="control-label">Password:</label> <input
+				type="password" placeholder="password" id="password"
+				name="password" maxlength="50" /> <span
+				class="help-block text-error errorMsg">Required</span>
+		</div>
+		<div class="control-group">
 			<label class="control-label">Total Outstanding Movies (Max = <span id="totalOutstandingMoviesSpan"></span>):</label> <input
-				type="text" placeholder="Enter an outstanding movies"
+				type="text" placeholder="Enter an outstanding movies" disabled="true"
 				id="totalOutstandingMovies" name="totalOutstandingMovies" maxlength="9" value="{{totalOutstandingMovies}}" /> <span
 				class="help-block text-error errorMsg">Required</span>
 		</div>
 		<div class="control-group premium">
 			<label class="control-label">Monthly Subscription Fee:</label> <select
-				id="monthlySubscriptionFee" name="monthlySubscriptionFee"></select>
+				id="monthlySubscriptionFee" name="monthlySubscriptionFee" disabled="true"></select>
 		</div>
 
 		<div class="control-group simple">
@@ -240,7 +233,6 @@
 				placeholder="Enter a zip code" id="zipCode" name="zipCode" maxlength="5" value="{{zipCode}}" />
 			<span class="help-block text-error errorMsg">Required</span>
 		</div>
-		<input type="hidden" name="userId" id="userId" value="{{userId}}" />
 		<input type="submit" class="btn" id="btnSubmit" value="Save" />
 </fieldset>
 </form>
