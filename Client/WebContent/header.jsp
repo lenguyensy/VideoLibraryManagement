@@ -43,6 +43,7 @@
 			<ul class="nav nav-pills pull-right">
 				<li id="movieNav"><a href="dashboard.jsp">User
 						Dashboard</a></li>
+				<li id="movieNav"><a href="dashboardyourinfo.jsp">Edit Your Information</a></li>		
 				<li id="signoutNav"><a href="signout.jsp">Sign Out</a></li>
 			</ul>
 			<h3 class="muted">User Portal</h3>

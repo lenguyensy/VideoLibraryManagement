@@ -185,7 +185,10 @@ var ENUM = {
 		15 : "$ 15",
 		30 : "$ 30"
 	},
-	GENRES:['Action','Adventure','Adult','Animation','Comedy','Crime','Documentary','Drama','Fantasy','Family','Film-Noir','Horror','Musical','Mystery','Romance','Sci-Fi','Short','Thriller','War','Western']
+	GENRES : [ 'Action', 'Adventure', 'Adult', 'Animation', 'Comedy', 'Crime',
+			'Documentary', 'Drama', 'Fantasy', 'Family', 'Film-Noir', 'Horror',
+			'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Short', 'Thriller',
+			'War', 'Western' ]
 };
 
 var URL = {
@@ -193,7 +196,6 @@ var URL = {
 	MOVIE_CONTROLLER : "movieajaxcontroller.jsp",
 	DASHBOARD_CONTROLLER : "dashboardajaxcontroller.jsp"
 }
-
 
 var NavUtil = (function() {
 	return {
@@ -221,250 +223,287 @@ var FormUtil = (function() {
 						$(this).next().toggle(isEmpty);
 					});
 
-			return
-
+			return isEmpty;
 		}
 	}
 })();
 
-
-var CommonUtil = (function(){
+var CommonUtil = (function() {
 	return {
-		showMessage : function(msg, task){
+		showMessage : function(msg, task) {
 			msg = $.trim(msg);
 			if (msg === "true")
 				msg = task + " Succeeds";
-			
+
 			$('#msg').html(msg).show(1000);
 			setTimeout(function() {
 				$('#msg').hide(1000);
 			}, 5000);
 		}
 	}
-}) ();
+})();
 
-//util
-$.fn.serializeObject = function()
-{
-    var o = {};
-    var a = this.serializeArray();
-    $.each(a, function() {
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(this.value || '');
-        } else {
-            o[this.name] = this.value || '';
-        }
-    });
-    return o;
+// util
+$.fn.serializeObject = function() {
+	var o = {};
+	var a = this.serializeArray();
+	$.each(a, function() {
+		if (o[this.name] !== undefined) {
+			if (!o[this.name].push) {
+				o[this.name] = [ o[this.name] ];
+			}
+			o[this.name].push(this.value || '');
+		} else {
+			o[this.name] = this.value || '';
+		}
+	});
+	return o;
 };
 
-
-
 (function($) {
-  /* 
-    Author: Sy Le
-    
-    button states
-    btn disable / enable utitlity
-    
-    touse simply call 
-    $(selector).btnDisable
-  */
+	/*
+	 * Author: Sy Le
+	 * 
+	 * button states btn disable / enable utitlity
+	 * 
+	 * touse simply call $(selector).btnDisable
+	 */
 
-  var attrDisabled, confirmBoxId, cssDisabled, hashConfirmBox, hashMsgBox, msgBoxId;
-  cssDisabled = "disabled";
-  attrDisabled = "disabled";
-  $.fn.btnDisable = function() {
-    return this.each(function() {
-      return $(this).addClass(cssDisabled).attr(attrDisabled, true);
-    });
-  };
-  $.fn.btnEnable = function() {
-    return this.each(function() {
-      return $(this).removeClass(cssDisabled).removeAttr(attrDisabled);
-    });
-  };
-  $.fn.btnIsDisabled = function() {
-    var isDisabled;
-    isDisabled = false;
-    this.each(function() {
-      if ($(this).hasClass(cssDisabled)) {
-        return isDisabled = true;
-      }
-    });
-    return isDisabled;
-  };
-  /*
-    Author: Sy Le
-    
-    wrapper function for validation jqBootstrapValidation
-  */
+	var attrDisabled, confirmBoxId, cssDisabled, hashConfirmBox, hashMsgBox, msgBoxId;
+	cssDisabled = "disabled";
+	attrDisabled = "disabled";
+	$.fn.btnDisable = function() {
+		return this.each(function() {
+			return $(this).addClass(cssDisabled).attr(attrDisabled, true);
+		});
+	};
+	$.fn.btnEnable = function() {
+		return this.each(function() {
+			return $(this).removeClass(cssDisabled).removeAttr(attrDisabled);
+		});
+	};
+	$.fn.btnIsDisabled = function() {
+		var isDisabled;
+		isDisabled = false;
+		this.each(function() {
+			if ($(this).hasClass(cssDisabled)) {
+				return isDisabled = true;
+			}
+		});
+		return isDisabled;
+	};
+	/*
+	 * Author: Sy Le
+	 * 
+	 * wrapper function for validation jqBootstrapValidation
+	 */
 
-  $.fn.formValidation = function() {
-    return this.each(function() {
-      var $frm;
-      $frm = $(this);
-      return $frm.find('input, select, textarea').jqBootstrapValidation();
-    });
-  };
-  $.fn.formValidate = function() {
-    var invalidCount;
-    invalidCount = 0;
-    this.each(function() {
-      var $frm;
-      $frm = $(this);
-      if ($frm.find('input, select, textarea').jqBootstrapValidation('hasErrors')) {
-        $frm.submit();
-        return invalidCount++;
-      }
-    });
-    return invalidCount === 0;
-  };
-  $.fn.triggerCrossInputValidation = function() {
-    return this.each(function() {
-      return $(this).val((new Date()).getTime()).change();
-    });
-  };
-  /*
-    Author: Sy Le
-    
-    msg box (bootstrap modal), abstract away the call to create a modal. to use do this
-    $.msgBox({header:'sample header', body: 'sample body', footer: 'sample footer'})
-  */
+	$.fn.formValidation = function() {
+		return this
+				.each(function() {
+					var $frm;
+					$frm = $(this);
+					return $frm.find('input, select, textarea')
+							.jqBootstrapValidation();
+				});
+	};
+	$.fn.formValidate = function() {
+		var invalidCount;
+		invalidCount = 0;
+		this.each(function() {
+			var $frm;
+			$frm = $(this);
+			if ($frm.find('input, select, textarea').jqBootstrapValidation(
+					'hasErrors')) {
+				$frm.submit();
+				return invalidCount++;
+			}
+		});
+		return invalidCount === 0;
+	};
+	$.fn.triggerCrossInputValidation = function() {
+		return this.each(function() {
+			return $(this).val((new Date()).getTime()).change();
+		});
+	};
+	/*
+	 * Author: Sy Le
+	 * 
+	 * msg box (bootstrap modal), abstract away the call to create a modal. to
+	 * use do this $.msgBox({header:'sample header', body: 'sample body',
+	 * footer: 'sample footer'})
+	 */
 
-  hashMsgBox = {};
-  msgBoxId = 0;
-  $.msgBox = function(conf) {
-    var dom, domId, icon = '';
-    conf = $.extend({
-      header: "",
-      body: "",
-      footer: "<button class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>",
-      id: "msgBox" + (++msgBoxId),
-      type: 'info'
-    }, conf);
-    domId = conf.id;
+	hashMsgBox = {};
+	msgBoxId = 0;
+	$.msgBox = function(conf) {
+		var dom, domId, icon = '';
+		conf = $
+				.extend(
+						{
+							header : "",
+							body : "",
+							footer : "<button class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>",
+							id : "msgBox" + (++msgBoxId),
+							type : 'info'
+						}, conf);
+		domId = conf.id;
 
-    switch (conf.type){
-      case 'loading':
-        icon = common.loading;
-        break;
-    }
+		switch (conf.type) {
+		case 'loading':
+			icon = common.loading;
+			break;
+		}
 
-    $("body").append("<div id=\"" + domId + "\" class=\"msgBox modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" data-backdrop=\"static\" data-keyboard=\"false\">" + "<div class=\"modal-header\">" + "<h3>" + conf.header + "</h3>" + "</div>" + "<div class=\"modal-body\">" + "<p>" + icon + " " + conf.body + "</p>" + "</div>" + "<div class=\"modal-footer\">" + conf.footer + "</div>" + "</div>");
-    dom = $("#" + domId);
-    dom.modal("show");
-    dom.on("hidden", function() {
-      dom.remove();
-      return delete hashMsgBox[domId];
-    });
-    hashMsgBox[domId] = dom;
-    return dom;
-  };
-  /*
-    Author: Sy Le
-    
-    confirmation box. a shortcut to generate confirmation dialog with 2 buttons.
-    to call, simply use
-    
-    $.confirmBox({header:'confirmation?', body: 'do you want to do this?', btnPrimary:{ text:'Yes', cb : function(){return true;}} })
-    
-    or you can look at account.coffee and search for disableEnablekey to see actual usage
-  */
+		$("body")
+				.append(
+						"<div id=\""
+								+ domId
+								+ "\" class=\"msgBox modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" data-backdrop=\"static\" data-keyboard=\"false\">"
+								+ "<div class=\"modal-header\">" + "<h3>"
+								+ conf.header + "</h3>" + "</div>"
+								+ "<div class=\"modal-body\">" + "<p>" + icon
+								+ " " + conf.body + "</p>" + "</div>"
+								+ "<div class=\"modal-footer\">" + conf.footer
+								+ "</div>" + "</div>");
+		dom = $("#" + domId);
+		dom.modal("show");
+		dom.on("hidden", function() {
+			dom.remove();
+			return delete hashMsgBox[domId];
+		});
+		hashMsgBox[domId] = dom;
+		return dom;
+	};
+	/*
+	 * Author: Sy Le
+	 * 
+	 * confirmation box. a shortcut to generate confirmation dialog with 2
+	 * buttons. to call, simply use
+	 * 
+	 * $.confirmBox({header:'confirmation?', body: 'do you want to do this?',
+	 * btnPrimary:{ text:'Yes', cb : function(){return true;}} })
+	 * 
+	 * or you can look at account.coffee and search for disableEnablekey to see
+	 * actual usage
+	 */
 
-  hashConfirmBox = {};
-  confirmBoxId = 0;
-  $.confirmBox = function(conf) {
-    var dom, domId;
-    conf = $.extend({
-      id: "confirmBox" + (++confirmBoxId),
-      header: "Confirmation?",
-      body: "",
-      btnPrimary: {
-        text: "OK",
-        cb: function(e) {
-          /*
-            this var is referred to the clicked primary button
-          
-            return values:
-            $.Deferred().resolve() to close the dialog
-            $.Deferred().fail() to keep the dialog open
-          */
+	hashConfirmBox = {};
+	confirmBoxId = 0;
+	$.confirmBox = function(conf) {
+		var dom, domId;
+		conf = $.extend({
+			id : "confirmBox" + (++confirmBoxId),
+			header : "Confirmation?",
+			body : "",
+			btnPrimary : {
+				text : "OK",
+				cb : function(e) {
+					/*
+					 * this var is referred to the clicked primary button
+					 * 
+					 * return values: $.Deferred().resolve() to close the dialog
+					 * $.Deferred().fail() to keep the dialog open
+					 */
 
-          return $.Deferred().resolve();
-        }
-      },
-      btnSecondary: {
-        text: "Cancel",
-        cb: function() {}
-      }
-    }, conf);
-    domId = conf.id;
-    $("body").append("<div id=\"" + domId + "\" class=\"msgBox modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" data-backdrop=\"static\" data-keyboard=\"false\">" + "<div class=\"modal-header\">" + "<h3>" + conf.header + "</h3>" + "</div>" + "<div class=\"modal-body\">" + "<p>" + conf.body + "</p>" + "</div>" + "<div class=\"modal-footer\">" + "<a class=\"btn btn-primary\">" + conf.btnPrimary.text + "</a><button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" aria-hidden=\"true\">" + conf.btnSecondary.text + "</button></div>" + "</div>");
-    dom = $("#" + domId);
-    hashConfirmBox[domId] = $("#" + domId).modal("show").on("hidden", function() {
-      dom.remove();
-      return delete hashConfirmBox[domId];
-    });
-    dom.find(".btn-primary").click(function(e) {
-      var dfdConfirm;
-      dfdConfirm = conf.btnPrimary.cb.apply(this, arguments);
-      if (dfdConfirm === false) {
-        dfdConfirm = $.Deferred();
-      }
-      if (dfdConfirm === true) {
-        dfdConfirm = $.Deferred().resolve();
-      }
-      return dfdConfirm.done(function() {
-        return dom.modal("hide");
-      });
-    });
-    dom.find(".btn-secondary").click(function() {
-      return conf.btnSecondary.cb.apply(this, arguments);
-    });
-    return hashConfirmBox[domId];
-  };
-  /*
-    Author: Sy Le
-    
-    loading indicator (show the spinning wheel when there is some background running)
-    to show it
-    $.loadingIndicator.show()
-    
-    to hide it
-    $.loadingIndicator.hide()
-  */
+					return $.Deferred().resolve();
+				}
+			},
+			btnSecondary : {
+				text : "Cancel",
+				cb : function() {
+				}
+			}
+		}, conf);
+		domId = conf.id;
+		$("body")
+				.append(
+						"<div id=\""
+								+ domId
+								+ "\" class=\"msgBox modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" data-backdrop=\"static\" data-keyboard=\"false\">"
+								+ "<div class=\"modal-header\">"
+								+ "<h3>"
+								+ conf.header
+								+ "</h3>"
+								+ "</div>"
+								+ "<div class=\"modal-body\">"
+								+ "<p>"
+								+ conf.body
+								+ "</p>"
+								+ "</div>"
+								+ "<div class=\"modal-footer\">"
+								+ "<a class=\"btn btn-primary\">"
+								+ conf.btnPrimary.text
+								+ "</a><button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" aria-hidden=\"true\">"
+								+ conf.btnSecondary.text + "</button></div>"
+								+ "</div>");
+		dom = $("#" + domId);
+		hashConfirmBox[domId] = $("#" + domId).modal("show").on("hidden",
+				function() {
+					dom.remove();
+					return delete hashConfirmBox[domId];
+				});
+		dom.find(".btn-primary").click(function(e) {
+			var dfdConfirm;
+			dfdConfirm = conf.btnPrimary.cb.apply(this, arguments);
+			if (dfdConfirm === false) {
+				dfdConfirm = $.Deferred();
+			}
+			if (dfdConfirm === true) {
+				dfdConfirm = $.Deferred().resolve();
+			}
+			return dfdConfirm.done(function() {
+				return dom.modal("hide");
+			});
+		});
+		dom.find(".btn-secondary").click(function() {
+			return conf.btnSecondary.cb.apply(this, arguments);
+		});
+		return hashConfirmBox[domId];
+	};
+	/*
+	 * Author: Sy Le
+	 * 
+	 * loading indicator (show the spinning wheel when there is some background
+	 * running) to show it $.loadingIndicator.show()
+	 * 
+	 * to hide it $.loadingIndicator.hide()
+	 */
 
-  $.loadingIndicator = (function(){
-    var init = function(){
-      if ($("#loadingIndicator").length === 0) {
-        $("body").append("<div id=\"loadingIndicator\"><div class=\"ajax-loader\"></div></div>");
-        $(document).bind("mousemove", function(e) {
-          return $("#loadingIndicator").css({
-            top: e.pageY + 10,
-            left: e.pageX + 10,
-            position: "absolute",
-            'z-index': 999999
-          });
-        });
-      }
-    };
+	$.loadingIndicator = (function() {
+		var init = function() {
+			if ($("#loadingIndicator").length === 0) {
+				$("body")
+						.append(
+								"<div id=\"loadingIndicator\"><div class=\"ajax-loader\"></div></div>");
+				$(document).bind("mousemove", function(e) {
+					return $("#loadingIndicator").css({
+						top : e.pageY + 10,
+						left : e.pageX + 10,
+						position : "absolute",
+						'z-index' : 999999
+					});
+				});
+			}
+		};
 
-    return {
-      show: function(){
-        init();
-        $("#loadingIndicator").show();
-      },
-      hide: function(){
-        init();
-        $("#loadingIndicator").hide();
-      }
-    }
-  })();
+		return {
+			show : function() {
+				init();
+				$("#loadingIndicator").show();
+			},
+			hide : function() {
+				init();
+				$("#loadingIndicator").hide();
+			}
+		}
+	})();
 })(jQuery);
 
-//override alert
-window.alert = function(msg){$.msgBox({header: "Information", body:msg})}
+// override alert
+window.alert = function(msg) {
+	$.msgBox({
+		header : "Information",
+		body : msg
+	})
+}

@@ -120,4 +120,25 @@ public class unitTest {
 		u.setPassword("password");
 		assertEquals("addUser", um.addUser(u), "true");
 	}
+	
+	
+	@Test
+	public void invalidateExpiredRental() {
+		rm.invalidateExpiredRental();
+	}
+	
+	
+	@Test
+	public void rentMovie() {
+		/*
+		rm.rentMovie(2, 2);
+		rm.rentMovie(2, 3);
+		assertEquals("rentMovie", rm.getMoviesRentalByUser(2).length, 2);
+		
+		rm.rentMovie(3, 9);
+		rm.rentMovie(4, 9);
+		rm.rentMovie(2, 9);
+		assertEquals("rentMovie", rm.getUserByMovieId(9).length, 3);
+		*/
+	}
 }
