@@ -12,6 +12,12 @@ import javax.jws.WebService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+
 import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
@@ -24,7 +30,8 @@ import sy.video.valueobj.SerializerUtil;
 @WebService
 public class VideoModel {
 	Connection con = MainConfig.getConnection();
-
+	DB mongoDB = MainConfig.getMongoDB();
+	
 	/**
 	 * get a list of available movies
 	 * 
@@ -44,9 +51,15 @@ public class VideoModel {
 
 			List<Movie> lstMov;
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				lstMov = SerializerUtil.getMovies(rs);
-
+				
+				if ( MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstMov = SerializerUtil.getMovies(rs);
+				} else {
+					//MongoDB 
+					lstMov = getMovieMDB(from, pagesize);
+				}
+				
 				// save it to cache
 				ret = SerializerUtil.getMovies(lstMov);
 				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key,
@@ -63,7 +76,7 @@ public class VideoModel {
 
 		return ret;
 	}
-
+	
 	/**
 	 * get movie by genre
 	 * 
@@ -87,9 +100,15 @@ public class VideoModel {
 
 			List<Movie> lstMov;
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				lstMov = SerializerUtil.getMovies(rs);
-
+				
+				if ( MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstMov = SerializerUtil.getMovies(rs);
+				} else {
+					//MongoDB
+					lstMov = getMoviesByGenreMDB(genre, from , pagesize);
+				}
+				
 				// save it to cache
 				ret = SerializerUtil.getMovies(lstMov);
 				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key,
@@ -105,7 +124,7 @@ public class VideoModel {
 
 		return ret;
 	}
-
+	
 	/**
 	 * get movie by search term
 	 * 
@@ -168,9 +187,15 @@ public class VideoModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				lstMov = SerializerUtil.getMovies(rs);
-
+				
+				if ( MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstMov = SerializerUtil.getMovies(rs);
+				} else {
+					//MongoDB
+					lstMov = getMovieMDB(movieId);
+				}
+				
 				// save it to cache
 				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key, (new JSONArray(
 						SerializerUtil.getMovies(lstMov))).toString());
@@ -196,18 +221,23 @@ public class VideoModel {
 	 */
 	public String addMovie(Movie m) {
 		try {
-			PreparedStatement stmt = con
-					.prepareStatement("INSERT INTO movies (moviename,moviebanner,releasedate,rentamount,availablecopies,category) "
-							+ "VALUES (?,?,?,?,?,?)");
-			stmt.setString(1, m.getMovieName());
-			stmt.setString(2, m.getMovieBanner());
-			stmt.setInt(3, m.getReleaseDate());
-			stmt.setDouble(4, m.getRentAmount());
-			stmt.setInt(5, m.getAvailableCopies());
-			stmt.setString(6, m.getCategory());
-
-			stmt.execute();
-
+			
+			if ( MainConfig.DB_MYSQL) {
+				PreparedStatement stmt = con
+						.prepareStatement("INSERT INTO movies (moviename,moviebanner,releasedate,rentamount,availablecopies,category) "
+								+ "VALUES (?,?,?,?,?,?)");
+				stmt.setString(1, m.getMovieName());
+				stmt.setString(2, m.getMovieBanner());
+				stmt.setInt(3, m.getReleaseDate());
+				stmt.setDouble(4, m.getRentAmount());
+				stmt.setInt(5, m.getAvailableCopies());
+				stmt.setString(6, m.getCategory());
+				
+				stmt.execute();
+			} else {
+				//MongoDB
+				addMovieMDB(m);
+			}
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
@@ -226,12 +256,18 @@ public class VideoModel {
 	 */
 	public String deletMovie(int movieId) {
 		try {
-			PreparedStatement stmt = con
-					.prepareStatement("DELETE FROM movies WHERE id = ?");
-			stmt.setInt(1, movieId);
-
-			stmt.execute();
-
+			
+			if ( MainConfig.DB_MYSQL) {
+				PreparedStatement stmt = con
+						.prepareStatement("DELETE FROM movies WHERE id = ?");
+				stmt.setInt(1, movieId);
+	
+				stmt.execute();
+			} else {
+				//MongoDB
+				deletMovieMDB(movieId);
+			}
+			
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
@@ -249,21 +285,26 @@ public class VideoModel {
 	 */
 	public String saveMovie(Movie m) {
 		try {
-			PreparedStatement stmt = con
-					.prepareStatement("UPDATE movies SET moviename = ?,"
-							+ " moviebanner = ?, " + "releasedate = ?, "
-							+ " rentamount = ?, " + "availablecopies =?, "
-							+ "category=? " + " WHERE id = ?");
-			stmt.setString(1, m.getMovieName());
-			stmt.setString(2, m.getMovieBanner());
-			stmt.setInt(3, m.getReleaseDate());
-			stmt.setDouble(4, m.getRentAmount());
-			stmt.setInt(5, m.getAvailableCopies());
-			stmt.setString(6, m.getCategory());
-			stmt.setString(7, m.getMovieId());
-
-			stmt.execute();
-
+			if ( MainConfig.DB_MYSQL) {
+				PreparedStatement stmt = con
+						.prepareStatement("UPDATE movies SET moviename = ?,"
+								+ " moviebanner = ?, " + "releasedate = ?, "
+								+ " rentamount = ?, " + "availablecopies =?, "
+								+ "category=? " + " WHERE id = ?");
+				stmt.setString(1, m.getMovieName());
+				stmt.setString(2, m.getMovieBanner());
+				stmt.setInt(3, m.getReleaseDate());
+				stmt.setDouble(4, m.getRentAmount());
+				stmt.setInt(5, m.getAvailableCopies());
+				stmt.setString(6, m.getCategory());
+				stmt.setString(7, m.getMovieId());
+	
+				stmt.execute();
+			} else {
+				//MongoDB
+				saveMovieMDB(m);
+			}
+			
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
@@ -271,5 +312,92 @@ public class VideoModel {
 			return "Updating Movie Failed.";
 		}
 		return "true";
+	}
+	
+	
+	/////////////// MongoDB ///////////////////////////
+	
+	private List<Movie> getMovieMDB(int from, int pageSize) {
+		DBCollection movies = mongoDB.getCollection("movies");
+        DBCursor cursor =  movies.find();
+
+		return getMovieListFromCursor(cursor, pageSize);
+	}
+
+	private List<Movie> getMoviesByGenreMDB(String genre, int from, int pageSize) {
+		DBCollection movies = mongoDB.getCollection("movies");
+		BasicDBObject query = new BasicDBObject("category", genre);
+		DBCursor cursor =  movies.find(query);
+		
+		return getMovieListFromCursor(cursor, pageSize);
+	}
+	
+	private List<Movie> getMovieMDB(int movieId) {
+		DBCollection movies = mongoDB.getCollection("movies");
+		BasicDBObject query = new BasicDBObject("id", movieId);
+		DBCursor cursor =  movies.find(query);
+		
+		return getMovieListFromCursor(cursor, 1);
+	}
+	
+	private void addMovieMDB(Movie movie) {
+		DBCollection movies = mongoDB.getCollection("movies");
+		BasicDBObject doc = new BasicDBObject ("moviename", movie.getMovieName()).
+				append("id", (int)movies.count()+1).
+				append("moviebanner", movie.getMovieBanner()).
+				append("releasedate", movie.getReleaseDate()).
+				append("rentamount", movie.getRentAmount()).
+				append("availablecopies", movie.getAvailableCopies()).
+				append("category",  movie.getCategory());
+			
+		movies.insert(doc);
+	}
+	
+	private void deletMovieMDB(int movieId) {
+		DBCollection movies = mongoDB.getCollection("movies");
+		BasicDBObject doc = new BasicDBObject();
+		doc.put("id", movieId);
+		movies.remove(doc);
+	}
+	
+	private void saveMovieMDB(Movie movie) {
+		DBCollection movies = mongoDB.getCollection("movies");
+
+		BasicDBObject query = new BasicDBObject();
+		query.put("id", movie.getMovieId());
+		
+		
+		BasicDBObject document = new BasicDBObject();
+		document.put("moviename", movie.getMovieName());
+		document.put("moviebanner", movie.getMovieBanner());
+		document.put("releasedate", movie.getReleaseDate());
+		document.put("rentamount", movie.getRentAmount());
+		document.put("availablecopies", movie.getAvailableCopies());
+		document.put("category", movie.getCategory());
+		
+		BasicDBObject updateObj = new BasicDBObject();
+		updateObj.put("$set", document);
+		movies.update(query, updateObj);
+	}
+	
+	private List<Movie> getMovieListFromCursor(DBCursor cursor, int pageSize) {
+		int count = 0;
+		List<Movie>  movieList = new ArrayList<Movie>();
+		while ( cursor.hasNext() && count < pageSize) {
+			DBObject movie = cursor.next();
+			count++;
+			Movie m = new Movie();
+			m.setCategory((String)movie.get("category"));
+			m.setMovieName((String)movie.get("MovieName"));
+			m.setMovieBanner((String)movie.get("MovieBanner"));
+			m.setReleaseDate((Integer)movie.get("ReleaseDate"));
+			m.setRentAmount(Float.valueOf(String.valueOf(movie.get("RentAmount"))));
+			m.setAvailableCopies((Integer)movie.get("AvailableCopies"));
+			m.setMovieId(String.valueOf(movie.get("id")));
+			
+			System.out.println("Name : " + (String)movie.get("MovieName"));
+			movieList.add(m);
+		}
+		return movieList;
 	}
 }
