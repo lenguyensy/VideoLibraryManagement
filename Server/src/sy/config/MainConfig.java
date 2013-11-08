@@ -17,7 +17,7 @@ import redis.clients.jedis.Jedis;
  */
 public class MainConfig {
 
-	public static Boolean DB_MYSQL = Boolean.FALSE;
+	public static Boolean DB_MYSQL = Boolean.TRUE;
 	
 	 //MySQL Cloud
     /*
