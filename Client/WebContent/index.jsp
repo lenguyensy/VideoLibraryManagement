@@ -9,22 +9,9 @@
 		//show tabs
 		$('#myTab a:first').tab('show');
 
-		//form validation
-		$('#frmSignIn').submit(function() {
-			var success = true;
-			
-			$('#signin').find('input').each(function() {
-				var isEmpty = FormUtil.emptyHandler.apply(this)
-				if (isEmpty)
-					success = false;
-			});
-
-			return success;
-		});
-
 		$('#myTabContent form').submit(function() {
 			var success = true;
-			$('#signup').find('input').each(function() {
+			$(this).find('input').each(function() {
 				var isEmpty = FormUtil.emptyHandler.apply(this)
 				if (isEmpty)
 					success = false;

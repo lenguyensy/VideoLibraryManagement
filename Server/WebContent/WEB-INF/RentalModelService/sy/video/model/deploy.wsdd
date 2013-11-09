@@ -10,8 +10,6 @@
       <parameter name="className" value="sy.video.model.RentalModel"/>
       <parameter name="wsdlPortType" value="RentalModel"/>
       <parameter name="typeMappingVersion" value="1.2"/>
-      <operation xmlns:operNS="http://model.video.sy" name="invalidateExpiredRental" qname="operNS:invalidateExpiredRental" soapAction="">
-      </operation>
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="rentMovie" qname="operNS:rentMovie" returnQName="retNS:rentMovieReturn" returnType="rtns:string" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userId" type="tns:int"/>
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:movieId" type="tns:int"/>
@@ -22,9 +20,15 @@
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUserByMovieId" qname="operNS:getUserByMovieId" returnQName="retNS:getUserByMovieIdReturn" returnType="rtns:User" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:movieId" type="tns:int"/>
       </operation>
-      <parameter name="allowedMethods" value="invalidateExpiredRental getUserByMovieId rentMovie getMoviesRentalByUser"/>
+      <operation xmlns:operNS="http://model.video.sy" name="returnRentals" qname="operNS:returnRentals" soapAction="">
+      </operation>
+      <operation xmlns:operNS="http://model.video.sy" name="returnRental" qname="operNS:returnRental" soapAction="">
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://valueobj.video.sy" qname="pns:r" type="tns:Rental"/>
+      </operation>
+      <parameter name="allowedMethods" value="returnRental getUserByMovieId rentMovie returnRentals getMoviesRentalByUser"/>
 
       <typeMapping xmlns:ns="http://valueobj.video.sy" qname="ns:User" type="java:sy.video.valueobj.User" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
       <typeMapping xmlns:ns="http://valueobj.video.sy" qname="ns:Rental" type="java:sy.video.valueobj.Rental" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://valueobj.video.sy" qname="ns:BaseValueObj" type="java:sy.video.valueobj.BaseValueObj" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
   </service>
 </deployment>

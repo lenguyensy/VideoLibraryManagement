@@ -44,12 +44,6 @@ public class RentalModelProxy implements sy.video.model.RentalModel {
     return rentalModel;
   }
   
-  public void invalidateExpiredRental() throws java.rmi.RemoteException{
-    if (rentalModel == null)
-      _initRentalModelProxy();
-    rentalModel.invalidateExpiredRental();
-  }
-  
   public java.lang.String rentMovie(int userId, int movieId) throws java.rmi.RemoteException{
     if (rentalModel == null)
       _initRentalModelProxy();
@@ -66,6 +60,18 @@ public class RentalModelProxy implements sy.video.model.RentalModel {
     if (rentalModel == null)
       _initRentalModelProxy();
     return rentalModel.getUserByMovieId(movieId);
+  }
+  
+  public void returnRentals() throws java.rmi.RemoteException{
+    if (rentalModel == null)
+      _initRentalModelProxy();
+    rentalModel.returnRentals();
+  }
+  
+  public void returnRental(sy.video.valueobj.Rental r) throws java.rmi.RemoteException{
+    if (rentalModel == null)
+      _initRentalModelProxy();
+    rentalModel.returnRental(r);
   }
   
   
