@@ -44,7 +44,7 @@ public class MainConfig {
 			+ "?zeroDateTimeBehavior=convertToNull";
 
 	// redis cache
-	public static final String REDIS_HOST = "locahost";// default 6379
+	public static final String REDIS_HOST = "localhost";// default 6379
 
 	/**
 	 * get jdbc connection
