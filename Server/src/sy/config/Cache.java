@@ -8,10 +8,10 @@ public class Cache {
 	public static final String REDIS_NAMESPACE_MOVIE = "movie.";
 	public static final String REDIS_NAMESPACE_USER = "user.";
 	public static final String REDIS_NAMESPACE_RENTAL = "rental.";
-	public static final String REDIS_HOST = "192.168.1.222";// default 6379
-	
 	public static final int EXPIRED_SECONDS = 60 * 15;//used for time based (15 minutes)
 
+	private static Jedis jedis = MainConfig.getRedisConnection();
+	
 	public static String getKey(PreparedStatement stmt) {
 		String md5 = stmt.toString().substring(stmt.toString().indexOf(": "));
 		try {
@@ -39,7 +39,6 @@ public class Cache {
 		String combinedKey = namespace + key;
 		System.out.println("GET CACHE: " + combinedKey);
 		
-		Jedis jedis = new Jedis(REDIS_HOST);
 		return jedis.get(combinedKey);
 	}
 
@@ -54,7 +53,6 @@ public class Cache {
 		String combinedKey = namespace + key;
 		
 		System.out.println("UPDATE CACHE: " + combinedKey);
-		Jedis jedis = new Jedis(REDIS_HOST);
 		jedis.set(combinedKey, value);
 		
 		//set expiration
@@ -79,8 +77,7 @@ public class Cache {
 	 */
 	public static void clear(String namespace) {
 		System.out.println("CLEAR CACHE: " + namespace);
-		
-		Jedis jedis = new Jedis(REDIS_HOST);
+
 		String old = jedis.get(namespace);
 		String[] keys = old.split(",");
 		for (int i = 0; i < keys.length; i++)

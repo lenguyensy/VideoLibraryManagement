@@ -3,13 +3,11 @@ package sy.config;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
+import redis.clients.jedis.Jedis;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-
-import redis.clients.jedis.Jedis;
 
 /**
  * 
@@ -18,9 +16,9 @@ import redis.clients.jedis.Jedis;
 public class MainConfig {
 
 	public static Boolean DB_MYSQL = Boolean.TRUE;
-	
-	 //MySQL Cloud
-    /*
+
+	// MySQL Cloud
+	/*
     public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
     public static final String JDBC_DBNAME = "d637a2ac0db4f46309974890f76ff391d";
     public static final String JDBC_USERNAME = "uhotL90StVqmT";
@@ -28,27 +26,29 @@ public class MainConfig {
     public static final String JDBC_PORT = "3306"; // "10000";
     public static final String HOST_NAME = "us01-user01.crtks9njytxu.us-east-1.rds.amazonaws.com:";
     */
-	
-	
-	//MongDB Local
-	public static String MONGODB_HOST = "localhost";
-	public static String MONGODB_DBNAME = "video";
-	public static int 	 MONGODB_PORT = 27017;
-	
-	
+
+	// MongDB Local
+	public static final String MONGODB_HOST = "locahost";
+	public static final String MONGODB_DBNAME = "video";
+	public static final int MONGODB_PORT = 27017;
+
 	// mysql local
 	public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
 	public static final String JDBC_DBNAME = "video";
 	public static final String JDBC_USERNAME = "root";
 	public static final String JDBC_PASSWORD = "root";
+	public static final String JDBC_HOST = "localhost";
 	public static final String JDBC_PORT = "3306";// default is 3306
-	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://localhost:"
-			+ JDBC_PORT
-			+ "/"
-			+ JDBC_DBNAME
+	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
+			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
 
+	// redis cache
+	public static final String REDIS_HOST = "locahost";// default 6379
+
 	/**
+	 * get jdbc connection
+	 * 
 	 * @return
 	 */
 	public static Connection getConnection() {
@@ -65,17 +65,27 @@ public class MainConfig {
 	}
 
 	/**
-	 * @return DB - mongodb Connection	 
+	 * @return DB - mongodb Connection
 	 */
 	public static DB getMongoDB() {
-        try {
-        	return new MongoClient( MONGODB_HOST, MONGODB_PORT ).getDB(MONGODB_DBNAME);
-        } catch (UnknownHostException e) {
-        	e.printStackTrace();
-        }
-        return null;
+		try {
+			return new MongoClient(MONGODB_HOST, MONGODB_PORT)
+					.getDB(MONGODB_DBNAME);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-	
+
+	/**
+	 * get redis connection
+	 * 
+	 * @return
+	 */
+	public static Jedis getRedisConnection() {
+		return new Jedis(REDIS_HOST);
+	}
+
 	/**
 	 * combine array to csv by glue
 	 * 
