@@ -123,9 +123,10 @@ public class unitTest {
 	
 	
 	@Test
-	public void invalidateExpiredRental() {
-		rm.invalidateExpiredRental();
+	public void returnRentals() {
+		rm.returnRentals();
 	}
+	
 	
 	
 	@Test

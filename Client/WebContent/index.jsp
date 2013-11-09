@@ -10,17 +10,16 @@
 		$('#myTab a:first').tab('show');
 
 		//form validation
-		$('#btnsignin').click(function() {
+		$('#frmSignIn').submit(function() {
 			var success = true;
+			
 			$('#signin').find('input').each(function() {
 				var isEmpty = FormUtil.emptyHandler.apply(this)
 				if (isEmpty)
-					success = true;
+					success = false;
 			});
 
-			if (success) {
-				//doing form submit
-			}
+			return success;
 		});
 
 		$('#myTabContent form').submit(function() {
@@ -146,7 +145,7 @@
 		<%
 			}
 		%>
-		<form action="signin.jsp" method="get">
+		<form id="frmSignIn" action="signin.jsp" method="get">
 			<fieldset>
 				<div class="control-group">
 					<label class="control-label">Username:</label> <input type="text"
@@ -158,7 +157,7 @@
 						type="password" placeholder="Enter a password" id="password"
 						name="password" /> <span class="help-block text-error errorMsg">Required</span>
 				</div>
-				<button class="btn" id="btnsignin">Signin</button>
+				<input type="submit" class="btn" id="btnSubmit" value="Sign In" />
 			</fieldset>
 		</form>
 	</div>

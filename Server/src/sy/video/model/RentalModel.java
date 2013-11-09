@@ -3,6 +3,7 @@ package sy.video.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,7 +168,7 @@ public class RentalModel {
 	/**
 	 * invalidate expired stuffs
 	 */
-	public void invalidateExpiredRental() {
+	public void returnRentals() {
 		// invalidate bad one
 		List<Rental> lstRental = null;
 
@@ -183,16 +184,8 @@ public class RentalModel {
 				Rental r = lstRental.get(i);
 
 				// increase movie count
-				stmt = con
-						.prepareStatement("UPDATE movies SET AvailableCopies = AvailableCopies + 1 WHERE id = ?;");
-				stmt.setString(1, r.getMovieId());
-				stmt.execute();
-
 				// increase user outsanding movie
-				stmt = con
-						.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies + 1 WHERE id = ?;");
-				stmt.setString(1, r.getUserId());
-				stmt.execute();
+				returnRental(r);
 			}
 
 			// move stuffs over
@@ -212,6 +205,32 @@ public class RentalModel {
 			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
+		}
+	}
+
+	
+	/**
+	 * invalidate rentals (like return). increase movie's avail copy count, user's oustanding count
+	 * @param r
+	 */
+	public void returnRental(Rental r) {
+		PreparedStatement stmt;		
+		
+		try {
+			// increase movie count
+			stmt = con
+					.prepareStatement("UPDATE movies SET AvailableCopies = AvailableCopies + 1 WHERE id = ?;");
+			stmt.setString(1, r.getMovieId());
+			stmt.execute();
+
+			// increase user outsanding movie
+			stmt = con
+					.prepareStatement("UPDATE users SET TotalOutstandingMovies = TotalOutstandingMovies + 1 WHERE id = ?;");
+			stmt.setString(1, r.getUserId());
+			stmt.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }
