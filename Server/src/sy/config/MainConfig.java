@@ -28,7 +28,7 @@ public class MainConfig {
     */
 
 	// MongDB Local
-	public static final String MONGODB_HOST = "locahost";
+	public static final String MONGODB_HOST = "localhost";
 	public static final String MONGODB_DBNAME = "video";
 	public static final int MONGODB_PORT = 27017;
 
