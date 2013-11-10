@@ -345,12 +345,12 @@ public class VideoModel {
 	
 	private void addMovieMDB(Movie movie) {
 		DBCollection movies = mongoDB.getCollection("movies");
-		BasicDBObject doc = new BasicDBObject ("moviename", movie.getMovieName()).
+		BasicDBObject doc = new BasicDBObject ("MovieName", movie.getMovieName()).
 				append("id", (int)movies.count()+1).
-				append("moviebanner", movie.getMovieBanner()).
-				append("releasedate", movie.getReleaseDate()).
-				append("rentamount", movie.getRentAmount()).
-				append("availablecopies", movie.getAvailableCopies()).
+				append("MovieBanner", movie.getMovieBanner()).
+				append("ReleaseDate", movie.getReleaseDate()).
+				append("RentAmount", movie.getRentAmount()).
+				append("AvailableCopies", movie.getAvailableCopies()).
 				append("category",  movie.getCategory());
 			
 		movies.insert(doc);
@@ -371,11 +371,11 @@ public class VideoModel {
 		
 		
 		BasicDBObject document = new BasicDBObject();
-		document.put("moviename", movie.getMovieName());
-		document.put("moviebanner", movie.getMovieBanner());
-		document.put("releasedate", movie.getReleaseDate());
-		document.put("rentamount", movie.getRentAmount());
-		document.put("availablecopies", movie.getAvailableCopies());
+		document.put("MovieName", movie.getMovieName());
+		document.put("MovieBanner", movie.getMovieBanner());
+		document.put("ReleaseDate", movie.getReleaseDate());
+		document.put("RentAmount", movie.getRentAmount());
+		document.put("AvailableCopies", movie.getAvailableCopies());
 		document.put("category", movie.getCategory());
 		
 		BasicDBObject updateObj = new BasicDBObject();
