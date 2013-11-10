@@ -24,5 +24,11 @@
 	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/mysql-connector-java-5.1.26-bin.jar"/>
 	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/saaj.jar"/>
 	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/Server/WebContent/WEB-INF/lib/wsdl4j.jar"/>
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/_Lib/commons-pool-1.5.5.jar"/>
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/_Lib/jedis-2.0.0.jar"/>
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/_Lib/mysql-connector-java-5.1.26-bin.jar"/>
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/_Lib/commons-dbcp-1.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/_Lib/commons-dbcp-1.4-sources.jar"/>
+	<classpathentry kind="lib" path="/Volumes/MacBig/Sy/Git/VideoLibraryManagement/_Lib/commons-dbcp-1.4.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
