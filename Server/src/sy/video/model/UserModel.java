@@ -12,6 +12,7 @@ import org.json.JSONArray;
 
 import sy.config.AppEnum;
 import sy.config.Cache;
+import sy.config.Logger;
 import sy.config.MainConfig;
 import sy.video.valueobj.SerializerUtil;
 import sy.video.valueobj.User;
@@ -38,7 +39,7 @@ public class UserModel {
 			stmt.setString(1, ssn);
 			return true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			logger.log(e);
 		}
 
@@ -60,7 +61,7 @@ public class UserModel {
 			stmt.setString(2, userId);
 			return true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			logger.log(e);
 		}
 
@@ -100,6 +101,7 @@ public class UserModel {
 				return SerializerUtil.getUsers(lstUsers);
 			}
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 		}
 
@@ -138,6 +140,7 @@ public class UserModel {
 				return SerializerUtil.getUsers(lstUsers);
 			}
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 		}
 
@@ -173,6 +176,7 @@ public class UserModel {
 			}
 
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 		}
 
@@ -201,6 +205,7 @@ public class UserModel {
 			ResultSet rs = stmt.executeQuery();
 			lstUsers = SerializerUtil.getUsers(rs);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 		}
 
@@ -226,6 +231,7 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Delete User Failed";
 		}
@@ -271,6 +277,7 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Add User Failed";
 		}
@@ -345,6 +352,7 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Updating User Failed.";
 		}
@@ -369,6 +377,7 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			return "Reset Password Failed.";
 		}
 

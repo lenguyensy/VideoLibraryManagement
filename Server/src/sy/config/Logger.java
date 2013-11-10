@@ -1,10 +1,8 @@
-package sy.video.model;
+package sy.config;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import sy.config.MainConfig;
 
 public class Logger {
 	Connection con = MainConfig.getConnection();

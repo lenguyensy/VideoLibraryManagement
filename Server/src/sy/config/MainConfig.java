@@ -3,6 +3,7 @@ package sy.config;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -76,6 +77,19 @@ public class MainConfig {
 			System.out.println("JDBC Connection Error \n" + ex);
 		}
 		return con;
+	}
+	
+	/**
+	 * close connection
+	 * @param con
+	 */
+	public static void closeConnection(Connection con){
+		try {
+			con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

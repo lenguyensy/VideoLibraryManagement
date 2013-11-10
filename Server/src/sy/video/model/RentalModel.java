@@ -12,6 +12,7 @@ import javax.jws.WebService;
 import org.json.JSONArray;
 
 import sy.config.Cache;
+import sy.config.Logger;
 import sy.config.MainConfig;
 import sy.video.valueobj.Movie;
 import sy.video.valueobj.Rental;
@@ -85,6 +86,7 @@ public class RentalModel {
 			// clear cache
 			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Renting Failed";
 		}
@@ -123,7 +125,7 @@ public class RentalModel {
 				lstRental = SerializerUtil.getRentals(new JSONArray(fromCache));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			logger.log(e);
 		}
 
@@ -158,7 +160,7 @@ public class RentalModel {
 				lstUser = SerializerUtil.getUsers(new JSONArray(fromCache));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			logger.log(e);
 		}
 
@@ -196,7 +198,7 @@ public class RentalModel {
 					.prepareStatement("DELETE FROM movierenter WHERE expirationdate < NOW();");
 			stmt.execute();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			logger.log(e);
 		}
 
@@ -229,7 +231,7 @@ public class RentalModel {
 			stmt.setString(1, r.getUserId());
 			stmt.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			e.printStackTrace();
 		}
 	}

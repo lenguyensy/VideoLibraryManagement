@@ -70,7 +70,7 @@ public class VideoModel {
 				ret = SerializerUtil.getMovies(lstMov);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			e.printStackTrace();
 		}
 
@@ -118,7 +118,7 @@ public class VideoModel {
 				ret = SerializerUtil.getMovies(lstMov);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			e.printStackTrace();
 		}
 
@@ -162,7 +162,7 @@ public class VideoModel {
 				ret = SerializerUtil.getMovies(lstMov);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			e.printStackTrace();
 		}
 
@@ -203,7 +203,7 @@ public class VideoModel {
 				lstMov = SerializerUtil.getMovies(new JSONArray(fromCache));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			MainConfig.closeConnection(con);
 			e.printStackTrace();
 		}
 
@@ -241,6 +241,7 @@ public class VideoModel {
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			ex.printStackTrace();
 			return "Adding Movie Failed";
 		}
@@ -271,6 +272,7 @@ public class VideoModel {
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			ex.printStackTrace();
 			return "Deleting Movie failed";
 		}
@@ -308,6 +310,7 @@ public class VideoModel {
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
+			MainConfig.closeConnection(con);
 			ex.printStackTrace();
 			return "Updating Movie Failed.";
 		}
