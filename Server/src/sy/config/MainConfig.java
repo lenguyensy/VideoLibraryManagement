@@ -58,7 +58,7 @@ public class MainConfig {
 	 * 
 	 * @return
 	 */
-	public static Connection getConnection() {
+	public static Connection getPoolConnection() {
 		if (ds == null) {
 			ds = new BasicDataSource();
 			ds.setDriverClassName(JDBC_CLASS_NAMESPACE);
@@ -78,6 +78,19 @@ public class MainConfig {
 		}
 		return con;
 	}
+	
+	public static Connection getConnection() {
+        Connection con = null;
+        try {
+                Class.forName(MainConfig.JDBC_CLASS_NAMESPACE);
+                con = DriverManager.getConnection(
+                                MainConfig.JDBC_CONNECTION_STRING,
+                                MainConfig.JDBC_USERNAME, MainConfig.JDBC_PASSWORD);
+        } catch (Exception ex) {
+                System.out.println("JDBC Connection Error \n" + ex);
+        }
+        return con;
+}
 	
 	/**
 	 * close connection
