@@ -45,7 +45,7 @@ public class MainConfig {
 	private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
-	private static final int JDBC_POOL_SIZE = 5;
+	private static final int JDBC_POOL_SIZE = 25;
 
 	// jdbc pooling using DBCP http://commons.apache.org/proper/commons-dbcp/
 	private static BasicDataSource ds = null;
@@ -54,7 +54,7 @@ public class MainConfig {
 	private static final String REDIS_HOST = "192.168.1.222";// default 6379
 
 	/**
-	 * get jdbc connection
+	 * get jdbc connection from connection pool
 	 * 
 	 * @return
 	 */
