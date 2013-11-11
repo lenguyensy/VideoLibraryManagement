@@ -1,5 +1,7 @@
 package sy.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +10,9 @@ import java.sql.SQLException;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Protocol;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
@@ -19,6 +24,8 @@ import com.mongodb.MongoClient;
 public class MainConfig {
 
 	public static Boolean DB_MYSQL = Boolean.TRUE;
+	public static Boolean CLOUD_DEPLOYMENT = Boolean.FALSE;
+	
 
 	// MySQL Cloud
 	/*
@@ -26,10 +33,14 @@ public class MainConfig {
     public static final String JDBC_DBNAME = "d637a2ac0db4f46309974890f76ff391d";
     public static final String JDBC_USERNAME = "uhotL90StVqmT";
     public static final String JDBC_PASSWORD = "pMXFBp6A3xirc";
-    public static final String JDBC_PORT = "3306"; // "10000";
-    public static final String HOST_NAME = "us01-user01.crtks9njytxu.us-east-1.rds.amazonaws.com:";
+    public static final String JDBC_PORT = "3306";
+    public static final String JDBC_HOST = "us01-user01.crtks9njytxu.us-east-1.rds.amazonaws.com";
+    private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
+			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
+			+ "?zeroDateTimeBehavior=convertToNull";
     */
-
+    
+	
 	// MongDB Local
 	public static final String MONGODB_HOST = "192.168.1.222";
 	public static final String MONGODB_DBNAME = "video";
@@ -38,20 +49,22 @@ public class MainConfig {
 	// mysql local
 	private static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
 	private static final String JDBC_DBNAME = "video";
-	private static final String JDBC_USERNAME = "sy";
-	private static final String JDBC_PASSWORD = "lancebass";
-	private static final String JDBC_HOST = "192.168.1.222";
+	private static final String JDBC_USERNAME = "root";
+	private static final String JDBC_PASSWORD = "root";
+	private static final String JDBC_HOST = "localhost";
 	private static final String JDBC_PORT = "3306";// default is 3306
 	private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
+	
+	
 	private static final int JDBC_POOL_SIZE = 25;
 
 	// jdbc pooling using DBCP http://commons.apache.org/proper/commons-dbcp/
 	private static BasicDataSource ds = null;
 
 	// redis cache
-	private static final String REDIS_HOST = "192.168.1.222";// default 6379
+	private static final String REDIS_HOST = "localhost";// default 6379
 
 	/**
 	 * get jdbc connection from connection pool
@@ -75,6 +88,7 @@ public class MainConfig {
 			con = ds.getConnection();
 		} catch (Exception ex) {
 			System.out.println("JDBC Connection Error \n" + ex);
+			throw new RuntimeException("getPoolConnection : " + ex.getMessage());
 		}
 		return con;
 	}
@@ -88,6 +102,7 @@ public class MainConfig {
                                 MainConfig.JDBC_USERNAME, MainConfig.JDBC_PASSWORD);
         } catch (Exception ex) {
                 System.out.println("JDBC Connection Error \n" + ex);
+                throw new RuntimeException("getConnection : " + ex.getMessage());
         }
         return con;
 }
@@ -125,7 +140,21 @@ public class MainConfig {
 	 * @return
 	 */
 	public static Jedis getRedisConnection() {
-		return new Jedis(REDIS_HOST);
+		try { 
+			if ( CLOUD_DEPLOYMENT) {
+		        URI redisUri = new URI(System.getenv("REDISCLOUD_URL"));
+		        JedisPool pool = new JedisPool(new JedisPoolConfig(),
+		                redisUri.getHost(),
+		                redisUri.getPort(),
+		                Protocol.DEFAULT_TIMEOUT,
+		                redisUri.getUserInfo().split(":",2)[1]);
+		        return pool.getResource();
+			} else {
+				return new Jedis(REDIS_HOST);
+			}
+		} catch (URISyntaxException e) {           
+		} 
+		return null;
 	}
 
 	/**

@@ -10,15 +10,15 @@ public class WebServiceClientFactory {
 		if (instanceName.equalsIgnoreCase("video")
 				|| instanceName.equalsIgnoreCase("movie")) {
 			VideoModelProxy vm = new VideoModelProxy();
-			vm.setEndpoint(Config.ENDPOINT_MOVIE);
+			vm.setEndpoint(Config.getMovieModelEndPoint());
 			return vm;
 		} else if (instanceName.equalsIgnoreCase("user")) {
 			UserModelProxy um = new UserModelProxy();
-			um.setEndpoint(Config.ENDPOINT_USER);
+			um.setEndpoint(Config.getUserModelEndPoint());
 			return um;
 		} else {
 			RentalModelProxy rm = new RentalModelProxy();
-			rm.setEndpoint(Config.ENDPOINT_RENTAL);
+			rm.setEndpoint(Config.getRentalModelEndPoint());
 			return rm;
 		}
 
