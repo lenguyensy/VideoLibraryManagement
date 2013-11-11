@@ -210,14 +210,15 @@ public class RentalModel {
 		}
 	}
 
-	
 	/**
-	 * invalidate rentals (like return). increase movie's avail copy count, user's oustanding count
+	 * invalidate rentals (like return). increase movie's avail copy count,
+	 * user's oustanding count
+	 * 
 	 * @param r
 	 */
 	public void returnRental(Rental r) {
-		PreparedStatement stmt;		
-		
+		PreparedStatement stmt;
+
 		try {
 			// increase movie count
 			stmt = con

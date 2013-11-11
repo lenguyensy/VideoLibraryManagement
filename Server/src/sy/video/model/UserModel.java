@@ -17,6 +17,12 @@ import sy.config.MainConfig;
 import sy.video.valueobj.SerializerUtil;
 import sy.video.valueobj.User;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+
 /**
  * 
  * @author Sy Le lenguyensy@gmail.com
@@ -25,6 +31,7 @@ import sy.video.valueobj.User;
 public class UserModel {
 	Connection con = MainConfig.getConnection();
 	Logger logger = new Logger(UserModel.class);
+	DB mongoDB = MainConfig.getMongoDB();
 
 	/**
 	 * check to see if ssn is unique
@@ -88,9 +95,12 @@ public class UserModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				lstUsers = SerializerUtil.getUsers(rs);
-
+				if (MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstUsers = SerializerUtil.getUsers(rs);
+				} else {
+					lstUsers = getUserByTypeMDB(userType, from, pagesize);
+				}
 				// save it to cache
 				User[] ret = SerializerUtil.getUsers(lstUsers);
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key,
@@ -127,9 +137,12 @@ public class UserModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				lstUsers = SerializerUtil.getUsers(rs);
-
+				if (MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstUsers = SerializerUtil.getUsers(rs);
+				} else {
+					lstUsers = getUsersMDB(from, pagesize);
+				}
 				// save it to cache
 				User[] ret = SerializerUtil.getUsers(lstUsers);
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key,
@@ -165,9 +178,12 @@ public class UserModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				lstUsers = SerializerUtil.getUsers(rs);
-
+				if (MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstUsers = SerializerUtil.getUsers(rs);
+				} else {
+					lstUsers = getUserMDB(userId);
+				}
 				// save it to cache
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key, (new JSONArray(
 						SerializerUtil.getUsers(lstUsers))).toString());
@@ -201,9 +217,12 @@ public class UserModel {
 					.prepareStatement("SELECT * FROM users WHERE email LIKE ? AND hashedpassword LIKE md5(?)");
 			stmt.setString(1, email);
 			stmt.setString(2, password);
-
-			ResultSet rs = stmt.executeQuery();
-			lstUsers = SerializerUtil.getUsers(rs);
+			if (MainConfig.DB_MYSQL) {
+				ResultSet rs = stmt.executeQuery();
+				lstUsers = SerializerUtil.getUsers(rs);
+			} else {
+				lstUsers = authenticateUserMDB(email, password);
+			}
 		} catch (Exception ex) {
 			MainConfig.closeConnection(con);
 			logger.log(ex);
@@ -226,9 +245,11 @@ public class UserModel {
 			PreparedStatement stmt = con
 					.prepareStatement("DELETE FROM users WHERE id = ?");
 			stmt.setInt(1, userId);
-
-			stmt.execute();
-
+			if (MainConfig.DB_MYSQL) {
+				stmt.execute();
+			} else {
+				deletUserMDB(userId);
+			}
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			MainConfig.closeConnection(con);
@@ -258,23 +279,26 @@ public class UserModel {
 							+ "VALUES (?,?,?,?,"
 							+ "?,?,md5(?),?,?,"
 							+ "?,?,?,?,?)");
-			stmt.setString(1, u.getMembershipNo());
-			stmt.setString(2, u.getUserType());
-			stmt.setString(3, u.getFirstName());
-			stmt.setString(4, u.getLastName());
-			stmt.setString(5, u.getAddress());
-			stmt.setString(6, u.getState());
-			stmt.setString(7, u.getPassword());
-			stmt.setInt(8, u.getTotalOutstandingMovies());
-			stmt.setDouble(9, u.getBalance());
-			stmt.setDouble(10, u.getMonthlySubscriptionFee());
-			stmt.setDouble(11, u.getTotal());
-			stmt.setString(12, u.getCity());
-			stmt.setString(13, u.getZipCode());
-			stmt.setString(14, u.getEmail());
+			if (MainConfig.DB_MYSQL) {
+				stmt.setString(1, u.getMembershipNo());
+				stmt.setString(2, u.getUserType());
+				stmt.setString(3, u.getFirstName());
+				stmt.setString(4, u.getLastName());
+				stmt.setString(5, u.getAddress());
+				stmt.setString(6, u.getState());
+				stmt.setString(7, u.getPassword());
+				stmt.setInt(8, u.getTotalOutstandingMovies());
+				stmt.setDouble(9, u.getBalance());
+				stmt.setDouble(10, u.getMonthlySubscriptionFee());
+				stmt.setDouble(11, u.getTotal());
+				stmt.setString(12, u.getCity());
+				stmt.setString(13, u.getZipCode());
+				stmt.setString(14, u.getEmail());
 
-			stmt.execute();
-
+				stmt.execute();
+			} else {
+				addUserMDB(u);
+			}
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			MainConfig.closeConnection(con);
@@ -298,7 +322,8 @@ public class UserModel {
 
 			// admin updates user
 			PreparedStatement stmt;
-			if (u.getPassword() == null || u.getPassword().equals(AppEnum.DUMMY_PASSWORD)) {
+			if (u.getPassword() == null
+					|| u.getPassword().equals(AppEnum.DUMMY_PASSWORD)) {
 				stmt = con
 						.prepareStatement("UPDATE users SET membershipno = ?,"
 								+ " usertype = ?," + " firstname = ?,"
@@ -347,8 +372,11 @@ public class UserModel {
 				stmt.setString(12, u.getPassword());
 				stmt.setString(13, u.getUserId());
 			}
-
-			stmt.execute();
+			if (MainConfig.DB_MYSQL) {
+				stmt.execute();
+			} else {
+				saveUserMDB(u);
+			}
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
@@ -372,9 +400,11 @@ public class UserModel {
 							+ " WHERE id = ?");
 			stmt.setString(7, u.getPassword());
 			stmt.setString(15, u.getUserId());
-
-			stmt.execute();
-
+			if (MainConfig.DB_MYSQL) {
+				stmt.execute();
+			} else {
+				resetPasswordMDB(u);
+			}
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			MainConfig.closeConnection(con);
@@ -383,4 +413,156 @@ public class UserModel {
 
 		return "true";
 	}
+
+	/* .......................... MongoDB: BEGIN ......................... */
+
+	private List<User> getUserByTypeMDB(String userType, int from, int pageSize) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("UserType", userType);
+		DBCursor cursor = users.find(query);
+
+		return getUsersListFromCursor(cursor, pageSize);
+	}
+
+	private List<User> getUsersMDB(int from, int pageSize) {
+		DBCollection users = mongoDB.getCollection("users");
+		DBCursor cursor = users.find();
+
+		return getUsersListFromCursor(cursor, pageSize);
+	}
+
+	private List<User> getUserMDB(int userId) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("Id", userId);
+		DBCursor cursor = users.find(query);
+
+		return getUsersListFromCursor(cursor, 1);
+	}
+
+	private List<User> authenticateUserMDB(String email, String password) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("Email", email).append(
+				"HashedPassword", MD5(password));
+
+		DBCursor cursor = users.find(query);
+		return getUsersListFromCursor(cursor, 1);
+	}
+
+	private void deletUserMDB(int userId) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject doc = new BasicDBObject();
+		doc.put("Id", userId);
+		users.remove(doc);
+	}
+
+	private void saveUserMDB(User u) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject();
+		query.put("Id", u.getUserId());
+
+		BasicDBObject doc = new BasicDBObject();
+
+		doc.put("UserType", u.getUserType());
+		doc.put("FirstName", u.getFirstName());
+		doc.put("LastName", u.getLastName());
+		doc.put("Address", u.getAddress());
+		doc.put("State", u.getState());
+		doc.put("HashedPassword", u.getPassword());
+		doc.put("TotalOutstandingMovies", u.getTotalOutstandingMovies());
+		doc.put("Balance", u.getBalance());
+		doc.put("MonthlySubscriptionFee", u.getMonthlySubscriptionFee());
+		doc.put("Total", u.getTotal());
+		doc.put("City", u.getCity());
+		doc.put("Zip", u.getZipCode());
+		doc.put("Email", u.getEmail());
+		doc.put("TotalOutstandingMovies", u.getTotalOutstandingMovies());
+
+		BasicDBObject updateObj = new BasicDBObject();
+		updateObj.put("$set", doc);
+		users.update(query, updateObj);
+	}
+
+	private String addUserMDB(User u) {
+		DBCollection users = mongoDB.getCollection("users");
+
+		BasicDBObject doc = new BasicDBObject("MembershipNo",
+				u.getMembershipNo())
+				.append("UserType", u.getUserType())
+				.append("FirstName", u.getFirstName())
+				.append("LastName", u.getLastName())
+				.append("Address", u.getAddress())
+				.append("State", u.getState())
+				.
+
+				append("Balance", u.getBalance())
+				.append("MonthlySubscriptionFee", u.getMonthlySubscriptionFee())
+				.append("Total", u.getTotal()).append("City", u.getCity())
+				.append("Zip", u.getZipCode()).append("Email", u.getEmail());
+		users.insert(doc);
+
+		return "true";
+	}
+
+	private void resetPasswordMDB(User u) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject();
+		query.put("Id", u.getUserId());
+
+		BasicDBObject doc = new BasicDBObject();
+
+		doc.put("HashedPassword", u.getPassword());
+
+		BasicDBObject updateObj = new BasicDBObject();
+		updateObj.put("$set", doc);
+		users.update(query, updateObj);
+	}
+
+	private List<User> getUsersListFromCursor(DBCursor cursor, int pageSize) {
+		int count = 0;
+		List<User> userList = new ArrayList<User>();
+
+		while (cursor.hasNext() && count < pageSize) {
+			DBObject user = cursor.next();
+			count++;
+			User u = new User();
+			u.setFirstName((String) user.get("FirstName"));
+			u.setLastName((String) user.get("LastName"));
+			u.setAddress((String) user.get("Address"));
+			u.setCity((String) user.get("City"));
+			u.setState((String) user.get("State"));
+			u.setZipCode(String.valueOf(user.get("Zip")));
+			u.setBalance(Double.valueOf(String.valueOf(user.get("Balance"))));
+			u.setMembershipNo(String.valueOf(user.get("MembershipNo")));
+			u.setMonthlySubscriptionFee(Double.valueOf(String.valueOf(user
+					.get("MonthlySubscriptionFee"))));
+			u.setTotal(Double.valueOf(String.valueOf(user.get("Total"))));
+			u.setTotalOutstandingMovies((Integer) user
+					.get("TotalOutstandingMovies"));
+			u.setUserType((String) user.get("UserType"));
+			u.setEmail((String) user.get("Email"));
+			u.setUserId(String.valueOf(user.get("Id")));
+
+			System.out.println("USER : " + user.get("FirstName"));
+			userList.add(u);
+		}
+		return userList;
+	}
+
+	private String MD5(String md5) {
+		try {
+			java.security.MessageDigest md = java.security.MessageDigest
+					.getInstance("MD5");
+			byte[] array = md.digest(md5.getBytes());
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < array.length; ++i) {
+				sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100)
+						.substring(1, 3));
+			}
+			return sb.toString();
+		} catch (java.security.NoSuchAlgorithmException e) {
+		}
+		return null;
+	}
+
+	/* .......................... MongoDB: END ......................... */
 }
