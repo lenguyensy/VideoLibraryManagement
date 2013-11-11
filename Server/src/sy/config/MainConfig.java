@@ -104,6 +104,7 @@ public class MainConfig {
 		}
 		return null;
 	}
+	
 
 	/**
 	 * get redis connection

@@ -12,6 +12,11 @@ public class Logger {
 		className = c.getName();
 	}
 
+	
+	/**
+	 * log error into mysql
+	 * @param e
+	 */
 	public void log(Exception e) {
 		e.printStackTrace();
 
