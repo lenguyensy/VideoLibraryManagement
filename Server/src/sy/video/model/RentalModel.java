@@ -46,7 +46,6 @@ public class RentalModel {
 	public String rentMovie(int userId, int movieId) {
 		// movie rental logics here....
 		try {
-			con = MainConfig.getConnection();
 			PreparedStatement stmt;
 
 			UserModel um = new UserModel();
@@ -63,15 +62,11 @@ public class RentalModel {
 						+ " has run out of available copies.";
 
 			// check to see if user already rented this movie.
-			stmt = con
-					.prepareStatement("SELECT id FROM movierenter WHERE userid = ? AND movieid = ? AND expirationdate > NOW() LIMIT 0,1");
-			stmt.setInt(1, userId);
-			stmt.setInt(2, movieId);
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next())
+			if(_isUserRentedThisMovie(userId, movieId))
 				return "You already rented this movie. Please check your rental and watch the movie instead of renting it again.";
 
 			// insert into the movie renter
+			con = MainConfig.getConnection();
 			stmt = con
 					.prepareStatement("INSERT INTO movierenter VALUES(null, ?,?,NOW(), DATE_ADD(NOW(),INTERVAL 1 DAY),?)");
 			stmt.setInt(1, movieId);
@@ -102,6 +97,24 @@ public class RentalModel {
 		}
 
 		return "true";
+	}
+
+	private Boolean _isUserRentedThisMovie(int userId, int movieId) {
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT id FROM movierenter WHERE userid = ? AND movieid = ? AND expirationdate > NOW() LIMIT 0,1");
+			stmt.setInt(1, userId);
+			stmt.setInt(2, movieId);
+			ResultSet rs = stmt.executeQuery();
+			return rs.next();
+		} catch (Exception ex) {
+			logger.log(ex);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
+
+		return false;
 	}
 
 	/**
@@ -259,9 +272,9 @@ public class RentalModel {
 
 		// clear cache
 		if (lstRental != null) {
-			// Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
-			// Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
-			// Cache.clear(Cache.REDIS_NAMESPACE_USER);
+			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
+			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		}
 	}
 

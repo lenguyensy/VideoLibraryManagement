@@ -99,6 +99,7 @@ public class MainConfig {
 				ds.setInitialSize(JDBC_POOL_SIZE);
 				ds.setTestOnBorrow(false);
 				ds.setTestWhileIdle(true);
+				System.out.println("CONNECTION POOL INIT WITH SIZE : " + JDBC_POOL_SIZE);
 			}
 
 			try {
