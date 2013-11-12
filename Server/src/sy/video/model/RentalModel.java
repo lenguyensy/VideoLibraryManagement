@@ -89,6 +89,8 @@ public class RentalModel {
 
 			// clear cache
 			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
+			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
+			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
 			logger.log(ex);
 			return "Renting Failed";
@@ -129,7 +131,7 @@ public class RentalModel {
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT mr.rentamount, mr.userid, mr.movieid, mr.renteddate,mr.expirationdate,"
-							+ "m.category, m.moviename, m.releasedate, m.id FROM movierenter mr "
+							+ "m.category, m.moviename, m.releasedate, m.id FROM vw_movierenter mr "
 							+ "INNER JOIN movies m ON m.id = mr.movieid "
 							+ " WHERE mr.userid = ? ORDER BY mr.renteddate, m.moviename limit 0,1000;");
 			stmt.setInt(1, userId);
@@ -172,7 +174,7 @@ public class RentalModel {
 		try {
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT u.* from users u INNER JOIN movierenter mr ON u.id = mr.userId WHERE mr.movieid = ? ORDER BY mr.renteddate, u.firstname limit 0,1000;");
+					.prepareStatement("SELECT u.* from users u INNER JOIN vw_movierenter mr ON u.id = mr.userId WHERE mr.movieid = ? ORDER BY mr.renteddate, u.firstname limit 0,1000;");
 			stmt.setInt(1, movieId);
 
 			String key = Cache.getKey(stmt);

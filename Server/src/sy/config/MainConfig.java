@@ -25,7 +25,7 @@ import com.mongodb.MongoURI;
 public class MainConfig {
 	public static Boolean DB_MYSQL = true;
 	public static Boolean CLOUD_DEPLOYMENT = false;
-	public static Boolean USE_CONNECTION_POOL = true;
+	public static Boolean USE_CONNECTION_POOL = false;
 
 	// MySQL Cloud-1
 	/*
@@ -65,7 +65,7 @@ public class MainConfig {
 	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
-	public static final int JDBC_POOL_SIZE = 25;// jdbc max size
+	public static final int JDBC_POOL_SIZE = 1000;// jdbc max size
 	public static BasicDataSource ds = null;// jdbc pooling using DBCP
 											// http://commons.apache.org/proper/commons-dbcp/
 

@@ -371,7 +371,7 @@ public class UserModel {
 								+ " monthlysubscriptionfee = ?,"
 								+ " total = ?,"
 								+ " city = ?,"
-								+ " zipCode = ?, email = ?, hashedpassword = md(?)"
+								+ " zipCode = ?, email = ?, hashedpassword = md5(?)"
 								+ " WHERE id = ?");
 				stmt.setString(1, u.getMembershipNo());
 				stmt.setString(2, u.getUserType());

@@ -30,7 +30,7 @@ public class unitTestRent {
 	
 	@Test
 	public void rentMovie() {
-		rm.rentMovie(11, 3);
+		rm.rentMovie(3, 81);
 		assertEquals("rentMovie", rm.getMoviesRentalByUser(2).length, 2);
 	}
 }

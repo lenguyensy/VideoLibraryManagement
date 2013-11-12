@@ -140,7 +140,7 @@
 		renderBilling();
 		
 		//polling calls - rerender every 3 secs
-		setInterval(function(){renderRentalList(); renderBilling();},10000);
+		setInterval(function(){renderRentalList(); renderBilling();},15000);
 	});
 </script>
 

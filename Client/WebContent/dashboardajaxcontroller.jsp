@@ -5,6 +5,7 @@
 <%@ page import="sy.video.model.UserModelProxy"%>
 <%@ page import="sy.video.valueobj.User"%>
 <%@ page import="sy.config.WebServiceClientFactory"%>
+<%@ page import="sy.config.AppEnum"%>
 
 <%@ page import="sy.ui.UIUtil"%>
 <%
@@ -79,10 +80,13 @@
 			u.setZipCode(request.getParameter("zipCode"));
 			u.setEmail(request.getParameter("email"));
 			u.setMembershipNo(request.getParameter("membershipNo"));
-			u.setMonthlySubscriptionFee(Float.parseFloat(request
-					.getParameter("monthlySubscriptionFee")));
 			u.setUserType(request.getParameter("userType"));
 			u.setPassword(request.getParameter("password"));
+			
+			if (u.getUserType().equals(AppEnum.USER_TYPE_PREMIUM))
+				u.setMonthlySubscriptionFee(15);
+			else
+				u.setMonthlySubscriptionFee(30);
 
 			ret = userProxy.saveUser(u);
 		} else if (command.equalsIgnoreCase("getbilling")) {
