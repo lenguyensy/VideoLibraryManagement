@@ -28,7 +28,7 @@ public class MainConfig {
 	public static Boolean CLOUD_DEPLOYMENT = Boolean.FALSE;
 	
 
-	// MySQL Cloud
+	// MySQL Cloud-1
 	/*
     public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
     public static final String JDBC_DBNAME = "d637a2ac0db4f46309974890f76ff391d";
@@ -42,7 +42,21 @@ public class MainConfig {
     
     */
 
+	// MySQL Cloud-2
+    public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
+    public static final String JDBC_DBNAME = "d6c10c768dd764a8b914ff9ae61e6020d";
+    public static final String JDBC_USERNAME = "u1oW6thCWqFkt";
+    public static final String JDBC_PASSWORD = "p90xVC3PtE1ss";
+    public static final String JDBC_PORT = "3306";
+    public static final String JDBC_HOST = "10.0.14.138";
+    private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
+			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
+			+ "?zeroDateTimeBehavior=convertToNull";
+	    
+	    
+	
 	// mysql local
+	/*
 	private static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
 	private static final String JDBC_DBNAME = "video";
 	private static final String JDBC_USERNAME = "root";
@@ -52,7 +66,7 @@ public class MainConfig {
 	private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
-	
+	*/
 	
 	private static final int JDBC_POOL_SIZE = 25;
 	
