@@ -16,6 +16,7 @@ import redis.clients.jedis.Protocol;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoURI;
 
 /**
  * 
@@ -38,13 +39,8 @@ public class MainConfig {
     private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
-    */
     
-	
-	// MongDB Local
-	public static final String MONGODB_HOST = "192.168.1.222";
-	public static final String MONGODB_DBNAME = "video";
-	public static final int MONGODB_PORT = 27017;
+    */
 
 	// mysql local
 	private static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
@@ -59,7 +55,19 @@ public class MainConfig {
 	
 	
 	private static final int JDBC_POOL_SIZE = 25;
-
+	
+	
+	// MongDB Local
+	public static final String MONGODB_HOST = "localhost";
+	public static final String MONGODB_DBNAME = "video";
+	public static final int MONGODB_PORT = 27017;
+	
+	//Mongo : Cloud
+	public static final String MONGO_CLOUD_URI = "mongodb://73f3c24e-43d1-4554-be5c-8ccf4c8e7ae0:1dec8efb-4b43-4517-829b-437fc013d57d@10.0.61.189:25194/db";
+		
+	public static final String MONGO_LOCAL_URI = "mongodb://:@localhost:27017/video";
+	
+	
 	// jdbc pooling using DBCP http://commons.apache.org/proper/commons-dbcp/
 	private static BasicDataSource ds = null;
 
@@ -105,7 +113,7 @@ public class MainConfig {
                 throw new RuntimeException("getConnection : " + ex.getMessage());
         }
         return con;
-}
+	}
 	
 	/**
 	 * close connection
@@ -125,6 +133,14 @@ public class MainConfig {
 	 */
 	public static DB getMongoDB() {
 		try {
+			if ( CLOUD_DEPLOYMENT)  {
+				MongoURI uri = new MongoURI(MONGO_CLOUD_URI);
+				DB db = uri.connectDB();
+				db.authenticate(uri.getUsername(), uri.getPassword());
+				return db;
+			}
+			
+			//Local MongoDB:
 			return new MongoClient(MONGODB_HOST, MONGODB_PORT)
 					.getDB(MONGODB_DBNAME);
 		} catch (UnknownHostException e) {
@@ -152,9 +168,9 @@ public class MainConfig {
 			} else {
 				return new Jedis(REDIS_HOST);
 			}
-		} catch (URISyntaxException e) {           
+		} catch (URISyntaxException e) {  
+			throw new RuntimeException(e.getMessage());
 		} 
-		return null;
 	}
 
 	/**

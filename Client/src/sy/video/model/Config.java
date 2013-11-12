@@ -10,9 +10,16 @@ public class Config {
 
 	
 	//Cloud-MySQL End Point.
+	/*
 	public static final String ENDPOINT_USER_CLOUD = "http://videoserver.aws.af.cm/services/UserModel";
 	public static final String ENDPOINT_MOVIE_CLOUD = "http://videoserver.aws.af.cm/services/VideoModel";
 	public static final String ENDPOINT_RENTAL_CLOUD = "http://videoserver.aws.af.cm/services/RentalModel";
+	*/
+	
+	//Cloud-Mongo End Point.
+	public static final String ENDPOINT_USER_CLOUD = "http://videoserver-mongo.aws.af.cm/services/UserModel";
+	public static final String ENDPOINT_MOVIE_CLOUD = "http://videoserver-mongo.aws.af.cm/services/VideoModel";
+	public static final String ENDPOINT_RENTAL_CLOUD = "http://videoserver-mongo.aws.af.cm/services/RentalModel";
 	
 	
 	public static String getUserModelEndPoint() {

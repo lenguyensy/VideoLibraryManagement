@@ -399,6 +399,11 @@ public class VideoModel {
 		return getMovieListFromCursor(cursor, pageSize);
 	}
 
+	public static void main(String[] args) {
+		VideoModel v = new VideoModel();
+		v.getMoviesBySearchTerm("Casa",  1,  10);
+	}
+	
 	private List<Movie> getMovieListFromCursor(DBCursor cursor, int pageSize) {
 		int count = 0;
 		List<Movie> movieList = new ArrayList<Movie>();

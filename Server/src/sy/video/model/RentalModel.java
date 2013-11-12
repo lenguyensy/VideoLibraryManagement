@@ -5,11 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.jws.WebService;
 
 import org.json.JSONArray;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 import sy.config.Cache;
 import sy.config.Logger;
@@ -27,7 +34,8 @@ import sy.video.valueobj.User;
 public class RentalModel {
 	Connection con = MainConfig.getConnection();
 	Logger logger = new Logger(RentalModel.class);
-
+	DB mongoDB = MainConfig.getMongoDB();
+	
 	/**
 	 * rent a movie
 	 * 
@@ -114,11 +122,14 @@ public class RentalModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_RENTAL, key);
 
 			if (fromCache == null) {
-
-				ResultSet rs = stmt.executeQuery();
-				lstRental = SerializerUtil.getRentals(rs);
-
+				if ( MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstRental = SerializerUtil.getRentals(rs);
+				} else {
+					lstRental = getMoviesRentalByUserMDB(userId);
+				}
 				Rental[] ret = SerializerUtil.getRentals(lstRental);
+				System.out.println("..... CHECK CACHE........");
 				Cache.set(Cache.REDIS_NAMESPACE_RENTAL, key,
 						(new JSONArray(ret)).toString());
 			} else {
@@ -132,6 +143,8 @@ public class RentalModel {
 		return SerializerUtil.getRentals(lstRental);
 	}
 
+		
+		
 	/**
 	 * get a list of users who retned the movies.
 	 * 
@@ -150,9 +163,12 @@ public class RentalModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
+				if ( MainConfig.DB_MYSQL) {
 				ResultSet rs = stmt.executeQuery();
 				lstUser = SerializerUtil.getUsers(rs);
-
+				} else {
+					
+				}
 				// save it to cache
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key, (new JSONArray(
 						SerializerUtil.getUsers(lstUser))).toString());
@@ -204,9 +220,9 @@ public class RentalModel {
 
 		// clear cache
 		if (lstRental != null) {
-			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
-			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
-			Cache.clear(Cache.REDIS_NAMESPACE_USER);
+			//Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
+			//Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
+			//Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		}
 	}
 
@@ -236,4 +252,36 @@ public class RentalModel {
 			e.printStackTrace();
 		}
 	}
+	
+	/* ......................... MongoDB ......................... */
+	private List<Rental> getMoviesRentalByUserMDB(int userId) {
+		DBCollection Rental = mongoDB.getCollection("movierenter");
+		BasicDBObject query = new BasicDBObject("UserId", userId);
+		DBCursor cursor = Rental.find(query);
+
+		return getRentalListFromCursor(cursor, 1);
+	}
+	
+	private List<Rental> getRentalListFromCursor(DBCursor cursor, int pageSize) {
+		int count = 0;
+		Date d;
+		List<Rental> rentalList = new ArrayList<Rental>();
+		while (cursor.hasNext() && count < pageSize) {
+			DBObject rs = cursor.next();
+			count++;
+			Rental r = new Rental();
+			r.setUserId((String)rs.get("UserId"));
+			r.setMovieId((String)rs.get("MovieId"));
+			r.setMovieName((String)rs.get("MovieName"));
+			r.setRentAmount(Double.valueOf((String)rs.get("RentAmount")));
+			r.setReleaseDate(Integer.valueOf((String)rs.get("RleaseDate")));
+			r.setRentedDate((Date)rs.get("RentedDate"));
+			r.setExpirationDate((Date)rs.get("ExpirationDate"));
+			
+			System.out.println("Name : " + (String) rs.get("MovieName"));
+			rentalList.add(r);
+		}
+		return rentalList;
+	}
+	/*........................ MongoDB: End ........................ */
 }

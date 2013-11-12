@@ -492,9 +492,7 @@ public class UserModel {
 				.append("LastName", u.getLastName())
 				.append("Address", u.getAddress())
 				.append("State", u.getState())
-				.
-
-				append("Balance", u.getBalance())
+				.append("Balance", u.getBalance())
 				.append("MonthlySubscriptionFee", u.getMonthlySubscriptionFee())
 				.append("Total", u.getTotal()).append("City", u.getCity())
 				.append("Zip", u.getZipCode()).append("Email", u.getEmail());
@@ -503,6 +501,7 @@ public class UserModel {
 		return "true";
 	}
 
+	
 	private void resetPasswordMDB(User u) {
 		DBCollection users = mongoDB.getCollection("users");
 		BasicDBObject query = new BasicDBObject();

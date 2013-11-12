@@ -38,8 +38,12 @@ public class Cache {
 	public static String get(String namespace, String key) {
 		String combinedKey = namespace + key;
 		System.out.println("GET CACHE: " + combinedKey);
-		
-		return jedis.get(combinedKey);
+		try {
+			return jedis.get(combinedKey);
+		}catch ( Exception e) {
+			//e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -52,21 +56,25 @@ public class Cache {
 	public static void set(String namespace, String key, String value) {
 		String combinedKey = namespace + key;
 		
-		System.out.println("UPDATE CACHE: " + combinedKey);
-		jedis.set(combinedKey, value);
-		
-		//set expiration
-		jedis.expire(combinedKey, EXPIRED_SECONDS);
-
-		// append to namespace (update list of all previous cache)
-		String old = jedis.get(namespace);
-		if (old == null)
-			old = "";
-
-		if (old.indexOf(combinedKey) == -1) {
-			old += combinedKey + ",";
-
-			jedis.set(namespace, old);
+		System.out.println("UPDATE CACHE..: " + combinedKey );
+		try{
+			jedis.set(combinedKey, value);
+			
+			//set expiration
+			jedis.expire(combinedKey, EXPIRED_SECONDS);
+	
+			// append to namespace (update list of all previous cache)
+			String old = jedis.get(namespace);
+			if (old == null)
+				old = "";
+	
+			if (old.indexOf(combinedKey) == -1) {
+				old += combinedKey + ",";
+	
+				jedis.set(namespace, old);
+			}
+		} catch ( Exception e) {
+			//handle exception...
 		}
 	}
 
