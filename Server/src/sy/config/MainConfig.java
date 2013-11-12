@@ -23,52 +23,42 @@ import com.mongodb.MongoURI;
  * @author Sy Le lenguyensy@gmail.com
  */
 public class MainConfig {
-
 	public static Boolean DB_MYSQL = Boolean.TRUE;
 	public static Boolean CLOUD_DEPLOYMENT = Boolean.FALSE;
 	
-
 	// MySQL Cloud-1
 	/*
-    public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
     public static final String JDBC_DBNAME = "d637a2ac0db4f46309974890f76ff391d";
     public static final String JDBC_USERNAME = "uhotL90StVqmT";
     public static final String JDBC_PASSWORD = "pMXFBp6A3xirc";
     public static final String JDBC_PORT = "3306";
     public static final String JDBC_HOST = "us01-user01.crtks9njytxu.us-east-1.rds.amazonaws.com";
-    private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
-			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
-			+ "?zeroDateTimeBehavior=convertToNull";
-    
     */
 
 	// MySQL Cloud-2
-    public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
     public static final String JDBC_DBNAME = "d6c10c768dd764a8b914ff9ae61e6020d";
     public static final String JDBC_USERNAME = "u1oW6thCWqFkt";
     public static final String JDBC_PASSWORD = "p90xVC3PtE1ss";
     public static final String JDBC_PORT = "3306";
     public static final String JDBC_HOST = "10.0.14.138";
-    private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
-			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
-			+ "?zeroDateTimeBehavior=convertToNull";
 	    
 	    
 	
 	// mysql local
 	/*
-	private static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
-	private static final String JDBC_DBNAME = "video";
-	private static final String JDBC_USERNAME = "root";
-	private static final String JDBC_PASSWORD = "root";
-	private static final String JDBC_HOST = "localhost";
-	private static final String JDBC_PORT = "3306";// default is 3306
-	private static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
-			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
-			+ "?zeroDateTimeBehavior=convertToNull";
+	public static final String JDBC_DBNAME = "video";
+	public static final String JDBC_USERNAME = "root";
+	public static final String JDBC_PASSWORD = "root";
+	public static final String JDBC_HOST = "localhost";
+	public static final String JDBC_PORT = "3306";// default is 3306
 	*/
 	
-	private static final int JDBC_POOL_SIZE = 25;
+    public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
+	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
+			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
+			+ "?zeroDateTimeBehavior=convertToNull";
+	public static final int JDBC_POOL_SIZE = 25;//jdbc max size
+	public static BasicDataSource ds = null;// jdbc pooling using DBCP http://commons.apache.org/proper/commons-dbcp/
 	
 	
 	// MongDB Local
@@ -76,17 +66,16 @@ public class MainConfig {
 	public static final String MONGODB_DBNAME = "video";
 	public static final int MONGODB_PORT = 27017;
 	
+	
 	//Mongo : Cloud
 	public static final String MONGO_CLOUD_URI = "mongodb://73f3c24e-43d1-4554-be5c-8ccf4c8e7ae0:1dec8efb-4b43-4517-829b-437fc013d57d@10.0.61.189:25194/db";
-		
 	public static final String MONGO_LOCAL_URI = "mongodb://:@localhost:27017/video";
 	
 	
-	// jdbc pooling using DBCP http://commons.apache.org/proper/commons-dbcp/
-	private static BasicDataSource ds = null;
+	
 
 	// redis cache
-	private static final String REDIS_HOST = "localhost";// default 6379
+	public static final String REDIS_HOST = "localhost";// default 6379
 
 	/**
 	 * get jdbc connection from connection pool
@@ -115,6 +104,11 @@ public class MainConfig {
 		return con;
 	}
 	
+	
+	/**
+	 * get connection
+	 * @return
+	 */
 	public static Connection getConnection() {
         Connection con = null;
         try {
