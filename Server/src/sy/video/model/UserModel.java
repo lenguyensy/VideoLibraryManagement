@@ -29,7 +29,7 @@ import com.mongodb.DBObject;
  */
 @WebService
 public class UserModel {
-	Connection con = MainConfig.getConnection();
+	Connection con;
 	Logger logger = new Logger(UserModel.class);
 	DB mongoDB = MainConfig.getMongoDB();
 
@@ -41,13 +41,15 @@ public class UserModel {
 	 */
 	private boolean _isSSNUnique(String ssn) {
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE ssn = ?");
 			stmt.setString(1, ssn);
 			return true;
 		} catch (Exception e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return false;
@@ -62,14 +64,16 @@ public class UserModel {
 	 */
 	private boolean _isSSNUnique(String ssn, String userId) {
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE ssn = ? AND id != ?");
 			stmt.setString(1, ssn);
 			stmt.setString(2, userId);
 			return true;
 		} catch (Exception e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return false;
@@ -85,6 +89,7 @@ public class UserModel {
 		List<User> lstUsers;
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE userType = ? limit ?, ?");
 			stmt.setString(1, userType);
@@ -111,8 +116,9 @@ public class UserModel {
 				return SerializerUtil.getUsers(lstUsers);
 			}
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return null;
@@ -128,6 +134,7 @@ public class UserModel {
 		List<User> lstUsers = null;
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users limit ?, ?");
 			stmt.setInt(1, from);
@@ -153,8 +160,9 @@ public class UserModel {
 				return SerializerUtil.getUsers(lstUsers);
 			}
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return null;
@@ -170,6 +178,7 @@ public class UserModel {
 		List<User> lstUsers = new ArrayList<User>();
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE id = ?");
 			stmt.setInt(1, userId);
@@ -192,8 +201,9 @@ public class UserModel {
 			}
 
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		if (lstUsers.size() == 1)
@@ -213,6 +223,7 @@ public class UserModel {
 		List<User> lstUsers = new ArrayList<User>();
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE email LIKE ? AND hashedpassword LIKE md5(?)");
 			stmt.setString(1, email);
@@ -252,9 +263,10 @@ public class UserModel {
 			}
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Delete User Failed";
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return "true";
@@ -272,6 +284,7 @@ public class UserModel {
 			if (!_isSSNUnique(u.getMembershipNo()))
 				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
 
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("INSERT INTO users (membershipno, usertype,firstname,lastname,"
 							+ "address,state,hashedpassword,totaloutstandingmovies,balance,"
@@ -301,9 +314,10 @@ public class UserModel {
 			}
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Add User Failed";
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return "true";
@@ -321,6 +335,7 @@ public class UserModel {
 				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
 
 			// admin updates user
+			con = MainConfig.getConnection();
 			PreparedStatement stmt;
 			if (u.getPassword() == null
 					|| u.getPassword().equals(AppEnum.DUMMY_PASSWORD)) {
@@ -380,9 +395,10 @@ public class UserModel {
 
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Updating User Failed.";
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 		return "true";
 	}
@@ -395,6 +411,7 @@ public class UserModel {
 	 */
 	public String resetPassword(User u) {
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("UPDATE users SET hashedpassword = md5(?)"
 							+ " WHERE id = ?");
@@ -407,8 +424,9 @@ public class UserModel {
 			}
 			Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			return "Reset Password Failed.";
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return "true";
@@ -501,7 +519,6 @@ public class UserModel {
 		return "true";
 	}
 
-	
 	private void resetPasswordMDB(User u) {
 		DBCollection users = mongoDB.getCollection("users");
 		BasicDBObject query = new BasicDBObject();

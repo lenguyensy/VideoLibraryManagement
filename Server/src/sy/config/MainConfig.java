@@ -23,56 +23,60 @@ import com.mongodb.MongoURI;
  * @author Sy Le lenguyensy@gmail.com
  */
 public class MainConfig {
-	public static Boolean DB_MYSQL = Boolean.TRUE;
-	public static Boolean CLOUD_DEPLOYMENT = Boolean.FALSE;
-	
+	public static Boolean DB_MYSQL = true;
+	public static Boolean CLOUD_DEPLOYMENT = false;
+	public static Boolean USE_CONNECTION_POOL = true;
+
 	// MySQL Cloud-1
 	/*
-    public static final String JDBC_DBNAME = "d637a2ac0db4f46309974890f76ff391d";
-    public static final String JDBC_USERNAME = "uhotL90StVqmT";
-    public static final String JDBC_PASSWORD = "pMXFBp6A3xirc";
-    public static final String JDBC_PORT = "3306";
-    public static final String JDBC_HOST = "us01-user01.crtks9njytxu.us-east-1.rds.amazonaws.com";
-    */
+	 * public static final String JDBC_DBNAME =
+	 * "d637a2ac0db4f46309974890f76ff391d"; public static final String
+	 * JDBC_USERNAME = "uhotL90StVqmT"; public static final String JDBC_PASSWORD
+	 * = "pMXFBp6A3xirc"; public static final String JDBC_PORT = "3306"; public
+	 * static final String JDBC_HOST =
+	 * "us01-user01.crtks9njytxu.us-east-1.rds.amazonaws.com";
+	 */
 
 	// MySQL Cloud-2
-    public static final String JDBC_DBNAME = "d6c10c768dd764a8b914ff9ae61e6020d";
-    public static final String JDBC_USERNAME = "u1oW6thCWqFkt";
-    public static final String JDBC_PASSWORD = "p90xVC3PtE1ss";
-    public static final String JDBC_PORT = "3306";
-    public static final String JDBC_HOST = "10.0.14.138";
-	    
-	    
-	
+	/*
+	 * public static final String JDBC_DBNAME =
+	 * "d6c10c768dd764a8b914ff9ae61e6020d"; public static final String
+	 * JDBC_USERNAME = "u1oW6thCWqFkt"; public static final String JDBC_PASSWORD
+	 * = "p90xVC3PtE1ss"; public static final String JDBC_PORT = "3306"; public
+	 * static final String JDBC_HOST = "10.0.14.138";
+	 */
+
 	// mysql local
 	/*
+	 * public static final String JDBC_DBNAME = "video"; public static final
+	 * String JDBC_USERNAME = "root"; public static final String JDBC_PASSWORD =
+	 * "root"; public static final String JDBC_HOST = "localhost"; public static
+	 * final String JDBC_PORT = "3306";// default is 3306
+	 */
+
+	// mysql sy
 	public static final String JDBC_DBNAME = "video";
-	public static final String JDBC_USERNAME = "root";
-	public static final String JDBC_PASSWORD = "root";
+	public static final String JDBC_USERNAME = "sy";
+	public static final String JDBC_PASSWORD = "lancebass";
 	public static final String JDBC_HOST = "localhost";
-	public static final String JDBC_PORT = "3306";// default is 3306
-	*/
-	
-    public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
+	public static final String JDBC_PORT = "13306";// default is 3306
+
+	public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
 	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
-	public static final int JDBC_POOL_SIZE = 25;//jdbc max size
-	public static BasicDataSource ds = null;// jdbc pooling using DBCP http://commons.apache.org/proper/commons-dbcp/
-	
-	
+	public static final int JDBC_POOL_SIZE = 25;// jdbc max size
+	public static BasicDataSource ds = null;// jdbc pooling using DBCP
+											// http://commons.apache.org/proper/commons-dbcp/
+
 	// MongDB Local
 	public static final String MONGODB_HOST = "localhost";
 	public static final String MONGODB_DBNAME = "video";
 	public static final int MONGODB_PORT = 27017;
-	
-	
-	//Mongo : Cloud
+
+	// Mongo : Cloud
 	public static final String MONGO_CLOUD_URI = "mongodb://73f3c24e-43d1-4554-be5c-8ccf4c8e7ae0:1dec8efb-4b43-4517-829b-437fc013d57d@10.0.61.189:25194/db";
 	public static final String MONGO_LOCAL_URI = "mongodb://:@localhost:27017/video";
-	
-	
-	
 
 	// redis cache
 	public static final String REDIS_HOST = "localhost";// default 6379
@@ -82,52 +86,50 @@ public class MainConfig {
 	 * 
 	 * @return
 	 */
-	public static Connection getPoolConnection() {
-		if (ds == null) {
-			ds = new BasicDataSource();
-			ds.setDriverClassName(JDBC_CLASS_NAMESPACE);
-			ds.setUsername(JDBC_USERNAME);
-			ds.setPassword(JDBC_PASSWORD);
-			ds.setUrl(JDBC_CONNECTION_STRING);
-			ds.setInitialSize(JDBC_POOL_SIZE);
-			ds.setTestOnBorrow(false);
-			ds.setTestWhileIdle(true);
-		}
-
+	public static Connection getConnection() {
 		Connection con = null;
-		try {
-			con = ds.getConnection();
-		} catch (Exception ex) {
-			System.out.println("JDBC Connection Error \n" + ex);
-			throw new RuntimeException("getPoolConnection : " + ex.getMessage());
+		if (USE_CONNECTION_POOL) {
+			//get connection from pool
+			if (ds == null) {
+				ds = new BasicDataSource();
+				ds.setDriverClassName(JDBC_CLASS_NAMESPACE);
+				ds.setUsername(JDBC_USERNAME);
+				ds.setPassword(JDBC_PASSWORD);
+				ds.setUrl(JDBC_CONNECTION_STRING);
+				ds.setInitialSize(JDBC_POOL_SIZE);
+				ds.setTestOnBorrow(false);
+				ds.setTestWhileIdle(true);
+			}
+
+			try {
+				con = ds.getConnection();
+			} catch (Exception ex) {
+				System.out.println("JDBC Connection Error \n" + ex);
+				throw new RuntimeException("getPoolConnection : "
+						+ ex.getMessage());
+			}
+		} else {
+			//get regular connection
+			try {
+				Class.forName(MainConfig.JDBC_CLASS_NAMESPACE);
+				con = DriverManager.getConnection(
+						MainConfig.JDBC_CONNECTION_STRING,
+						MainConfig.JDBC_USERNAME, MainConfig.JDBC_PASSWORD);
+			} catch (Exception ex) {
+				System.out.println("JDBC Connection Error \n" + ex);
+				throw new RuntimeException("getConnection : " + ex.getMessage());
+			}
 		}
+		
 		return con;
 	}
-	
-	
-	/**
-	 * get connection
-	 * @return
-	 */
-	public static Connection getConnection() {
-        Connection con = null;
-        try {
-                Class.forName(MainConfig.JDBC_CLASS_NAMESPACE);
-                con = DriverManager.getConnection(
-                                MainConfig.JDBC_CONNECTION_STRING,
-                                MainConfig.JDBC_USERNAME, MainConfig.JDBC_PASSWORD);
-        } catch (Exception ex) {
-                System.out.println("JDBC Connection Error \n" + ex);
-                throw new RuntimeException("getConnection : " + ex.getMessage());
-        }
-        return con;
-	}
-	
+
 	/**
 	 * close connection
+	 * 
 	 * @param con
 	 */
-	public static void closeConnection(Connection con){
+	public static void closeConnection(Connection con) {
 		try {
 			con.close();
 		} catch (SQLException e) {
@@ -141,14 +143,14 @@ public class MainConfig {
 	 */
 	public static DB getMongoDB() {
 		try {
-			if ( CLOUD_DEPLOYMENT)  {
+			if (CLOUD_DEPLOYMENT) {
 				MongoURI uri = new MongoURI(MONGO_CLOUD_URI);
 				DB db = uri.connectDB();
 				db.authenticate(uri.getUsername(), uri.getPassword());
 				return db;
 			}
-			
-			//Local MongoDB:
+
+			// Local MongoDB:
 			return new MongoClient(MONGODB_HOST, MONGODB_PORT)
 					.getDB(MONGODB_DBNAME);
 		} catch (UnknownHostException e) {
@@ -156,7 +158,6 @@ public class MainConfig {
 		}
 		return null;
 	}
-	
 
 	/**
 	 * get redis connection
@@ -164,21 +165,20 @@ public class MainConfig {
 	 * @return
 	 */
 	public static Jedis getRedisConnection() {
-		try { 
-			if ( CLOUD_DEPLOYMENT) {
-		        URI redisUri = new URI(System.getenv("REDISCLOUD_URL"));
-		        JedisPool pool = new JedisPool(new JedisPoolConfig(),
-		                redisUri.getHost(),
-		                redisUri.getPort(),
-		                Protocol.DEFAULT_TIMEOUT,
-		                redisUri.getUserInfo().split(":",2)[1]);
-		        return pool.getResource();
+		try {
+			if (CLOUD_DEPLOYMENT) {
+				URI redisUri = new URI(System.getenv("REDISCLOUD_URL"));
+				JedisPool pool = new JedisPool(new JedisPoolConfig(),
+						redisUri.getHost(), redisUri.getPort(),
+						Protocol.DEFAULT_TIMEOUT, redisUri.getUserInfo().split(
+								":", 2)[1]);
+				return pool.getResource();
 			} else {
 				return new Jedis(REDIS_HOST);
 			}
-		} catch (URISyntaxException e) {  
+		} catch (URISyntaxException e) {
 			throw new RuntimeException(e.getMessage());
-		} 
+		}
 	}
 
 	/**

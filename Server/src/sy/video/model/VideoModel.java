@@ -31,7 +31,7 @@ import com.mongodb.QueryBuilder;
  */
 @WebService
 public class VideoModel {
-	Connection con = MainConfig.getConnection();
+	Connection con;
 	Logger logger = new Logger(VideoModel.class);
 	DB mongoDB = MainConfig.getMongoDB();
 
@@ -44,6 +44,7 @@ public class VideoModel {
 		Movie[] ret = null;
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM movies LIMIT ?,?");
 			stmt.setInt(1, from);
@@ -71,8 +72,10 @@ public class VideoModel {
 				ret = SerializerUtil.getMovies(lstMov);
 			}
 		} catch (SQLException e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		}
+		finally{
+			MainConfig.closeConnection(con);
 		}
 
 		return ret;
@@ -90,6 +93,7 @@ public class VideoModel {
 		Movie[] ret = null;
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM movies WHERE category LIKE ? LIMIT ?,?");
 			stmt.setString(1, "%" + genre + "%");
@@ -119,8 +123,10 @@ public class VideoModel {
 				ret = SerializerUtil.getMovies(lstMov);
 			}
 		} catch (SQLException e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		}
+		finally{
+			MainConfig.closeConnection(con);
 		}
 
 		return ret;
@@ -139,6 +145,7 @@ public class VideoModel {
 		Movie[] ret = null;
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM movies WHERE moviename LIKE ? LIMIT ?,?");
 			stmt.setString(1, "%" + searchTerm + "%");
@@ -167,8 +174,10 @@ public class VideoModel {
 				ret = SerializerUtil.getMovies(lstMov);
 			}
 		} catch (SQLException e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		}
+		finally{
+			MainConfig.closeConnection(con);
 		}
 
 		return ret;
@@ -184,6 +193,7 @@ public class VideoModel {
 		List<Movie> lstMov = new ArrayList<Movie>();
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM movies WHERE id = ?");
 			stmt.setInt(1, movieId);
@@ -208,8 +218,10 @@ public class VideoModel {
 				lstMov = SerializerUtil.getMovies(new JSONArray(fromCache));
 			}
 		} catch (SQLException e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		}
+		finally{
+			MainConfig.closeConnection(con);
 		}
 
 		if (lstMov.size() == 1)
@@ -228,6 +240,7 @@ public class VideoModel {
 		try {
 
 			if (MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
 				PreparedStatement stmt = con
 						.prepareStatement("INSERT INTO movies (moviename,moviebanner,releasedate,rentamount,availablecopies,category) "
 								+ "VALUES (?,?,?,?,?,?)");
@@ -246,9 +259,11 @@ public class VideoModel {
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Adding Movie Failed";
+		}
+		finally{
+			MainConfig.closeConnection(con);
 		}
 
 		return "true";
@@ -264,6 +279,7 @@ public class VideoModel {
 		try {
 
 			if (MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
 				PreparedStatement stmt = con
 						.prepareStatement("DELETE FROM movies WHERE id = ?");
 				stmt.setInt(1, movieId);
@@ -277,9 +293,11 @@ public class VideoModel {
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Deleting Movie failed";
+		}
+		finally{
+			MainConfig.closeConnection(con);
 		}
 
 		return "true";
@@ -293,6 +311,7 @@ public class VideoModel {
 	public String saveMovie(Movie m) {
 		try {
 			if (MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
 				PreparedStatement stmt = con
 						.prepareStatement("UPDATE movies SET moviename = ?,"
 								+ " moviebanner = ?, " + "releasedate = ?, "
@@ -315,10 +334,13 @@ public class VideoModel {
 			// clear movie cache
 			Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Updating Movie Failed.";
 		}
+		finally{
+			MainConfig.closeConnection(con);
+		}
+		
 		return "true";
 	}
 
@@ -401,9 +423,9 @@ public class VideoModel {
 
 	public static void main(String[] args) {
 		VideoModel v = new VideoModel();
-		v.getMoviesBySearchTerm("Casa",  1,  10);
+		v.getMoviesBySearchTerm("Casa", 1, 10);
 	}
-	
+
 	private List<Movie> getMovieListFromCursor(DBCursor cursor, int pageSize) {
 		int count = 0;
 		List<Movie> movieList = new ArrayList<Movie>();

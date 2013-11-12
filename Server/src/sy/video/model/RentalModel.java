@@ -35,7 +35,7 @@ public class RentalModel {
 	Connection con = MainConfig.getConnection();
 	Logger logger = new Logger(RentalModel.class);
 	DB mongoDB = MainConfig.getMongoDB();
-	
+
 	/**
 	 * rent a movie
 	 * 
@@ -46,6 +46,7 @@ public class RentalModel {
 	public String rentMovie(int userId, int movieId) {
 		// movie rental logics here....
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt;
 
 			UserModel um = new UserModel();
@@ -94,9 +95,10 @@ public class RentalModel {
 			// clear cache
 			Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
 		} catch (Exception ex) {
-			MainConfig.closeConnection(con);
 			logger.log(ex);
 			return "Renting Failed";
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return "true";
@@ -111,6 +113,7 @@ public class RentalModel {
 	public Rental[] getMoviesRentalByUser(int userId) {
 		List<Rental> lstRental = new ArrayList<Rental>();
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT mr.rentamount, mr.userid, mr.movieid, mr.renteddate,mr.expirationdate,"
 							+ "m.category, m.moviename, m.releasedate, m.id FROM movierenter mr "
@@ -122,7 +125,7 @@ public class RentalModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_RENTAL, key);
 
 			if (fromCache == null) {
-				if ( MainConfig.DB_MYSQL) {
+				if (MainConfig.DB_MYSQL) {
 					ResultSet rs = stmt.executeQuery();
 					lstRental = SerializerUtil.getRentals(rs);
 				} else {
@@ -136,15 +139,14 @@ public class RentalModel {
 				lstRental = SerializerUtil.getRentals(new JSONArray(fromCache));
 			}
 		} catch (Exception e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return SerializerUtil.getRentals(lstRental);
 	}
 
-		
-		
 	/**
 	 * get a list of users who retned the movies.
 	 * 
@@ -155,6 +157,7 @@ public class RentalModel {
 		List<User> lstUser = new ArrayList<User>();
 
 		try {
+			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT u.* from users u INNER JOIN movierenter mr ON u.id = mr.userId WHERE mr.movieid = ? ORDER BY mr.renteddate, u.firstname limit 0,1000;");
 			stmt.setInt(1, movieId);
@@ -163,11 +166,11 @@ public class RentalModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
-				if ( MainConfig.DB_MYSQL) {
-				ResultSet rs = stmt.executeQuery();
-				lstUser = SerializerUtil.getUsers(rs);
+				if (MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					lstUser = SerializerUtil.getUsers(rs);
 				} else {
-					
+
 				}
 				// save it to cache
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key, (new JSONArray(
@@ -176,11 +179,56 @@ public class RentalModel {
 				lstUser = SerializerUtil.getUsers(new JSONArray(fromCache));
 			}
 		} catch (Exception e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 
 		return SerializerUtil.getUsers(lstUser);
+	}
+
+	/**
+	 * get a list of expired rentals
+	 * 
+	 * @return
+	 */
+	private List<Rental> getExpiredRentals() {
+		List<Rental> lstRental = null;
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt;
+			stmt = con
+					.prepareStatement("SELECT * FROM movierenter WHERE expirationdate < NOW()");
+
+			lstRental = SerializerUtil.getRentals(stmt.executeQuery());
+		} catch (Exception e) {
+			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
+
+		return lstRental;
+	}
+
+	/**
+	 * move expired rentals
+	 */
+	private void moveExpiredRental() {
+		try {
+			// move stuffs over
+			con = MainConfig.getConnection();
+			PreparedStatement stmt;
+			stmt = con
+					.prepareStatement("INSERT INTO movierenterexp SELECT null,movieid,userid,renteddate,expirationdate,rentamount FROM movierenter WHERE expirationdate < NOW();");
+			stmt.execute();
+			stmt = con
+					.prepareStatement("DELETE FROM movierenter WHERE expirationdate < NOW();");
+			stmt.execute();
+		} catch (Exception e) {
+			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
 	}
 
 	/**
@@ -188,15 +236,12 @@ public class RentalModel {
 	 */
 	public void returnRentals() {
 		// invalidate bad one
-		List<Rental> lstRental = null;
+		List<Rental> lstRental = getExpiredRentals();
+
+		if (lstRental == null)
+			return;
 
 		try {
-			PreparedStatement stmt;
-			stmt = con
-					.prepareStatement("SELECT * FROM movierenter WHERE expirationdate < NOW()");
-
-			lstRental = SerializerUtil.getRentals(stmt.executeQuery());
-
 			// doing adjustment here
 			for (int i = 0; i < lstRental.size(); i++) {
 				Rental r = lstRental.get(i);
@@ -207,22 +252,16 @@ public class RentalModel {
 			}
 
 			// move stuffs over
-			stmt = con
-					.prepareStatement("INSERT INTO movierenterexp SELECT * FROM movierenter WHERE expirationdate < NOW();");
-			stmt.execute();
-			stmt = con
-					.prepareStatement("DELETE FROM movierenter WHERE expirationdate < NOW();");
-			stmt.execute();
+			moveExpiredRental();
 		} catch (Exception e) {
-			MainConfig.closeConnection(con);
 			logger.log(e);
 		}
 
 		// clear cache
 		if (lstRental != null) {
-			//Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
-			//Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
-			//Cache.clear(Cache.REDIS_NAMESPACE_USER);
+			// Cache.clear(Cache.REDIS_NAMESPACE_RENTAL);
+			// Cache.clear(Cache.REDIS_NAMESPACE_MOVIE);
+			// Cache.clear(Cache.REDIS_NAMESPACE_USER);
 		}
 	}
 
@@ -236,6 +275,7 @@ public class RentalModel {
 		PreparedStatement stmt;
 
 		try {
+			con = MainConfig.getConnection();
 			// increase movie count
 			stmt = con
 					.prepareStatement("UPDATE movies SET AvailableCopies = AvailableCopies + 1 WHERE id = ?;");
@@ -248,11 +288,12 @@ public class RentalModel {
 			stmt.setString(1, r.getUserId());
 			stmt.execute();
 		} catch (SQLException e) {
-			MainConfig.closeConnection(con);
 			e.printStackTrace();
+		} finally {
+			MainConfig.closeConnection(con);
 		}
 	}
-	
+
 	/* ......................... MongoDB ......................... */
 	private List<Rental> getMoviesRentalByUserMDB(int userId) {
 		DBCollection Rental = mongoDB.getCollection("movierenter");
@@ -261,7 +302,7 @@ public class RentalModel {
 
 		return getRentalListFromCursor(cursor, 1);
 	}
-	
+
 	private List<Rental> getRentalListFromCursor(DBCursor cursor, int pageSize) {
 		int count = 0;
 		Date d;
@@ -270,18 +311,18 @@ public class RentalModel {
 			DBObject rs = cursor.next();
 			count++;
 			Rental r = new Rental();
-			r.setUserId((String)rs.get("UserId"));
-			r.setMovieId((String)rs.get("MovieId"));
-			r.setMovieName((String)rs.get("MovieName"));
-			r.setRentAmount(Double.valueOf((String)rs.get("RentAmount")));
-			r.setReleaseDate(Integer.valueOf((String)rs.get("RleaseDate")));
-			r.setRentedDate((Date)rs.get("RentedDate"));
-			r.setExpirationDate((Date)rs.get("ExpirationDate"));
-			
+			r.setUserId((String) rs.get("UserId"));
+			r.setMovieId((String) rs.get("MovieId"));
+			r.setMovieName((String) rs.get("MovieName"));
+			r.setRentAmount(Double.valueOf((String) rs.get("RentAmount")));
+			r.setReleaseDate(Integer.valueOf((String) rs.get("RleaseDate")));
+			r.setRentedDate((Date) rs.get("RentedDate"));
+			r.setExpirationDate((Date) rs.get("ExpirationDate"));
+
 			System.out.println("Name : " + (String) rs.get("MovieName"));
 			rentalList.add(r);
 		}
 		return rentalList;
 	}
-	/*........................ MongoDB: End ........................ */
+	/* ........................ MongoDB: End ........................ */
 }
