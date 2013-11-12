@@ -89,7 +89,7 @@
 			//form validation
 			$('#frm').submit(function() {
 				var success = true;
-				$('.form').find('input').each(function() {
+				$('.form').find('input:visible').each(function() {
 					if (!$(this).attr('disabled')) {
 						var isEmpty = FormUtil.emptyHandler.apply(this);
 						if (isEmpty)
@@ -143,9 +143,12 @@
 		});
 
 		//polling calls - rerender every 3 secs
-		setInterval(function() {
-			renderRentalList();
-		}, 6000);
+		if ($('#lstRental').is(':visible')) {
+			setInterval(function() {
+				renderRentalList();
+			}, 10000);
+		}
+
 	})
 </script>
 

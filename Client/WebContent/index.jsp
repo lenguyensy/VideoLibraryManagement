@@ -1,3 +1,4 @@
+
 <%
 	String error = request.getParameter("error");
 %>
@@ -21,13 +22,12 @@
 				//doing form submit
 			} else
 				return false;
-		}).find('input').attr({autocomplete: "off"});
-		
+		}).find('input').attr({
+			autocomplete : "off"
+		});
+
 		$('#username').focus();
-		
-		
-		
-		
+
 		//sign up
 		function render() {
 			//populate states
@@ -65,10 +65,10 @@
 					.change(
 							function() {
 								var isPremium = $(this).find(':selected').val() == ENUM.USER_TYPE.premimum;
-								$('#frmUser').find('.premium')
-										.toggle(isPremium);
-								$('#frmUser').find('.simple')
-										.toggle(!isPremium);
+								$('#frmSignup').find('.premium').toggle(
+										isPremium);
+								$('#frmSignup').find('.simple').toggle(
+										!isPremium);
 
 								$('#totalOutstandingMoviesSpan').html(
 										isPremium ? "10" : "2");
@@ -81,7 +81,7 @@
 			//form validation
 			$('#frmSignup').submit(function() {
 				var success = true;
-				$('.form').find('input').each(function() {
+				$('.form').find('input:visible').each(function() {
 					if (!$(this).attr('disabled')) {
 						var isEmpty = FormUtil.emptyHandler.apply(this);
 						if (isEmpty)
@@ -92,9 +92,9 @@
 				if (success) {
 					//doing form submit
 					//doing form submit
-					$.get(URL.USER_CONTROLLER, $.extend({
+					$.get("signupAjaxController.jsp", $.extend({
 						cmd : "saveuser"
-					}, $('#frm').serializeObject()), function(ret) {
+					}, $('#frmSignup').serializeObject()), function(ret) {
 						$('#btnSubmit').show();
 
 						ret = $.trim(ret);
@@ -105,7 +105,7 @@
 				return false;
 			});
 		}
-		
+
 		var tmplFormUser = $('#tmplFormUser').html(), userData = {};
 		$('#signup fieldset').html(Mustache.render(tmplFormUser, userData));
 		render();
@@ -152,8 +152,7 @@
 		<h4>Please enter the following information to sign up.</h4>
 
 		<form id="frmSignup" action="signup.jsp" method="get">
-			<fieldset>
-			</fieldset>
+			<fieldset></fieldset>
 		</form>
 	</div>
 </div>
@@ -174,6 +173,12 @@
 				type="text" placeholder="Membership No - Your SSN" id="membershipNo"
 				value="{{membershipNo}}"
 				name="membershipNo" maxlength="9" /> <span
+				class="help-block text-error errorMsg">Required</span>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Password:</label> <input
+				type="text" placeholder="Enter a password"
+				id="password" name="password"  /> <span
 				class="help-block text-error errorMsg">Required</span>
 		</div>
 		<div class="control-group">

@@ -84,9 +84,9 @@
 			u.setPassword(request.getParameter("password"));
 			
 			if (u.getUserType().equals(AppEnum.USER_TYPE_PREMIUM))
-				u.setMonthlySubscriptionFee(15);
-			else
 				u.setMonthlySubscriptionFee(30);
+			else
+				u.setMonthlySubscriptionFee(15);
 
 			ret = userProxy.saveUser(u);
 		} else if (command.equalsIgnoreCase("getbilling")) {

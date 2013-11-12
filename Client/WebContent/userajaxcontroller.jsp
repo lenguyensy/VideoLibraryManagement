@@ -62,10 +62,13 @@
 		u.setZipCode(request.getParameter("zipCode"));
 		u.setEmail(request.getParameter("email"));
 		u.setMembershipNo(request.getParameter("membershipNo"));
-		u.setMonthlySubscriptionFee(Float.parseFloat(request
-				.getParameter("monthlySubscriptionFee")));
 		u.setUserType(request.getParameter("userType"));
 		u.setPassword(AppEnum.DUMMY_PASSWORD);//add dummy password
+		
+		if (u.getUserType().equals(AppEnum.USER_TYPE_PREMIUM))
+			u.setMonthlySubscriptionFee(30);
+		else
+			u.setMonthlySubscriptionFee(15);
 
 		if (u.getUserId() == null || u.getUserId().trim().equals(""))
 			ret = userProxy.addUser(u);
