@@ -51,6 +51,8 @@
 		//render users who rented this movie;
 		//rendering
 		function renderList(lstUser) {
+			$("#tblRental").toggleClass('hide', lstUser.length === 0);
+			
 			for (var i = 0; i < lstUser.length; i++)
 				$('#tblUser tbody').append(
 						Mustache.render(tpmlRowUser, lstUser[i]));

@@ -30,53 +30,10 @@
 
 		//sign up
 		function render() {
-			//populate states
-			for ( var k in ENUM.STATE) {
-				if (ENUM.STATE.hasOwnProperty(k))
-					$('#state').append(
-							'<option value="'+ENUM.STATE[k].abbreviation+'">'
-									+ ENUM.STATE[k].name + '</option>');
-			}
-			if (userData.state)
-				$('#state').val(userData.state);
-
-			//populate user type
-			for ( var k in ENUM.USER_TYPE) {
-				if (ENUM.USER_TYPE.hasOwnProperty(k))
-					$('#userType').append(
-							'<option>' + ENUM.USER_TYPE[k] + '</option>');
-			}
-			if (userData.userType)
-				$('#userType').val(userData.userType);
-
-			//populate fee
-			for ( var k in ENUM.MONTHLY_FEE) {
-				if (ENUM.MONTHLY_FEE.hasOwnProperty(k))
-					$('#monthlySubscriptionFee').append(
-							'<option value="'+k+'">' + ENUM.MONTHLY_FEE[k]
-									+ '</option>');
-			}
-			if (userData.monthlySubscriptionFee)
-				$('#monthlySubscriptionFee').val(
-						userData.monthlySubscriptionFee);
+			FormUtil.populateUserForm();
 
 			//change user type show different fields.
-			$('#userType')
-					.change(
-							function() {
-								var isPremium = $(this).find(':selected').val() == ENUM.USER_TYPE.premimum;
-								$('#frmSignup').find('.premium').toggle(
-										isPremium);
-								$('#frmSignup').find('.simple').toggle(
-										!isPremium);
-
-								$('#totalOutstandingMoviesSpan').html(
-										isPremium ? "10" : "2");
-
-								if ($('#totalOutstandingMovies').val().length == 0)
-									$('#totalOutstandingMovies').val(
-											isPremium ? "10" : "2");
-							}).change();
+			$('#userType').change();
 
 			//form validation
 			$('#frmSignup').submit(function() {
@@ -92,7 +49,7 @@
 				if (success) {
 					//doing form submit
 					//doing form submit
-					$.get("signupAjaxController.jsp", $.extend({
+					$.get(URL.ANON_CONTROLLER, $.extend({
 						cmd : "saveuser"
 					}, $('#frmSignup').serializeObject()), function(ret) {
 						$('#btnSubmit').show();

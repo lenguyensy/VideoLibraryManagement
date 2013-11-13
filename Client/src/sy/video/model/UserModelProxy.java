@@ -44,16 +44,34 @@ public class UserModelProxy implements sy.video.model.UserModel {
     return userModel;
   }
   
+  public sy.video.valueobj.User[] getUsers(int from, int pagesize) throws java.rmi.RemoteException{
+    if (userModel == null)
+      _initUserModelProxy();
+    return userModel.getUsers(from, pagesize);
+  }
+  
   public sy.video.valueobj.User getUser(int userId) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
     return userModel.getUser(userId);
   }
   
-  public sy.video.valueobj.User[] getUserByType(java.lang.String userType, int from, int pagesize) throws java.rmi.RemoteException{
+  public int getUserByTypeCount(java.lang.String userType) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
-    return userModel.getUserByType(userType, from, pagesize);
+    return userModel.getUserByTypeCount(userType);
+  }
+  
+  public sy.video.valueobj.User authenticateUser(java.lang.String email, java.lang.String password) throws java.rmi.RemoteException{
+    if (userModel == null)
+      _initUserModelProxy();
+    return userModel.authenticateUser(email, password);
+  }
+  
+  public int getUsersCount() throws java.rmi.RemoteException{
+    if (userModel == null)
+      _initUserModelProxy();
+    return userModel.getUsersCount();
   }
   
   public java.lang.String deletUser(int userId) throws java.rmi.RemoteException{
@@ -80,16 +98,10 @@ public class UserModelProxy implements sy.video.model.UserModel {
     return userModel.resetPassword(u);
   }
   
-  public sy.video.valueobj.User authenticateUser(java.lang.String email, java.lang.String password) throws java.rmi.RemoteException{
+  public sy.video.valueobj.User[] getUserByType(java.lang.String userType, int from, int pagesize) throws java.rmi.RemoteException{
     if (userModel == null)
       _initUserModelProxy();
-    return userModel.authenticateUser(email, password);
-  }
-  
-  public sy.video.valueobj.User[] getUsers(int from, int pagesize) throws java.rmi.RemoteException{
-    if (userModel == null)
-      _initUserModelProxy();
-    return userModel.getUsers(from, pagesize);
+    return userModel.getUserByType(userType, from, pagesize);
   }
   
   

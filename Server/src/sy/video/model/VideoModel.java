@@ -73,8 +73,40 @@ public class VideoModel {
 			}
 		} catch (SQLException e) {
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
-		finally{
+
+		return ret;
+	}
+
+	/**
+	 * get movie count
+	 * 
+	 * @return
+	 */
+	public int getMoviesCount() {
+		int ret = 0;
+
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT count(*) FROM movies");
+
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				ret = rs.getInt(1);
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key, String.valueOf(ret));
+			} else {
+				ret = Integer.parseInt(fromCache);
+			}
+		} catch (Exception ex) {
+			logger.log(ex);
+		} finally {
 			MainConfig.closeConnection(con);
 		}
 
@@ -124,8 +156,41 @@ public class VideoModel {
 			}
 		} catch (SQLException e) {
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
-		finally{
+
+		return ret;
+	}
+
+	/**
+	 * get total count of movies by genre
+	 * 
+	 * @return
+	 */
+	public int getMoviesByGenreCount(String genre) {
+		int ret = 0;
+
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT count(*) FROM movies WHERE category LIKE ?");
+			stmt.setString(1, "%" + genre + "%");
+
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				ret = rs.getInt(1);
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key, String.valueOf(ret));
+			} else {
+				ret = Integer.parseInt(fromCache);
+			}
+		} catch (Exception ex) {
+			logger.log(ex);
+		} finally {
 			MainConfig.closeConnection(con);
 		}
 
@@ -175,8 +240,42 @@ public class VideoModel {
 			}
 		} catch (SQLException e) {
 			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
 		}
-		finally{
+
+		return ret;
+	}
+
+	
+	/**
+	 * get movies by search term count
+	 * @param genre
+	 * @return
+	 */
+	public int getMoviesBySearchTermCount(String searchTerm) {
+		int ret = 0;
+
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT count(*) FROM movies WHERE moviename LIKE ?");
+			stmt.setString(1, "%" + searchTerm + "%");
+
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				ret = rs.getInt(1);
+				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key, String.valueOf(ret));
+			} else {
+				ret = Integer.parseInt(fromCache);
+			}
+		} catch (Exception ex) {
+			logger.log(ex);
+		} finally {
 			MainConfig.closeConnection(con);
 		}
 
@@ -219,8 +318,7 @@ public class VideoModel {
 			}
 		} catch (SQLException e) {
 			logger.log(e);
-		}
-		finally{
+		} finally {
 			MainConfig.closeConnection(con);
 		}
 
@@ -261,8 +359,7 @@ public class VideoModel {
 		} catch (Exception ex) {
 			logger.log(ex);
 			return "Adding Movie Failed";
-		}
-		finally{
+		} finally {
 			MainConfig.closeConnection(con);
 		}
 
@@ -295,8 +392,7 @@ public class VideoModel {
 		} catch (Exception ex) {
 			logger.log(ex);
 			return "Deleting Movie failed";
-		}
-		finally{
+		} finally {
 			MainConfig.closeConnection(con);
 		}
 
@@ -336,11 +432,10 @@ public class VideoModel {
 		} catch (Exception ex) {
 			logger.log(ex);
 			return "Updating Movie Failed.";
-		}
-		finally{
+		} finally {
 			MainConfig.closeConnection(con);
 		}
-		
+
 		return "true";
 	}
 

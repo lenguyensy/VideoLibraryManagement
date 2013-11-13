@@ -22,9 +22,8 @@ public class RentalModelServiceLocator extends org.apache.axis.client.Service im
     }
 
     // Use to get a proxy class for RentalModel
-    //private java.lang.String RentalModel_address = "http://localhost:8080/VideoLibraryServer/services/RentalModel";
-    private java.lang.String RentalModel_address = Config.getRentalModelEndPoint();
-    
+    private java.lang.String RentalModel_address = "http://localhost:8080/VideoLibraryServer/services/RentalModel";
+
     public java.lang.String getRentalModelAddress() {
         return RentalModel_address;
     }

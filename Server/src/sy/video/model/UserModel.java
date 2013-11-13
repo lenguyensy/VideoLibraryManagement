@@ -56,7 +56,7 @@ public class UserModel {
 	}
 
 	/**
-	 * check to see if ssn is unique
+	 * is ssn unique
 	 * 
 	 * @param ssn
 	 * @param userId
@@ -68,6 +68,52 @@ public class UserModel {
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE ssn = ? AND id != ?");
 			stmt.setString(1, ssn);
+			stmt.setString(2, userId);
+			return true;
+		} catch (Exception e) {
+			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
+
+		return false;
+	}
+
+	/**
+	 * is email unique
+	 * 
+	 * @param email
+	 * @return
+	 */
+	private boolean _isEmailUnique(String email) {
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE email = ?");
+			stmt.setString(1, email);
+			return true;
+		} catch (Exception e) {
+			logger.log(e);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
+
+		return false;
+	}
+
+	/**
+	 * is email unique
+	 * 
+	 * @param email
+	 * @param userId
+	 * @return
+	 */
+	private boolean _isEmailUnique(String email, String userId) {
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT * FROM users WHERE email = ? AND id != ?");
+			stmt.setString(1, email);
 			stmt.setString(2, userId);
 			return true;
 		} catch (Exception e) {
@@ -125,6 +171,41 @@ public class UserModel {
 	}
 
 	/**
+	 * get total count by user type
+	 * 
+	 * @param userType
+	 * @return
+	 */
+	public int getUserByTypeCount(String userType) {
+		int ret = 0;
+
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT count(*) FROM users WHERE userType = ?");
+			stmt.setString(1, userType);
+
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				ret = rs.getInt(1);
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key, String.valueOf(ret));
+			} else {
+				ret = Integer.parseInt(fromCache);
+			}
+		} catch (Exception ex) {
+			logger.log(ex);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
+
+		return ret;
+	}
+
+	/**
 	 * 
 	 * @param from
 	 * @param pagesize
@@ -166,6 +247,39 @@ public class UserModel {
 		}
 
 		return null;
+	}
+
+	/**
+	 * get total user count
+	 * 
+	 * @return
+	 */
+	public int getUsersCount() {
+		int ret = 0;
+
+		try {
+			con = MainConfig.getConnection();
+			PreparedStatement stmt = con
+					.prepareStatement("SELECT count(*) FROM users");
+
+			String key = Cache.getKey(stmt);
+			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
+
+			if (fromCache == null) {
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				ret = rs.getInt(1);
+				Cache.set(Cache.REDIS_NAMESPACE_USER, key, String.valueOf(ret));
+			} else {
+				ret = Integer.parseInt(fromCache);
+			}
+		} catch (Exception ex) {
+			logger.log(ex);
+		} finally {
+			MainConfig.closeConnection(con);
+		}
+
+		return ret;
 	}
 
 	/**
@@ -253,6 +367,8 @@ public class UserModel {
 	 */
 	public String deletUser(int userId) {
 		try {
+			con = MainConfig.getConnection();
+			
 			PreparedStatement stmt = con
 					.prepareStatement("DELETE FROM users WHERE id = ?");
 			stmt.setInt(1, userId);
@@ -283,6 +399,11 @@ public class UserModel {
 			// check to see if ssn unique
 			if (!_isSSNUnique(u.getMembershipNo()))
 				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
+			if (!_isEmailUnique(u.getEmail()))
+				return "Your email address "
+						+ u.getEmail()
+						+ " has been registered. Please use another email address.";
 
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
@@ -333,6 +454,11 @@ public class UserModel {
 		try {
 			if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
 				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
+			if (!_isEmailUnique(u.getEmail(), u.getUserId()))
+				return "Your email address "
+						+ u.getEmail()
+						+ " has been registered. Please use another email address.";
 
 			// admin updates user
 			con = MainConfig.getConnection();

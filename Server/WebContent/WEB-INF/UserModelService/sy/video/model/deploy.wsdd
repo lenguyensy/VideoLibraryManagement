@@ -10,13 +10,21 @@
       <parameter name="className" value="sy.video.model.UserModel"/>
       <parameter name="wsdlPortType" value="UserModel"/>
       <parameter name="typeMappingVersion" value="1.2"/>
+      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUsers" qname="operNS:getUsers" returnQName="retNS:getUsersReturn" returnType="rtns:User" soapAction="">
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:from" type="tns:int"/>
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:pagesize" type="tns:int"/>
+      </operation>
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUser" qname="operNS:getUser" returnQName="retNS:getUserReturn" returnType="rtns:User" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userId" type="tns:int"/>
       </operation>
-      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUserByType" qname="operNS:getUserByType" returnQName="retNS:getUserByTypeReturn" returnType="rtns:User" soapAction="">
+      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="getUserByTypeCount" qname="operNS:getUserByTypeCount" returnQName="retNS:getUserByTypeCountReturn" returnType="rtns:int" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userType" type="tns:string"/>
-        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:from" type="tns:int"/>
-        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:pagesize" type="tns:int"/>
+      </operation>
+      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="authenticateUser" qname="operNS:authenticateUser" returnQName="retNS:authenticateUserReturn" returnType="rtns:User" soapAction="">
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:email" type="tns:string"/>
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:password" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="getUsersCount" qname="operNS:getUsersCount" returnQName="retNS:getUsersCountReturn" returnType="rtns:int" soapAction="">
       </operation>
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="deletUser" qname="operNS:deletUser" returnQName="retNS:deletUserReturn" returnType="rtns:string" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userId" type="tns:int"/>
@@ -30,16 +38,14 @@
       <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="resetPassword" qname="operNS:resetPassword" returnQName="retNS:resetPasswordReturn" returnType="rtns:string" soapAction="">
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://valueobj.video.sy" qname="pns:u" type="tns:User"/>
       </operation>
-      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="authenticateUser" qname="operNS:authenticateUser" returnQName="retNS:authenticateUserReturn" returnType="rtns:User" soapAction="">
-        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:email" type="tns:string"/>
-        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:password" type="tns:string"/>
-      </operation>
-      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUsers" qname="operNS:getUsers" returnQName="retNS:getUsersReturn" returnType="rtns:User" soapAction="">
+      <operation xmlns:operNS="http://model.video.sy" xmlns:retNS="http://model.video.sy" xmlns:rtns="http://valueobj.video.sy" name="getUserByType" qname="operNS:getUserByType" returnQName="retNS:getUserByTypeReturn" returnType="rtns:User" soapAction="">
+        <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userType" type="tns:string"/>
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:from" type="tns:int"/>
         <parameter xmlns:pns="http://model.video.sy" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:pagesize" type="tns:int"/>
       </operation>
-      <parameter name="allowedMethods" value="getUserByType deletUser getUser resetPassword saveUser addUser authenticateUser getUsers"/>
+      <parameter name="allowedMethods" value="getUserByType deletUser getUsersCount getUser resetPassword saveUser addUser getUserByTypeCount authenticateUser getUsers"/>
 
       <typeMapping xmlns:ns="http://valueobj.video.sy" qname="ns:User" type="java:sy.video.valueobj.User" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://valueobj.video.sy" qname="ns:BaseValueObj" type="java:sy.video.valueobj.BaseValueObj" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
   </service>
 </deployment>

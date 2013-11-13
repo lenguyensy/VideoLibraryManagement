@@ -5,19 +5,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
   <schema elementFormDefault="qualified" targetNamespace="http://model.video.sy" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://valueobj.video.sy"/>
-   <element name="getMovie">
+   <element name="main">
     <complexType>
      <sequence>
-      <element name="movieId" type="xsd:int"/>
+      <element maxOccurs="unbounded" name="args" type="xsd:string"/>
      </sequence>
     </complexType>
    </element>
-   <element name="getMovieResponse">
-    <complexType>
-     <sequence>
-      <element name="getMovieReturn" type="tns1:Movie"/>
-     </sequence>
-    </complexType>
+   <element name="mainResponse">
+    <complexType/>
    </element>
    <element name="getMovies">
     <complexType>
@@ -34,17 +30,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="addMovie">
-    <complexType>
-     <sequence>
-      <element name="m" type="tns1:Movie"/>
-     </sequence>
-    </complexType>
+   <element name="getMoviesCount">
+    <complexType/>
    </element>
-   <element name="addMovieResponse">
+   <element name="getMoviesCountResponse">
     <complexType>
      <sequence>
-      <element name="addMovieReturn" type="xsd:string"/>
+      <element name="getMoviesCountReturn" type="xsd:int"/>
      </sequence>
     </complexType>
    </element>
@@ -64,17 +56,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="saveMovie">
+   <element name="getMoviesByGenreCount">
     <complexType>
      <sequence>
-      <element name="m" type="tns1:Movie"/>
+      <element name="genre" type="xsd:string"/>
      </sequence>
     </complexType>
    </element>
-   <element name="saveMovieResponse">
+   <element name="getMoviesByGenreCountResponse">
     <complexType>
      <sequence>
-      <element name="saveMovieReturn" type="xsd:string"/>
+      <element name="getMoviesByGenreCountReturn" type="xsd:int"/>
      </sequence>
     </complexType>
    </element>
@@ -94,6 +86,48 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="getMoviesBySearchTermCount">
+    <complexType>
+     <sequence>
+      <element name="searchTerm" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getMoviesBySearchTermCountResponse">
+    <complexType>
+     <sequence>
+      <element name="getMoviesBySearchTermCountReturn" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getMovie">
+    <complexType>
+     <sequence>
+      <element name="movieId" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getMovieResponse">
+    <complexType>
+     <sequence>
+      <element name="getMovieReturn" type="tns1:Movie"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addMovie">
+    <complexType>
+     <sequence>
+      <element name="m" type="tns1:Movie"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addMovieResponse">
+    <complexType>
+     <sequence>
+      <element name="addMovieReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
    <element name="deletMovie">
     <complexType>
      <sequence>
@@ -108,18 +142,39 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="saveMovie">
+    <complexType>
+     <sequence>
+      <element name="m" type="tns1:Movie"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="saveMovieResponse">
+    <complexType>
+     <sequence>
+      <element name="saveMovieReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
   </schema>
   <schema elementFormDefault="qualified" targetNamespace="http://valueobj.video.sy" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="BaseValueObj">
+    <sequence/>
+   </complexType>
    <complexType name="Movie">
-    <sequence>
-     <element name="availableCopies" type="xsd:int"/>
-     <element name="category" nillable="true" type="xsd:string"/>
-     <element name="movieBanner" nillable="true" type="xsd:string"/>
-     <element name="movieId" nillable="true" type="xsd:string"/>
-     <element name="movieName" nillable="true" type="xsd:string"/>
-     <element name="releaseDate" type="xsd:int"/>
-     <element name="rentAmount" type="xsd:double"/>
-    </sequence>
+    <complexContent>
+     <extension base="tns1:BaseValueObj">
+      <sequence>
+       <element name="availableCopies" type="xsd:int"/>
+       <element name="category" nillable="true" type="xsd:string"/>
+       <element name="movieBanner" nillable="true" type="xsd:string"/>
+       <element name="movieId" nillable="true" type="xsd:string"/>
+       <element name="movieName" nillable="true" type="xsd:string"/>
+       <element name="releaseDate" type="xsd:int"/>
+       <element name="rentAmount" type="xsd:double"/>
+      </sequence>
+     </extension>
+    </complexContent>
    </complexType>
   </schema>
  </wsdl:types>
@@ -127,6 +182,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="getMoviesBySearchTermResponse">
 
       <wsdl:part element="impl:getMoviesBySearchTermResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="mainResponse">
+
+      <wsdl:part element="impl:mainResponse" name="parameters">
 
       </wsdl:part>
 
@@ -148,9 +211,33 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getMoviesBySearchTermCountRequest">
+
+      <wsdl:part element="impl:getMoviesBySearchTermCount" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
    <wsdl:message name="deletMovieRequest">
 
       <wsdl:part element="impl:deletMovie" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMoviesByGenreCountResponse">
+
+      <wsdl:part element="impl:getMoviesByGenreCountResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="mainRequest">
+
+      <wsdl:part element="impl:main" name="parameters">
 
       </wsdl:part>
 
@@ -164,17 +251,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getMovieRequest">
+   <wsdl:message name="addMovieResponse">
 
-      <wsdl:part element="impl:getMovie" name="parameters">
+      <wsdl:part element="impl:addMovieResponse" name="parameters">
 
       </wsdl:part>
 
    </wsdl:message>
 
-   <wsdl:message name="addMovieResponse">
+   <wsdl:message name="getMovieRequest">
 
-      <wsdl:part element="impl:addMovieResponse" name="parameters">
+      <wsdl:part element="impl:getMovie" name="parameters">
 
       </wsdl:part>
 
@@ -212,6 +299,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getMoviesCountResponse">
+
+      <wsdl:part element="impl:getMoviesCountResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
    <wsdl:message name="addMovieRequest">
 
       <wsdl:part element="impl:addMovie" name="parameters">
@@ -220,9 +315,33 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getMoviesBySearchTermCountResponse">
+
+      <wsdl:part element="impl:getMoviesBySearchTermCountResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMoviesByGenreCountRequest">
+
+      <wsdl:part element="impl:getMoviesByGenreCount" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
    <wsdl:message name="saveMovieResponse">
 
       <wsdl:part element="impl:saveMovieResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMoviesCountRequest">
+
+      <wsdl:part element="impl:getMoviesCount" name="parameters">
 
       </wsdl:part>
 
@@ -238,13 +357,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:portType name="VideoModel">
 
-      <wsdl:operation name="getMovie">
+      <wsdl:operation name="main">
 
-         <wsdl:input message="impl:getMovieRequest" name="getMovieRequest">
+         <wsdl:input message="impl:mainRequest" name="mainRequest">
 
        </wsdl:input>
 
-         <wsdl:output message="impl:getMovieResponse" name="getMovieResponse">
+         <wsdl:output message="impl:mainResponse" name="mainResponse">
 
        </wsdl:output>
 
@@ -262,13 +381,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="addMovie">
+      <wsdl:operation name="getMoviesCount">
 
-         <wsdl:input message="impl:addMovieRequest" name="addMovieRequest">
+         <wsdl:input message="impl:getMoviesCountRequest" name="getMoviesCountRequest">
 
        </wsdl:input>
 
-         <wsdl:output message="impl:addMovieResponse" name="addMovieResponse">
+         <wsdl:output message="impl:getMoviesCountResponse" name="getMoviesCountResponse">
 
        </wsdl:output>
 
@@ -286,13 +405,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="saveMovie">
+      <wsdl:operation name="getMoviesByGenreCount">
 
-         <wsdl:input message="impl:saveMovieRequest" name="saveMovieRequest">
+         <wsdl:input message="impl:getMoviesByGenreCountRequest" name="getMoviesByGenreCountRequest">
 
        </wsdl:input>
 
-         <wsdl:output message="impl:saveMovieResponse" name="saveMovieResponse">
+         <wsdl:output message="impl:getMoviesByGenreCountResponse" name="getMoviesByGenreCountResponse">
 
        </wsdl:output>
 
@@ -310,6 +429,42 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getMoviesBySearchTermCount">
+
+         <wsdl:input message="impl:getMoviesBySearchTermCountRequest" name="getMoviesBySearchTermCountRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getMoviesBySearchTermCountResponse" name="getMoviesBySearchTermCountResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMovie">
+
+         <wsdl:input message="impl:getMovieRequest" name="getMovieRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getMovieResponse" name="getMovieResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addMovie">
+
+         <wsdl:input message="impl:addMovieRequest" name="addMovieRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:addMovieResponse" name="addMovieResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deletMovie">
 
          <wsdl:input message="impl:deletMovieRequest" name="deletMovieRequest">
@@ -322,23 +477,35 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="saveMovie">
+
+         <wsdl:input message="impl:saveMovieRequest" name="saveMovieRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:saveMovieResponse" name="saveMovieResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="VideoModelSoapBinding" type="impl:VideoModel">
 
       <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
-      <wsdl:operation name="getMovie">
+      <wsdl:operation name="main">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="getMovieRequest">
+         <wsdl:input name="mainRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="getMovieResponse">
+         <wsdl:output name="mainResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -364,17 +531,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="addMovie">
+      <wsdl:operation name="getMoviesCount">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="addMovieRequest">
+         <wsdl:input name="getMoviesCountRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="addMovieResponse">
+         <wsdl:output name="getMoviesCountResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -400,17 +567,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="saveMovie">
+      <wsdl:operation name="getMoviesByGenreCount">
 
          <wsdlsoap:operation soapAction=""/>
 
-         <wsdl:input name="saveMovieRequest">
+         <wsdl:input name="getMoviesByGenreCountRequest">
 
             <wsdlsoap:body use="literal"/>
 
          </wsdl:input>
 
-         <wsdl:output name="saveMovieResponse">
+         <wsdl:output name="getMoviesByGenreCountResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -436,6 +603,60 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getMoviesBySearchTermCount">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMoviesBySearchTermCountRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMoviesBySearchTermCountResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMovie">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMovieRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMovieResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addMovie">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addMovieRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addMovieResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deletMovie">
 
          <wsdlsoap:operation soapAction=""/>
@@ -447,6 +668,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="deletMovieResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="saveMovie">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="saveMovieRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="saveMovieResponse">
 
             <wsdlsoap:body use="literal"/>
 

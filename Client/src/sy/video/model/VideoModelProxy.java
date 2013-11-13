@@ -44,10 +44,10 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     return videoModel;
   }
   
-  public sy.video.valueobj.Movie getMovie(int movieId) throws java.rmi.RemoteException{
+  public void main(java.lang.String[] args) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
-    return videoModel.getMovie(movieId);
+    videoModel.main(args);
   }
   
   public sy.video.valueobj.Movie[] getMovies(int from, int pagesize) throws java.rmi.RemoteException{
@@ -56,10 +56,10 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     return videoModel.getMovies(from, pagesize);
   }
   
-  public java.lang.String addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
+  public int getMoviesCount() throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
-    return videoModel.addMovie(m);
+    return videoModel.getMoviesCount();
   }
   
   public sy.video.valueobj.Movie[] getMoviesByGenre(java.lang.String genre, int from, int pagesize) throws java.rmi.RemoteException{
@@ -68,10 +68,10 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     return videoModel.getMoviesByGenre(genre, from, pagesize);
   }
   
-  public java.lang.String saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
+  public int getMoviesByGenreCount(java.lang.String genre) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
-    return videoModel.saveMovie(m);
+    return videoModel.getMoviesByGenreCount(genre);
   }
   
   public sy.video.valueobj.Movie[] getMoviesBySearchTerm(java.lang.String searchTerm, int from, int pagesize) throws java.rmi.RemoteException{
@@ -80,10 +80,34 @@ public class VideoModelProxy implements sy.video.model.VideoModel {
     return videoModel.getMoviesBySearchTerm(searchTerm, from, pagesize);
   }
   
+  public int getMoviesBySearchTermCount(java.lang.String searchTerm) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.getMoviesBySearchTermCount(searchTerm);
+  }
+  
+  public sy.video.valueobj.Movie getMovie(int movieId) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.getMovie(movieId);
+  }
+  
+  public java.lang.String addMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.addMovie(m);
+  }
+  
   public java.lang.String deletMovie(int movieId) throws java.rmi.RemoteException{
     if (videoModel == null)
       _initVideoModelProxy();
     return videoModel.deletMovie(movieId);
+  }
+  
+  public java.lang.String saveMovie(sy.video.valueobj.Movie m) throws java.rmi.RemoteException{
+    if (videoModel == null)
+      _initVideoModelProxy();
+    return videoModel.saveMovie(m);
   }
   
   

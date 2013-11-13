@@ -22,9 +22,8 @@ public class VideoModelServiceLocator extends org.apache.axis.client.Service imp
     }
 
     // Use to get a proxy class for VideoModel
-    //private java.lang.String VideoModel_address = "http://localhost:8080/VideoLibraryServer/services/VideoModel";
-    private java.lang.String VideoModel_address = Config.getMovieModelEndPoint();
-    
+    private java.lang.String VideoModel_address = "http://localhost:8080/VideoLibraryServer/services/VideoModel";
+
     public java.lang.String getVideoModelAddress() {
         return VideoModel_address;
     }

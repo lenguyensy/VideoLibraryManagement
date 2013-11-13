@@ -30,6 +30,19 @@
 				$('#tblMovie tbody').append(
 						Mustache.render(tpmlRowUser, lstMovie[i]));
 		}
+		
+		function renderCount(){
+			$.get(URL.MOVIE_CONTROLLER, {
+				cmd : "getmoviescount",
+				<%if (!isSearchPage) {%>
+				genre : $('#genres').val(),
+				<%} else {%>
+				searchTerm : "<%=escapedSearchTerm%>",
+				<%}%>
+			}, function(count) {
+				$('.totalCount').html(count);
+			});
+		}
 
 		//hook up events
 		$('.btn-show-more').on('click', function() {
@@ -40,17 +53,16 @@
 				<%} else {%>
 				searchTerm : "<%=escapedSearchTerm%>",
 				<%}%>
-				from : $('.entryrow').length,
+				from : $('.rentry').length,
 				pagesize : 25
 			}, function(lstUsers) {
 				renderList(lstUsers);
 				$('.totalRecord').html($('.rentry').length);
-				$('.btn-show-more').toggle($('.rentry').length % 25 == 0);
 			}, 'json');
 		}).click();
 
 		$('#moviemanagement').on('click', '.btnDeleteMovie', function() {
-			var cur = $(this).closest('tr'), name = cur.find('.name').html();
+			var cur = $(this).closest('tr'), name = cur.find('.name').html(), movieId = $(this).attr('data-id');
 			
 			$.confirmBox({
 				body: 'Delete Movie <b>' + name + '</b>?',
@@ -61,7 +73,7 @@
 						
 						$.get(URL.MOVIE_CONTROLLER, {
 							cmd : 'deletemovie',
-							movieId : $(this).attr('data-id')
+							movieId : movieId
 						}).done(function(ret) {
 							cur.remove();
 							ret = $.trim(ret);
@@ -78,7 +90,9 @@
 		$('#genres').change(function() {
 			$('#tblMovie tbody').children().remove();
 			$('.btn-show-more').click();
+			renderCount();
 		});
+		renderCount();
 		
 		$('#frmSearch').submit(function(){
 			if ($('#searchTerm').val() == ""){
@@ -92,9 +106,6 @@
 <div id="moviemanagement">
 	<h4>Movie Management</h4>
 	<a class="btn pull-right" href="movieform.jsp">Add Movie</a>
-	<h4>
-		Showing <span class="totalRecord"></span> Movies
-	</h4>
 
 	<div class="control-group" style="margin: 15px 0 15px 0">
 		<%
@@ -119,6 +130,12 @@
 		</div>
 	</div>
 
+	<div>
+		<h4>
+			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span> Movies
+		</h4>
+	</div>
+
 
 	<table id="tblMovie" class="table">
 		<thead>
@@ -137,7 +154,7 @@
 	</table>
 
 	<h4>
-		Showing <span class="totalRecord"></span> Movies
+		Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span> Movies
 	</h4>
 	<a class="btn btn-show-more">Show more</a>
 </div>

@@ -41,10 +41,10 @@
 
 	if (command.equalsIgnoreCase("getpremiummembers")) {
 		ret = new JSONArray(userProxy.getUserByType(
-				sy.config.AppEnum.USER_TYPE_PREMIUM, from, pagesize));
+				AppEnum.USER_TYPE_PREMIUM, from, pagesize));
 	} else if (command.equalsIgnoreCase("getsimplecustomers")) {
 		ret = new JSONArray(userProxy.getUserByType(
-				sy.config.AppEnum.USER_TYPE_SIMPLE, from, pagesize));
+				AppEnum.USER_TYPE_SIMPLE, from, pagesize));
 	} else if (command.equalsIgnoreCase("getallcustomer")) {
 		ret = new JSONArray(userProxy.getUsers(from, pagesize));
 	} else if (command.equalsIgnoreCase("deletuser")) {
@@ -64,7 +64,7 @@
 		u.setMembershipNo(request.getParameter("membershipNo"));
 		u.setUserType(request.getParameter("userType"));
 		u.setPassword(AppEnum.DUMMY_PASSWORD);//add dummy password
-		
+
 		if (u.getUserType().equals(AppEnum.USER_TYPE_PREMIUM))
 			u.setMonthlySubscriptionFee(30);
 		else
@@ -77,6 +77,14 @@
 	} else if (command.equalsIgnoreCase("getallrentals")) {
 		//get all rentals movie
 		ret = new JSONArray(rentalProxy.getMoviesRentalByUser(userId));
+	} else if (command.equalsIgnoreCase("getpremiummemberscount")) {
+		ret = userProxy
+				.getUserByTypeCount(AppEnum.USER_TYPE_PREMIUM);
+	} else if (command.equalsIgnoreCase("getsimplecustomerscount")) {
+		ret = userProxy
+				.getUserByTypeCount(AppEnum.USER_TYPE_SIMPLE);
+	} else if (command.equalsIgnoreCase("getallcustomercount")) {
+		ret = userProxy.getUsersCount();
 	}
 %>
 

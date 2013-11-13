@@ -1,11 +1,14 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import sy.config.AppEnum;
 import sy.video.model.RentalModel;
 import sy.video.model.UserModel;
 import sy.video.model.VideoModel;
+import sy.video.valueobj.Movie;
 import sy.video.valueobj.User;
 
 /**
@@ -41,6 +44,26 @@ public class unitTest {
 		Object[] o = um.getUsers(from, pagesize);
 		assertEquals("getUsers", o.length, pagesize);
 		print(o);
+	}
+
+	@Test
+	public void getUserByTypeCount() {
+		int ret;
+		ret = um.getUserByTypeCount(AppEnum.USER_TYPE_PREMIUM);
+		Assert.assertNotEquals("getUserByTypeCount", ret, 0);
+
+		ret = um.getUserByTypeCount(AppEnum.USER_TYPE_SIMPLE);
+		Assert.assertNotEquals("getUserByTypeCount", ret, 0);
+
+		ret = um.getUserByTypeCount("Admin");
+		Assert.assertNotEquals("getUserByTypeCount", ret, 0);
+	}
+
+	@Test
+	public void getUsersCount() {
+		int ret;
+		ret = um.getUsersCount();
+		Assert.assertNotEquals("getUsersCount", ret, 0);
 	}
 
 	@Test
@@ -105,6 +128,27 @@ public class unitTest {
 	}
 
 	@Test
+	public void getMoviesCount() {
+		int ret;
+		ret = vm.getMoviesCount();
+		Assert.assertNotEquals("getMoviesCount", ret, 0);
+	}
+
+	@Test
+	public void getMoviesByGenreCount() {
+		int ret;
+		ret = vm.getMoviesByGenreCount("action");
+		Assert.assertNotEquals("getMoviesByGenreCount", ret, 0);
+	}
+
+	@Test
+	public void getMoviesBySearchTermCount() {
+		int ret;
+		ret = vm.getMoviesBySearchTermCount("world");
+		Assert.assertNotEquals("getMoviesBySearchTermCount", ret, 0);
+	}
+
+	@Test
 	public void saveUsers() {
 		User u;
 		u = um.getUser(userId);
@@ -120,26 +164,40 @@ public class unitTest {
 		u.setPassword("password");
 		assertEquals("addUser", um.addUser(u), "true");
 	}
-	
-	
+
 	@Test
 	public void returnRentals() {
 		rm.returnRentals();
 	}
 	
 	
+	@Test
+	public void deleteUser(){
+		int userToDelete = 10000;
+		String success = um.deletUser(userToDelete);
+		User u = um.getUser(userToDelete);
+		assertEquals("deleteUser", success, "true");
+		assertEquals("deleteUser", u, null);
+	}
 	
+	
+	@Test
+	public void deletMovie(){
+		int movToDelete = 10000;
+		String success = vm.deletMovie(movToDelete);
+		Movie v = vm.getMovie(movToDelete);
+		assertEquals("deletMovie", success, "true");
+		assertEquals("deletMovie", v, null);
+	}
+
 	@Test
 	public void rentMovie() {
 		/*
-		rm.rentMovie(2, 2);
-		rm.rentMovie(2, 3);
-		assertEquals("rentMovie", rm.getMoviesRentalByUser(2).length, 2);
-		
-		rm.rentMovie(3, 9);
-		rm.rentMovie(4, 9);
-		rm.rentMovie(2, 9);
-		assertEquals("rentMovie", rm.getUserByMovieId(9).length, 3);
-		*/
+		 * rm.rentMovie(2, 2); rm.rentMovie(2, 3); assertEquals("rentMovie",
+		 * rm.getMoviesRentalByUser(2).length, 2);
+		 * 
+		 * rm.rentMovie(3, 9); rm.rentMovie(4, 9); rm.rentMovie(2, 9);
+		 * assertEquals("rentMovie", rm.getUserByMovieId(9).length, 3);
+		 */
 	}
 }

@@ -57,8 +57,7 @@
 		ret = new JSONObject(videoProxy.getMovie(movieId));
 	} else if (command.equalsIgnoreCase("getuserbymovieid")) {
 		ret = new JSONArray(rentalProxy.getUserByMovieId(movieId));
-	}
-	else if (command.equalsIgnoreCase("savemovie")) {
+	} else if (command.equalsIgnoreCase("savemovie")) {
 		Movie m = new Movie();
 		m.setCategory(request.getParameter("category"));
 		m.setMovieBanner(request.getParameter("movieBanner"));
@@ -76,6 +75,15 @@
 			ret = videoProxy.addMovie(m);
 		else
 			ret = videoProxy.saveMovie(m);
+	} else if (command.equalsIgnoreCase("getmoviescount")
+			|| command.equalsIgnoreCase("getmoviebygenrecount")) {
+		if (genre != null && !genre.equals(""))
+			ret = videoProxy.getMoviesByGenreCount(genre);
+		else if (searchterm != null && !searchterm.equals(""))
+			ret = videoProxy.getMoviesBySearchTermCount(searchterm);
+		else
+			ret = videoProxy.getMoviesCount();
+
 	}
 %>
 

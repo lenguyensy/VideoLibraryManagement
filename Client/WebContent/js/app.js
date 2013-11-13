@@ -194,8 +194,11 @@ var ENUM = {
 var URL = {
 	USER_CONTROLLER : "userajaxcontroller.jsp",
 	MOVIE_CONTROLLER : "movieajaxcontroller.jsp",
-	DASHBOARD_CONTROLLER : "dashboardajaxcontroller.jsp"
+	DASHBOARD_CONTROLLER : "dashboardajaxcontroller.jsp",
+	ANON_CONTROLLER : "anonAjaxController.jsp"
 }
+
+
 
 var NavUtil = (function() {
 	return {
@@ -224,6 +227,48 @@ var FormUtil = (function() {
 					});
 
 			return isEmpty;
+		},
+		populateUserForm : function() {
+			// populate user type
+			for ( var k in ENUM.USER_TYPE) {
+				if (ENUM.USER_TYPE.hasOwnProperty(k))
+					$('#userType').append(
+							'<option>' + ENUM.USER_TYPE[k] + '</option>');
+			}
+
+			// populate states
+			for ( var k in ENUM.STATE) {
+				if (ENUM.STATE.hasOwnProperty(k))
+					$('#state').append(
+							'<option value="' + ENUM.STATE[k].abbreviation
+									+ '">' + ENUM.STATE[k].name + '</option>');
+			}
+
+			// populate fee
+			for ( var k in ENUM.MONTHLY_FEE) {
+				if (ENUM.MONTHLY_FEE.hasOwnProperty(k))
+					$('#monthlySubscriptionFee').append(
+							'<option value="' + k + '">' + ENUM.MONTHLY_FEE[k]
+									+ '</option>');
+			}
+
+			// change user type show different fields.
+			$('#userType')
+					.change(
+							function() {
+								var isPremium = $(this).find(':selected').val() == ENUM.USER_TYPE.premimum;
+								$('#frmUser').find('.premium')
+										.toggle(isPremium);
+								$('#frmUser').find('.simple')
+										.toggle(!isPremium);
+
+								$('#totalOutstandingMoviesSpan').html(
+										isPremium ? "10" : "2");
+
+								if ($('#totalOutstandingMovies').val().length == 0)
+									$('#totalOutstandingMovies').val(
+											isPremium ? "10" : "2");
+							});
 		}
 	}
 })();
@@ -507,3 +552,15 @@ window.alert = function(msg) {
 		body : msg
 	})
 }
+
+// style
+$(document).delegate('.table tr', 'mouseover', function() {
+	$(this).addClass('info');
+}).delegate('.table tr', 'mouseout', function() {
+	$(this).removeClass('info');
+}).delegate('.table tr', 'click', function() {
+	$(this).siblings().removeClass('success');
+	$(this).addClass('success');
+}).delegate('.table tr', 'dblclick', function() {
+	$(this).find('.icon-edit').click();
+});

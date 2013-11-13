@@ -22,9 +22,8 @@ public class UserModelServiceLocator extends org.apache.axis.client.Service impl
     }
 
     // Use to get a proxy class for UserModel
-    //private java.lang.String UserModel_address = "http://localhost:8080/VideoLibraryServer/services/UserModel";
-    private java.lang.String UserModel_address = Config.getUserModelEndPoint();
-    
+    private java.lang.String UserModel_address = "http://localhost:8080/VideoLibraryServer/services/UserModel";
+
     public java.lang.String getUserModelAddress() {
         return UserModel_address;
     }

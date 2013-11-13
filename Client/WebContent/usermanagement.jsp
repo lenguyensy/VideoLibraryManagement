@@ -18,6 +18,14 @@
 						Mustache.render(tpmlRowUser, lstUser[i]));
 		}
 
+		function renderTotalCount() {
+			$.get(URL.USER_CONTROLLER, {
+				cmd : $('#selUserType').val() + "count"
+			}, function(totalCount) {
+				$(".totalCount").html(totalCount);
+			});
+		}
+
 		//hook up events
 		$('.btn-show-more').on('click', function() {
 			$.get(URL.USER_CONTROLLER, {
@@ -33,7 +41,9 @@
 		$('#selUserType').change(function() {
 			$('#tblUser tbody').empty();
 			$('.btn-show-more').click();
+			renderTotalCount();
 		});
+		renderTotalCount();
 
 		$('#usermanagement')
 				.on(
@@ -41,7 +51,8 @@
 						'.btnDeleteUser',
 						function() {
 							var cur = $(this).closest('tr'), name = cur.find(
-									'.name').html();
+									'.name').html(), userId = $(this).attr(
+									'data-id');
 
 							$
 									.confirmBox({
@@ -57,10 +68,7 @@
 																URL.USER_CONTROLLER,
 																{
 																	cmd : 'deletuser',
-																	userId : $(
-																			this)
-																			.attr(
-																					'data-id')
+																	userId : userId
 																})
 														.done(
 																function(ret) {
@@ -101,7 +109,8 @@
 	</div>
 
 	<h4>
-		Showing <span class="totalRecord"></span> Users
+		Showing <span class="totalRecord"></span> - <span class="totalCount">32480</span>
+		Users
 	</h4>
 
 	<table id="tblUser" class="table">
@@ -123,7 +132,8 @@
 	</table>
 
 	<h4>
-		Showing <span class="totalRecord"></span> Users
+		Showing <span class="totalRecord"></span> - <span class="totalCount">32480</span>
+		Users
 	</h4>
 	<a class="btn btn-show-more">Show more</a>
 </div>

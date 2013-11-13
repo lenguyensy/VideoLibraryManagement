@@ -24,6 +24,7 @@
 				userId : userId
 			}, function(lstMovie) {
 				$('#tblRental tbody').empty();
+				$("#lstRental").toggleClass('hide', lstMovie.length === 0);
 
 				for (var i = 0; i < lstMovie.length; i++) {
 					lstMovie[i].rentedDate = moment(lstMovie[i].rentedDate)
@@ -34,57 +35,27 @@
 					$('#tblRental tbody').append(
 							Mustache.render(tmplRowRental, lstMovie[i]));
 				}
-			}, 'json');
+			}, 'json').fail(function(){
+				$("#lstRental").addClass('hide');
+			});
 		}
 
 		function render() {
-			//populate states
-			for ( var k in ENUM.STATE) {
-				if (ENUM.STATE.hasOwnProperty(k))
-					$('#state').append(
-							'<option value="'+ENUM.STATE[k].abbreviation+'">'
-									+ ENUM.STATE[k].name + '</option>');
-			}
+			FormUtil.populateUserForm();
+			
 			if (userData.state)
 				$('#state').val(userData.state);
 
-			//populate user type
-			for ( var k in ENUM.USER_TYPE) {
-				if (ENUM.USER_TYPE.hasOwnProperty(k))
-					$('#userType').append(
-							'<option>' + ENUM.USER_TYPE[k] + '</option>');
-			}
 			if (userData.userType)
 				$('#userType').val(userData.userType);
 
-			//populate fee
-			for ( var k in ENUM.MONTHLY_FEE) {
-				if (ENUM.MONTHLY_FEE.hasOwnProperty(k))
-					$('#monthlySubscriptionFee').append(
-							'<option value="'+k+'">' + ENUM.MONTHLY_FEE[k]
-									+ '</option>');
-			}
+			
 			if (userData.monthlySubscriptionFee)
 				$('#monthlySubscriptionFee').val(
 						userData.monthlySubscriptionFee);
 
-			//change user type show different fields.
-			$('#userType')
-					.change(
-							function() {
-								var isPremium = $(this).find(':selected').val() == ENUM.USER_TYPE.premimum;
-								$('#frmUser').find('.premium')
-										.toggle(isPremium);
-								$('#frmUser').find('.simple')
-										.toggle(!isPremium);
-
-								$('#totalOutstandingMoviesSpan').html(
-										isPremium ? "10" : "2");
-
-								if ($('#totalOutstandingMovies').val().length == 0)
-									$('#totalOutstandingMovies').val(
-											isPremium ? "10" : "2");
-							}).change();
+			
+			$('#userType').change();
 
 			//form validation
 			$('#frm').submit(function() {
@@ -130,7 +101,6 @@
 				userId : userId
 			}, function(retUserData) {
 				userData = retUserData;
-				$("#lstRental").removeClass('hide');
 				renderRentalList();
 				dfd.resolve();
 			}, 'json');
