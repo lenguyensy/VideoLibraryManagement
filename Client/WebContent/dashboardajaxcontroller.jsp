@@ -82,7 +82,7 @@
 			u.setMembershipNo(request.getParameter("membershipNo"));
 			u.setUserType(request.getParameter("userType"));
 			u.setPassword(request.getParameter("password"));
-			
+
 			if (u.getUserType().equals(AppEnum.USER_TYPE_PREMIUM))
 				u.setMonthlySubscriptionFee(30);
 			else
@@ -92,6 +92,14 @@
 		} else if (command.equalsIgnoreCase("getbilling")) {
 			//get all billing information
 			ret = new JSONObject(userProxy.getUser(userId));
+		} else if (command.equalsIgnoreCase("getmoviescount")
+				|| command.equalsIgnoreCase("getmoviebygenrecount")) {
+			if (genre != null && !genre.equals(""))
+				ret = videoProxy.getMoviesByGenreCount(genre);
+			else if (searchterm != null && !searchterm.equals(""))
+				ret = videoProxy.getMoviesBySearchTermCount(searchterm);
+			else
+				ret = videoProxy.getMoviesCount();
 		}
 	} catch (Exception ex) {
 		ret = ret;

@@ -83,7 +83,6 @@
 			ret = videoProxy.getMoviesBySearchTermCount(searchterm);
 		else
 			ret = videoProxy.getMoviesCount();
-
 	}
 %>
 

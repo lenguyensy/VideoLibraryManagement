@@ -58,6 +58,19 @@
 			}, 'json');
 		}
 		
+		function renderCount(){
+			$.get(URL.DASHBOARD_CONTROLLER, {
+				cmd : "getmoviescount",
+				<%if (!isSearchPage) {%>
+				genre : $('#genres').val(),
+				<%} else {%>
+				searchTerm : "<%=escapedSearchTerm%>",
+				<%}%>
+			}, function(count) {
+				$('.totalCount').html(count);
+			});
+		}
+		
 		//hook up events
 		$('.btn-show-more').on('click', function() {
 			renderMovieList();
@@ -66,7 +79,9 @@
 		$('#genres').change(function() {
 			$('#tblMovie tbody').children().remove();
 			$('.btn-show-more').click();
+			renderCount();
 		});
+		renderCount();
 		
 		$('#frmSearch').submit(function(){
 			if ($('#searchTerm').val() == ""){
@@ -168,7 +183,7 @@
 	<div id="moviemanagement" class="span7">
 		<h4 class="text-info">Rent A New Movie</h4>
 		<h4 class="muted">
-			Showing <span class="totalRecord"></span> Movies
+			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span> Movies
 		</h4>
 
 		<div class="control-group" style="margin: 15px 0 15px 0">
@@ -211,7 +226,7 @@
 		</table>
 
 		<h4 class="muted">
-			Showing <span class="totalRecord"></span> Movies
+			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span> Movies
 		</h4>
 		<a class="btn btn-show-more">Show more</a>
 	</div>
