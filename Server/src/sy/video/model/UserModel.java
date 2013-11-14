@@ -623,14 +623,14 @@ public class UserModel {
 		BasicDBObject query = new BasicDBObject("UserType", userType);
 		DBCursor cursor = users.find(query);
 
-		return getUsersListFromCursor(cursor, pageSize);
+		return getUsersListFromCursor(cursor, from, pageSize);
 	}
 
 	private List<User> getUsersMDB(int from, int pageSize) {
 		DBCollection users = mongoDB.getCollection("users");
 		DBCursor cursor = users.find();
 
-		return getUsersListFromCursor(cursor, pageSize);
+		return getUsersListFromCursor(cursor, from, pageSize);
 	}
 
 	private List<User> getUserMDB(int userId) {
@@ -638,7 +638,7 @@ public class UserModel {
 		BasicDBObject query = new BasicDBObject("Id", userId);
 		DBCursor cursor = users.find(query);
 
-		return getUsersListFromCursor(cursor, 1);
+		return getUsersListFromCursor(cursor, 1, 1);
 	}
 
 	private List<User> authenticateUserMDB(String email, String password) {
@@ -647,7 +647,7 @@ public class UserModel {
 				"HashedPassword", MD5(password));
 
 		DBCursor cursor = users.find(query);
-		return getUsersListFromCursor(cursor, 1);
+		return getUsersListFromCursor(cursor, 0, 1);
 	}
 
 	private void deletUserMDB(int userId) {
@@ -717,33 +717,36 @@ public class UserModel {
 		users.update(query, updateObj);
 	}
 
-	private List<User> getUsersListFromCursor(DBCursor cursor, int pageSize) {
+	private List<User> getUsersListFromCursor(DBCursor cursor, int from, int pageSize) {
 		int count = 0;
+		int lastIndex = from + pageSize;
 		List<User> userList = new ArrayList<User>();
 
-		while (cursor.hasNext() && count < pageSize) {
+		while (cursor.hasNext() && count < lastIndex) {
 			DBObject user = cursor.next();
+			if ( count >= from) {
+				User u = new User();
+				u.setFirstName((String) user.get("FirstName"));
+				u.setLastName((String) user.get("LastName"));
+				u.setAddress((String) user.get("Address"));
+				u.setCity((String) user.get("City"));
+				u.setState((String) user.get("State"));
+				u.setZipCode(String.valueOf(user.get("Zip")));
+				u.setBalance(Double.valueOf(String.valueOf(user.get("Balance"))));
+				u.setMembershipNo(String.valueOf(user.get("MembershipNo")));
+				u.setMonthlySubscriptionFee(Double.valueOf(String.valueOf(user
+						.get("MonthlySubscriptionFee"))));
+				u.setTotal(Double.valueOf(String.valueOf(user.get("Total"))));
+				u.setTotalOutstandingMovies((Integer) user
+						.get("TotalOutstandingMovies"));
+				u.setUserType((String) user.get("UserType"));
+				u.setEmail((String) user.get("Email"));
+				u.setUserId(String.valueOf(user.get("Id")));
+	
+				//System.out.println("USER : " + user.get("FirstName"));
+				userList.add(u);
+			}
 			count++;
-			User u = new User();
-			u.setFirstName((String) user.get("FirstName"));
-			u.setLastName((String) user.get("LastName"));
-			u.setAddress((String) user.get("Address"));
-			u.setCity((String) user.get("City"));
-			u.setState((String) user.get("State"));
-			u.setZipCode(String.valueOf(user.get("Zip")));
-			u.setBalance(Double.valueOf(String.valueOf(user.get("Balance"))));
-			u.setMembershipNo(String.valueOf(user.get("MembershipNo")));
-			u.setMonthlySubscriptionFee(Double.valueOf(String.valueOf(user
-					.get("MonthlySubscriptionFee"))));
-			u.setTotal(Double.valueOf(String.valueOf(user.get("Total"))));
-			u.setTotalOutstandingMovies((Integer) user
-					.get("TotalOutstandingMovies"));
-			u.setUserType((String) user.get("UserType"));
-			u.setEmail((String) user.get("Email"));
-			u.setUserId(String.valueOf(user.get("Id")));
-
-			System.out.println("USER : " + user.get("FirstName"));
-			userList.add(u);
 		}
 		return userList;
 	}
