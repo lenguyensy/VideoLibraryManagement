@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import javax.jws.WebService;
 
@@ -41,13 +42,18 @@ public class UserModel {
 	 */
 	private boolean _isSSNUnique(String ssn) {
 		try {
-			con = MainConfig.getConnection();
-			PreparedStatement stmt = con
-					.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? LIMIT 0,1");
-			stmt.setString(1, ssn);
-			ResultSet rs = stmt.executeQuery();
-			rs.next();
-			return rs.getInt(1) == 0;
+			if (MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
+				PreparedStatement stmt = con
+						.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? LIMIT 0,1");
+				stmt.setString(1, ssn);
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				return rs.getInt(1) == 0;
+			} else {
+				return _isSSNUniqueMDB(ssn);
+			}
+			
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
@@ -66,14 +72,18 @@ public class UserModel {
 	 */
 	private boolean _isSSNUnique(String ssn, String userId) {
 		try {
-			con = MainConfig.getConnection();
-			PreparedStatement stmt = con
-					.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? AND id != ? LIMIT 0,1");
-			stmt.setString(1, ssn);
-			stmt.setString(2, userId);
-			ResultSet rs = stmt.executeQuery();
-			rs.next();
-			return rs.getInt(1) == 0;
+			if ( MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
+				PreparedStatement stmt = con
+						.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? AND id != ? LIMIT 0,1");
+				stmt.setString(1, ssn);
+				stmt.setString(2, userId);
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				return rs.getInt(1) == 0;
+			} else {
+				return _isSSNUniqueMDB(ssn, userId);
+			}
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
@@ -454,13 +464,24 @@ public class UserModel {
 	public String addUser(User u) {
 		try {
 			// check to see if ssn unique
-			if (!_isSSNUnique(u.getMembershipNo()))
-				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
-
-			if (!_isEmailUnique(u.getEmail()))
-				return "Your email address "
-						+ u.getEmail()
-						+ " has been registered. Please use another email address.";
+			if ( MainConfig.DB_MYSQL) {
+				if (!_isSSNUnique(u.getMembershipNo()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+				
+				if (!_isEmailUnique(u.getEmail()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			} else {
+				if (!_isSSNUniqueMDB(u.getMembershipNo()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+				
+				if (!_isEmailUniqueMDB(u.getEmail()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			}
+			
 
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
@@ -509,19 +530,29 @@ public class UserModel {
 	 */
 	public String saveUser(User u) {
 		try {
-			if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
-				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
-
-			if (!_isEmailUnique(u.getEmail(), u.getUserId()))
-				return "Your email address "
-						+ u.getEmail()
-						+ " has been registered. Please use another email address.";
 			
+			if ( MainConfig.DB_MYSQL) {
+				if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+	
+				if (!_isEmailUnique(u.getEmail(), u.getUserId()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			
+			} else {
+				if (!_isSSNUniqueMDB(u.getMembershipNo(), u.getUserId()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+	
+				if (!_isEmailUniqueMDB(u.getEmail(), u.getUserId()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			}
 			
 			if (!_isModelChanged(u))
 				return "Save is not done, no change happens.";
 			
-
 			// admin updates user
 			con = MainConfig.getConnection();
 			PreparedStatement stmt;
@@ -630,6 +661,39 @@ public class UserModel {
 		return getUsersListFromCursor(cursor, from, pageSize);
 	}
 
+	private boolean _isSSNUniqueMDB(String membershipNo) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("MembershipNo", membershipNo);
+		DBCursor cursor = users.find(query);
+		
+		return cursor.count() == 0 ;		
+	}
+	
+	private boolean _isSSNUniqueMDB(String membershipNo, String userId) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("MembershipNo", membershipNo).append("Id", userId);
+		DBCursor cursor = users.find(query);
+		
+		return cursor.count() == 0 ;		
+	}
+	
+	private boolean _isEmailUniqueMDB(String email) {
+		
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("Email", email);
+		DBCursor cursor = users.find(query);
+		
+		return cursor.count() == 0 ;
+	}
+	
+	private boolean _isEmailUniqueMDB(String email, String userId) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("Email", email).append("Id", userId);
+		DBCursor cursor = users.find(query);
+		
+		return cursor.count() == 0 ;
+	}
+	
 	private int getUsersCountMDB() {
 		DBCollection users = mongoDB.getCollection("users");
 		DBCursor cursor = users.find();
@@ -649,7 +713,7 @@ public class UserModel {
 		BasicDBObject query = new BasicDBObject("Id", userId);
 		DBCursor cursor = users.find(query);
 
-		return getUsersListFromCursor(cursor, 1, 1);
+		return getUsersListFromCursor(cursor, 1, 1); 	
 	}
 
 	private List<User> authenticateUserMDB(String email, String password) {
@@ -779,4 +843,5 @@ public class UserModel {
 	}
 
 	/* .......................... MongoDB: END ......................... */
+	
 }
