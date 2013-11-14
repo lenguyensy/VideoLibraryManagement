@@ -43,16 +43,18 @@ public class UserModel {
 		try {
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE ssn = ?");
+					.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? LIMIT 0,1");
 			stmt.setString(1, ssn);
-			return true;
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			return rs.getInt(1) == 0;
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
 			MainConfig.closeConnection(con);
 		}
 
-		return false;
+		return true;//fail, means unique
 	}
 
 	/**
@@ -66,17 +68,19 @@ public class UserModel {
 		try {
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE ssn = ? AND id != ?");
+					.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? AND id != ? LIMIT 0,1");
 			stmt.setString(1, ssn);
 			stmt.setString(2, userId);
-			return true;
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			return rs.getInt(1) == 0;
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
 			MainConfig.closeConnection(con);
 		}
 
-		return false;
+		return true;//fail, means unique
 	}
 
 	/**
@@ -89,16 +93,18 @@ public class UserModel {
 		try {
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE email = ?");
+					.prepareStatement("SELECT count(*) FROM users WHERE email = ? LIMIT 0,1");
 			stmt.setString(1, email);
-			return true;
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			return rs.getInt(1) == 0;
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
 			MainConfig.closeConnection(con);
 		}
 
-		return false;
+		return true;//fail, means unique
 	}
 
 	/**
@@ -112,16 +118,54 @@ public class UserModel {
 		try {
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
-					.prepareStatement("SELECT * FROM users WHERE email = ? AND id != ?");
+					.prepareStatement("SELECT count(*) FROM users WHERE email = ? AND id != ? LIMIT 0,1");
 			stmt.setString(1, email);
 			stmt.setString(2, userId);
-			return true;
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			return rs.getInt(1) == 0;
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
 			MainConfig.closeConnection(con);
 		}
 
+		return true;//fail, means unique
+	}
+	
+	/**
+	 * is model changed
+	 * @param u
+	 * @return
+	 */
+	private Boolean _isModelChanged(User u){
+		//validate if there is a change needed
+		User uo = this.getUser(u.getUserId());
+		
+		if (!uo.getAddress().equals(u.getAddress()))
+			return true;
+		
+		if (!uo.getFirstName().equals(u.getFirstName()))
+			return true;
+		
+		if (!uo.getLastName().equals(u.getLastName()))
+			return true;
+		
+		if (!uo.getCity().equals(u.getCity()))
+			return true;
+		
+		if (!uo.getState().equals(u.getState()))
+			return true;
+		
+		if (!uo.getMembershipNo().equals(u.getMembershipNo()))
+			return true;
+		
+		if (!uo.getZipCode().equals(u.getZipCode()))
+			return true;
+		
+		if (!uo.getEmail().equals(u.getEmail()))
+			return true;
+		
 		return false;
 	}
 
@@ -325,6 +369,15 @@ public class UserModel {
 		else
 			return null;
 	}
+	
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public User getUser(String userId) {
+		return this.getUser(Integer.parseInt(userId));
+	}
 
 	/**
 	 * authenticate user
@@ -368,7 +421,7 @@ public class UserModel {
 	public String deletUser(int userId) {
 		try {
 			con = MainConfig.getConnection();
-			
+
 			PreparedStatement stmt = con
 					.prepareStatement("DELETE FROM users WHERE id = ?");
 			stmt.setInt(1, userId);
@@ -459,6 +512,11 @@ public class UserModel {
 				return "Your email address "
 						+ u.getEmail()
 						+ " has been registered. Please use another email address.";
+			
+			
+			if (!_isModelChanged(u))
+				return "Save is not done, no change happens.";
+			
 
 			// admin updates user
 			con = MainConfig.getConnection();

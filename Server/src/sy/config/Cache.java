@@ -8,7 +8,7 @@ public class Cache {
 	public static final String REDIS_NAMESPACE_MOVIE = "movie.";
 	public static final String REDIS_NAMESPACE_USER = "user.";
 	public static final String REDIS_NAMESPACE_RENTAL = "rental.";
-	public static final int EXPIRED_SECONDS = 60 * 15;// used for time based (15
+	public static final int EXPIRED_SECONDS = 60 * 10;// used for time based (15
 														// minutes)
 
 	private static Jedis jedis = MainConfig.getRedisConnection();
@@ -26,6 +26,7 @@ public class Cache {
 			}
 			return sb.toString();
 		} catch (java.security.NoSuchAlgorithmException e) {
+			String.valueOf(stmt.toString().hashCode());
 		}
 		return null;
 	}
@@ -37,10 +38,12 @@ public class Cache {
 	 * @return
 	 */
 	public static String get(String namespace, String key) {
-		String combinedKey = namespace + key;
-		System.out.println("GET CACHE: " + combinedKey);
 		try {
-			return jedis.get(combinedKey);
+			String combinedKey = namespace + key;
+			System.out.println("GET CACHE: " + combinedKey);
+			String val = jedis.get(combinedKey);
+			System.out.println(val);
+			return val;
 		} catch (Exception e) {
 			// e.printStackTrace();
 		}
@@ -55,10 +58,11 @@ public class Cache {
 	 * @param value
 	 */
 	public static void set(String namespace, String key, String value) {
-		String combinedKey = namespace + key;
-
-		System.out.println("UPDATE CACHE..: " + combinedKey);
 		try {
+			String combinedKey = namespace + key;
+			System.out.println("UPDATE CACHE: " + combinedKey);
+			System.out.println(value);
+
 			jedis.set(combinedKey, value);
 
 			// set expiration
@@ -85,13 +89,14 @@ public class Cache {
 	 * @param namespace
 	 */
 	public static void clear(String namespace) {
-		System.out.println("CLEAR CACHE: " + namespace);
-
-		String old = jedis.get(namespace);
 		try {
+			System.out.println("CLEAR CACHE: " + namespace);
+			String old = jedis.get(namespace);
 			String[] keys = old.split(",");
 			for (int i = 0; i < keys.length; i++)
 				jedis.del(keys[i]);
+			
+			System.out.println(MainConfig.combine(keys, ", "));
 		} catch (Exception ex) {
 
 		}

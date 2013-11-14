@@ -41,6 +41,7 @@ public class unitTest {
 	// test all the get calls
 	@Test
 	public void getUsers() {
+		System.out.println("Test getUsers");
 		Object[] o = um.getUsers(from, pagesize);
 		assertEquals("getUsers", o.length, pagesize);
 		print(o);
@@ -48,6 +49,8 @@ public class unitTest {
 
 	@Test
 	public void getUserByTypeCount() {
+		System.out.println("Test getUserByTypeCount");
+
 		int ret;
 		ret = um.getUserByTypeCount(AppEnum.USER_TYPE_PREMIUM);
 		Assert.assertNotEquals("getUserByTypeCount", ret, 0);
@@ -61,6 +64,8 @@ public class unitTest {
 
 	@Test
 	public void getUsersCount() {
+		System.out.println("Test getUsersCount");
+
 		int ret;
 		ret = um.getUsersCount();
 		Assert.assertNotEquals("getUsersCount", ret, 0);
@@ -68,6 +73,8 @@ public class unitTest {
 
 	@Test
 	public void getUser() {
+		System.out.println("Test getUser");
+
 		Object o = um.getUser(userId);
 		assertNotNull("getUser " + userId, o);
 		print(o);
@@ -75,6 +82,8 @@ public class unitTest {
 
 	@Test
 	public void getUserByType() {
+		System.out.println("Test getUserByType");
+
 		Object[] o;
 		o = um.getUserByType(AppEnum.USER_TYPE_PREMIUM, from, pagesize);
 		assertEquals("getUsers by USER_TYPE_PREMIUM", o.length, pagesize);
@@ -87,6 +96,8 @@ public class unitTest {
 
 	@Test
 	public void getMovies() {
+		System.out.println("Test getMovies");
+
 		Object[] o = vm.getMovies(from, pagesize);
 		assertEquals("getMovies", o.length, pagesize);
 		print(o);
@@ -94,6 +105,8 @@ public class unitTest {
 
 	@Test
 	public void getMoviesByGenre() {
+		System.out.println("Test getMoviesByGenre");
+
 		Object[] o = vm.getMoviesByGenre(genre, from, pagesize);
 		assertEquals("getMoviesByGenre " + genre, o.length, pagesize);
 		print(o);
@@ -101,6 +114,8 @@ public class unitTest {
 
 	@Test
 	public void getMoviesBySearchTerm() {
+		System.out.println("Test getMoviesBySearchTerm");
+
 		Object[] o = vm.getMoviesBySearchTerm(searchTerm, from, pagesize);
 		assertEquals("getMoviesBySearchTerm " + searchTerm, o.length, pagesize);
 		print(o);
@@ -108,6 +123,8 @@ public class unitTest {
 
 	@Test
 	public void getMovie() {
+		System.out.println("Test getMovie");
+
 		Object o = vm.getMovie(movieId);
 		assertNotNull("getMovie " + movieId, o);
 		print(o);
@@ -115,6 +132,8 @@ public class unitTest {
 
 	@Test
 	public void getUserByMovieId() {
+		System.out.println("Test getUserByMovieId");
+
 		Object[] o = rm.getUserByMovieId(userId);
 		assertNotNull("getUserByMovieId " + movieId, o);
 		print(o);
@@ -122,6 +141,8 @@ public class unitTest {
 
 	@Test
 	public void getMoviesRentalByUser() {
+		System.out.println("Test getMoviesRentalByUser");
+
 		Object[] o = rm.getMoviesRentalByUser(userId);
 		assertNotNull("getMoviesRentalByUser " + userId, o);
 		print(o);
@@ -129,6 +150,8 @@ public class unitTest {
 
 	@Test
 	public void getMoviesCount() {
+		System.out.println("Test getMoviesCount");
+
 		int ret;
 		ret = vm.getMoviesCount();
 		Assert.assertNotEquals("getMoviesCount", ret, 0);
@@ -136,6 +159,8 @@ public class unitTest {
 
 	@Test
 	public void getMoviesByGenreCount() {
+		System.out.println("Test getMoviesByGenreCount");
+
 		int ret;
 		ret = vm.getMoviesByGenreCount("action");
 		Assert.assertNotEquals("getMoviesByGenreCount", ret, 0);
@@ -143,6 +168,8 @@ public class unitTest {
 
 	@Test
 	public void getMoviesBySearchTermCount() {
+		System.out.println("Test getMoviesBySearchTermCount");
+
 		int ret;
 		ret = vm.getMoviesBySearchTermCount("world");
 		Assert.assertNotEquals("getMoviesBySearchTermCount", ret, 0);
@@ -150,39 +177,74 @@ public class unitTest {
 
 	@Test
 	public void saveUsers() {
+		System.out.println("Test saveUsers");
+
 		User u;
-		u = um.getUser(userId);
-		u.setFirstName("Premium");
+		int userIdToTest = 123; 
+		u = um.getUser(userIdToTest);
+		assertEquals("saveUsers", um.saveUser(u), "Save is not done, no change happens.");
+
+		// with a change
+		u = um.getUser(userIdToTest);
+		u.setFirstName("Premium 111");
 		assertEquals("saveUsers", um.saveUser(u), "true");
 	}
 
 	@Test
 	public void addUsers() {
+		System.out.println("Test addUsers");
+
 		User u;
 		u = um.getUser(userId);
-		u.setFirstName("premium");
-		u.setPassword("password");
-		assertEquals("addUser", um.addUser(u), "true");
+		assertEquals(
+				"addUser with same email and ssn",
+				um.addUser(u),
+				"Your SSN has been registered in our database. Please use a different SSN or call customer support for help.");
+
+		u = um.getUser(userId);
+		u.setMembershipNo("123456789");
+		assertEquals(
+				"addUser with same email",
+				um.addUser(u),
+				"Your email address "
+						+ u.getEmail()
+						+ " has been registered. Please use another email address.");
+
+		u = um.getUser(userId);
+		u.setEmail("sy+999@ebay.com");
+		assertEquals(
+				"addUser with same ssn",
+				um.addUser(u),
+				"Your SSN has been registered in our database. Please use a different SSN or call customer support for help.");
+
+		u = um.getUser(userId);
+		u.setMembershipNo("123456789");
+		u.setEmail("sy+999@ebay.com");
+		assertEquals("addUser with different ssn and email", um.addUser(u),
+				"trueaa");
 	}
 
 	@Test
 	public void returnRentals() {
+		System.out.println("Test returnRentals");
+
 		rm.returnRentals();
 	}
-	
-	
+
 	@Test
-	public void deleteUser(){
+	public void deleteUser() {
+		System.out.println("Test deleteUser");
+
 		int userToDelete = 10000;
 		String success = um.deletUser(userToDelete);
 		User u = um.getUser(userToDelete);
 		assertEquals("deleteUser", success, "true");
 		assertEquals("deleteUser", u, null);
 	}
-	
-	
+
 	@Test
-	public void deletMovie(){
+	public void deletMovie() {
+		System.out.println("Test deletMovie");
 		int movToDelete = 10000;
 		String success = vm.deletMovie(movToDelete);
 		Movie v = vm.getMovie(movToDelete);
