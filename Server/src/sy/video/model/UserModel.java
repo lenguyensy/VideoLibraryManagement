@@ -140,7 +140,7 @@ public class UserModel {
 	 */
 	private Boolean _isModelChanged(User u){
 		//validate if there is a change needed
-		User uo = this.getUser(u.getUserId());
+		User uo = this.getUser(Integer.parseInt(u.getUserId()));
 		
 		if (!uo.getAddress().equals(u.getAddress()))
 			return true;
@@ -375,9 +375,9 @@ public class UserModel {
 	 * @param userId
 	 * @return
 	 */
-	public User getUser(String userId) {
-		return this.getUser(Integer.parseInt(userId));
-	}
+//	public User getUser(String userId) {
+//		return this.getUser(Integer.parseInt(userId));
+//	}
 
 	/**
 	 * authenticate user
