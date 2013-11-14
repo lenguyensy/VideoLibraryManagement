@@ -310,9 +310,13 @@ public class UserModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-				ret = rs.getInt(1);
+				if ( MainConfig.DB_MYSQL) {	
+					ResultSet rs = stmt.executeQuery();
+					rs.next();
+					ret = rs.getInt(1);
+				} else {
+					ret = getUsersCountMDB();
+				}
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key, String.valueOf(ret));
 			} else {
 				ret = Integer.parseInt(fromCache);
@@ -626,6 +630,13 @@ public class UserModel {
 		return getUsersListFromCursor(cursor, from, pageSize);
 	}
 
+	private int getUsersCountMDB() {
+		DBCollection users = mongoDB.getCollection("users");
+		DBCursor cursor = users.find();
+		
+		return cursor.count();
+	}
+	
 	private List<User> getUsersMDB(int from, int pageSize) {
 		DBCollection users = mongoDB.getCollection("users");
 		DBCursor cursor = users.find();
