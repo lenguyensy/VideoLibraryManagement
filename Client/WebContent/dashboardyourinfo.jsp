@@ -97,7 +97,7 @@
 		//polling calls - rerender every 3 secs
 		setInterval(function() {
 			renderRentalList();
-		}, 6000);
+		}, REFRESH_RATE);
 	})
 </script>
 

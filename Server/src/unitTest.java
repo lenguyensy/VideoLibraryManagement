@@ -1,6 +1,8 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -180,19 +182,22 @@ public class unitTest {
 		System.out.println("Test saveUsers");
 
 		User u;
-		int userIdToTest = 123; 
+		int userIdToTest = 123;
 		u = um.getUser(userIdToTest);
-		assertEquals("saveUsers", um.saveUser(u), "Save is not done, no change happens.");
+		assertEquals("saveUsers", um.saveUser(u),
+				"Save is not done, no change happens.");
 
 		// with a change
+		Random r = new Random();
 		u = um.getUser(userIdToTest);
-		u.setFirstName("Premium 111");
+		u.setFirstName("Premium " + String.valueOf(r.nextInt(1000)));
 		assertEquals("saveUsers", um.saveUser(u), "true");
 	}
 
 	@Test
 	public void addUsers() {
 		System.out.println("Test addUsers");
+		Random rand = new Random();
 
 		User u;
 		u = um.getUser(userId);
@@ -202,7 +207,7 @@ public class unitTest {
 				"Your SSN has been registered in our database. Please use a different SSN or call customer support for help.");
 
 		u = um.getUser(userId);
-		u.setMembershipNo("123456789");
+		u.setMembershipNo("12345678" + rand.nextInt(9));
 		assertEquals(
 				"addUser with same email",
 				um.addUser(u),
@@ -211,17 +216,18 @@ public class unitTest {
 						+ " has been registered. Please use another email address.");
 
 		u = um.getUser(userId);
-		u.setEmail("sy+999@ebay.com");
+		u.setEmail("sy+999" + rand.nextInt(123213) + "@ebay.com");
 		assertEquals(
 				"addUser with same ssn",
 				um.addUser(u),
 				"Your SSN has been registered in our database. Please use a different SSN or call customer support for help.");
 
 		u = um.getUser(userId);
-		u.setMembershipNo("123456789");
-		u.setEmail("sy+999@ebay.com");
+		u.setMembershipNo("123"+ rand.nextInt(9)+"5678" + rand.nextInt(9));
+		u.setEmail("sy+999" + rand.nextInt(91232)+"@ebay.com");
+		u.setPassword("password");
 		assertEquals("addUser with different ssn and email", um.addUser(u),
-				"trueaa");
+				"true");
 	}
 
 	@Test

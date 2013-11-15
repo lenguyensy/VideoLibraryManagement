@@ -11,7 +11,7 @@ public class Cache {
 	public static final int EXPIRED_SECONDS = 60 * 10;// used for time based (15
 														// minutes)
 
-	private static Jedis jedis = MainConfig.getRedisConnection();
+	private static Jedis jedis;
 
 	public static String getKey(PreparedStatement stmt) {
 		String md5 = stmt.toString().substring(stmt.toString().indexOf(": "));
@@ -38,6 +38,8 @@ public class Cache {
 	 * @return
 	 */
 	public static String get(String namespace, String key) {
+		jedis = MainConfig.getRedisConnection();
+
 		try {
 			String combinedKey = namespace + key;
 			System.out.println("GET CACHE: " + combinedKey);
@@ -46,7 +48,10 @@ public class Cache {
 			return val;
 		} catch (Exception e) {
 			// e.printStackTrace();
+		} finally {
+			jedis.disconnect();
 		}
+
 		return null;
 	}
 
@@ -58,6 +63,8 @@ public class Cache {
 	 * @param value
 	 */
 	public static void set(String namespace, String key, String value) {
+		jedis = MainConfig.getRedisConnection();
+
 		try {
 			String combinedKey = namespace + key;
 			System.out.println("UPDATE CACHE: " + combinedKey);
@@ -80,6 +87,8 @@ public class Cache {
 			}
 		} catch (Exception e) {
 			// handle exception...
+		} finally {
+			jedis.disconnect();
 		}
 	}
 
@@ -89,19 +98,21 @@ public class Cache {
 	 * @param namespace
 	 */
 	public static void clear(String namespace) {
+		jedis = MainConfig.getRedisConnection();
+
 		try {
 			System.out.println("CLEAR CACHE: " + namespace);
 			String old = jedis.get(namespace);
+			jedis.del(namespace);
 			String[] keys = old.split(",");
 			for (int i = 0; i < keys.length; i++)
 				jedis.del(keys[i]);
-			
+
 			System.out.println(MainConfig.combine(keys, ", "));
 		} catch (Exception ex) {
 
+		} finally {
+			jedis.disconnect();
 		}
-
-		// set namesapce to be empty now
-		jedis.del(namespace);
 	}
 }

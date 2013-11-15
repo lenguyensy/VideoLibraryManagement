@@ -56,16 +56,17 @@ public class MainConfig {
 
 	// mysql sy
 	public static final String JDBC_DBNAME = "video";
-	public static final String JDBC_USERNAME = "sy";
-	public static final String JDBC_PASSWORD = "lancebass";
-	public static final String JDBC_HOST = "192.168.1.116";
+	public static final String JDBC_USERNAME = "root";
+	public static final String JDBC_PASSWORD = "";
+	public static final String JDBC_HOST = "localhost";
 	public static final String JDBC_PORT = "3306";// default is 3306
 
 	public static final String JDBC_CLASS_NAMESPACE = "com.mysql.jdbc.Driver";
 	public static final String JDBC_CONNECTION_STRING = "jdbc:mysql://"
 			+ JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DBNAME
 			+ "?zeroDateTimeBehavior=convertToNull";
-	public static final int JDBC_POOL_SIZE = 1000;// jdbc max size
+	public static final int JDBC_POOL_MAX_ACTIVE = 20;// jdbc max size
+	public static final int JDBC_POOL_MAX_IDLE = 2;// jdbc max size
 	public static BasicDataSource ds = null;// jdbc pooling using DBCP
 											// http://commons.apache.org/proper/commons-dbcp/
 
@@ -89,28 +90,44 @@ public class MainConfig {
 	public static Connection getConnection() {
 		Connection con = null;
 		if (USE_CONNECTION_POOL) {
-			//get connection from pool
+			// init connection pool
 			if (ds == null) {
 				ds = new BasicDataSource();
 				ds.setDriverClassName(JDBC_CLASS_NAMESPACE);
 				ds.setUsername(JDBC_USERNAME);
 				ds.setPassword(JDBC_PASSWORD);
 				ds.setUrl(JDBC_CONNECTION_STRING);
-				ds.setInitialSize(JDBC_POOL_SIZE);
-				ds.setTestOnBorrow(false);
-				ds.setTestWhileIdle(true);
-				System.out.println("CONNECTION POOL INIT WITH SIZE : " + JDBC_POOL_SIZE);
+				ds.setMaxActive(JDBC_POOL_MAX_ACTIVE);
+				ds.setMaxIdle(JDBC_POOL_MAX_IDLE);
+
+				System.out.println("CONNECTION POOL INIT WITH IDLE ("
+						+ JDBC_POOL_MAX_ACTIVE + ")  / MAX IDLE ("
+						+ JDBC_POOL_MAX_ACTIVE + ")");
 			}
 
-			try {
-				con = ds.getConnection();
-			} catch (Exception ex) {
-				System.out.println("JDBC Connection Error \n" + ex);
-				throw new RuntimeException("getPoolConnection : "
-						+ ex.getMessage());
+			// connection retry
+			int retry = 10;// will retry 10 times
+
+			// get connection from pool
+			while (retry > 0) {
+				try {
+					con = ds.getConnection();
+					return con;
+				} catch (Exception ex) {
+					System.out.println("JDBC Connection Error \n" + ex);
+					System.out
+							.println("getPoolConnection : " + ex.getMessage());
+					retry--;
+				}
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} else {
-			//get regular connection
+			// get regular connection
 			try {
 				Class.forName(MainConfig.JDBC_CLASS_NAMESPACE);
 				con = DriverManager.getConnection(
@@ -121,7 +138,7 @@ public class MainConfig {
 				throw new RuntimeException("getConnection : " + ex.getMessage());
 			}
 		}
-		
+
 		return con;
 	}
 

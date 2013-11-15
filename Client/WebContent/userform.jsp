@@ -19,42 +19,45 @@
 		//get list of all rentals
 		var tmplRowRental = $('#tmplRowRental').html();
 		function renderRentalList() {
-			$.get(URL.USER_CONTROLLER, {
-				cmd : "getallrentals",
-				userId : userId
-			}, function(lstMovie) {
-				$('#tblRental tbody').empty();
-				$("#lstRental").toggleClass('hide', lstMovie.length === 0);
+			$.get(
+					URL.USER_CONTROLLER,
+					{
+						cmd : "getallrentals",
+						userId : userId
+					},
+					function(lstMovie) {
+						$('#tblRental tbody').empty();
+						$("#lstRental").toggleClass('hide',
+								lstMovie.length === 0);
 
-				for (var i = 0; i < lstMovie.length; i++) {
-					lstMovie[i].rentedDate = moment(lstMovie[i].rentedDate)
-							.format('L');
-					lstMovie[i].expirationDate = moment(
-							lstMovie[i].expirationDate).format('L');
+						for (var i = 0; i < lstMovie.length; i++) {
+							lstMovie[i].rentedDate = moment(
+									lstMovie[i].rentedDate).format('L');
+							lstMovie[i].expirationDate = moment(
+									lstMovie[i].expirationDate).format('L');
 
-					$('#tblRental tbody').append(
-							Mustache.render(tmplRowRental, lstMovie[i]));
-				}
-			}, 'json').fail(function(){
+							$('#tblRental tbody')
+									.append(
+											Mustache.render(tmplRowRental,
+													lstMovie[i]));
+						}
+					}, 'json').fail(function() {
 				$("#lstRental").addClass('hide');
 			});
 		}
 
 		function render() {
 			FormUtil.populateUserForm();
-			
+
 			if (userData.state)
 				$('#state').val(userData.state);
 
-			if (userData.userType)
-				$('#userType').val(userData.userType);
+			$('#userType').val(userData.userType || 'Simple Customer');	
 
-			
 			if (userData.monthlySubscriptionFee)
 				$('#monthlySubscriptionFee').val(
 						userData.monthlySubscriptionFee);
 
-			
 			$('#userType').change();
 
 			//form validation
@@ -116,7 +119,7 @@
 		if ($('#lstRental').is(':visible')) {
 			setInterval(function() {
 				renderRentalList();
-			}, 10000);
+			}, REFRESH_RATE);
 		}
 
 	})
@@ -153,6 +156,7 @@
 	<div class="control-group">
 			<label class="control-label">User Type:</label> <select id="userType"
 				name="userType">
+				<option value="Admin" disabled="true">Admin</option>
 			</select>
 		</div>
 		<div class="control-group">

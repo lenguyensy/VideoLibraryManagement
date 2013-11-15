@@ -54,7 +54,7 @@ public class UserModel {
 			MainConfig.closeConnection(con);
 		}
 
-		return true;//fail, means unique
+		return true;// fail, means unique
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class UserModel {
 			MainConfig.closeConnection(con);
 		}
 
-		return true;//fail, means unique
+		return true;// fail, means unique
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class UserModel {
 			MainConfig.closeConnection(con);
 		}
 
-		return true;//fail, means unique
+		return true;// fail, means unique
 	}
 
 	/**
@@ -130,42 +130,43 @@ public class UserModel {
 			MainConfig.closeConnection(con);
 		}
 
-		return true;//fail, means unique
+		return true;// fail, means unique
 	}
-	
+
 	/**
 	 * is model changed
+	 * 
 	 * @param u
 	 * @return
 	 */
-	private Boolean _isModelChanged(User u){
-		//validate if there is a change needed
-		User uo = this.getUser(u.getUserId());
-		
+	private Boolean _isModelChanged(User u) {
+		// validate if there is a change needed
+		User uo = this.getUser(Integer.parseInt(u.getUserId()));
+
 		if (!uo.getAddress().equals(u.getAddress()))
 			return true;
-		
+
 		if (!uo.getFirstName().equals(u.getFirstName()))
 			return true;
-		
+
 		if (!uo.getLastName().equals(u.getLastName()))
 			return true;
-		
+
 		if (!uo.getCity().equals(u.getCity()))
 			return true;
-		
+
 		if (!uo.getState().equals(u.getState()))
 			return true;
-		
+
 		if (!uo.getMembershipNo().equals(u.getMembershipNo()))
 			return true;
-		
+
 		if (!uo.getZipCode().equals(u.getZipCode()))
 			return true;
-		
+
 		if (!uo.getEmail().equals(u.getEmail()))
 			return true;
-		
+
 		return false;
 	}
 
@@ -369,15 +370,6 @@ public class UserModel {
 		else
 			return null;
 	}
-	
-	/**
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public User getUser(String userId) {
-		return this.getUser(Integer.parseInt(userId));
-	}
 
 	/**
 	 * authenticate user
@@ -512,11 +504,9 @@ public class UserModel {
 				return "Your email address "
 						+ u.getEmail()
 						+ " has been registered. Please use another email address.";
-			
-			
+
 			if (!_isModelChanged(u))
 				return "Save is not done, no change happens.";
-			
 
 			// admin updates user
 			con = MainConfig.getConnection();

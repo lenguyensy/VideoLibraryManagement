@@ -355,7 +355,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:port binding="impl:RentalModelSoapBinding" name="RentalModel">
 
-         <wsdlsoap:address location="http://localhost:8080/VideoLibraryServer/services/RentalModel"/>
+         <wsdlsoap:address location="http://localhost:8080/VideoServer/services/RentalModel"/>
 
       </wsdl:port>
 

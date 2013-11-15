@@ -138,6 +138,8 @@
 					$('#tblRental tbody').append(
 							Mustache.render(tmplRowRental, lstMovie[i]));
 				}
+				
+				$('#totalRented').html($('.rentryrental') ? ' ('+ $('.rentryrental').length + ')' : '');
 			}, 'json');
 		}
 		renderRentalList();
@@ -155,14 +157,16 @@
 		renderBilling();
 		
 		//polling calls - rerender every 3 secs
-		setInterval(function(){renderRentalList(); renderBilling();},15000);
+		setInterval(function(){renderRentalList(); renderBilling();},REFRESH_RATE);
 	});
 </script>
 
 <div class="row-fluid">
-	<div class="span5">
+	<div id="info" class="span5">
 		<div id="yourrental">
-			<h4 class="text-info">Movies you rented</h4>
+			<h4 class="text-info">
+				Movies you rented <span id="totalRented"></span>
+			</h4>
 			<table id="tblRental" class="table">
 				<thead>
 					<tr>
@@ -183,7 +187,8 @@
 	<div id="moviemanagement" class="span7">
 		<h4 class="text-info">Rent A New Movie</h4>
 		<h4 class="muted">
-			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span> Movies
+			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span>
+			Movies
 		</h4>
 
 		<div class="control-group" style="margin: 15px 0 15px 0">
@@ -226,7 +231,8 @@
 		</table>
 
 		<h4 class="muted">
-			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span> Movies
+			Showing <span class="totalRecord"></span> - <span class="totalCount">85540</span>
+			Movies
 		</h4>
 		<a class="btn btn-show-more">Show more</a>
 	</div>
@@ -248,7 +254,7 @@
 
 
 <script id="tmplRowRental" type="mustache">
-<tr class="rentry">
+<tr class="rentryrental">
 <td>{{movieName}}</td>
 <td>{{releaseDate}}</td>
 <td>{{rentAmount}}</td>

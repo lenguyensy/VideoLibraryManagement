@@ -25,18 +25,13 @@ public class tester {
 
 	public static void main(String[] args) {
 		System.out.println("Start");
-		// importMovie();
-		// importUser();
-
-		//doing all the tests
-		Object [] lst;
-		Object o;
-		System.out.println("getUsers");
-		User [] ul = um.getUsers(0, 5);
-		print(ul);
 		
+		//return rentals
+		//rm.returnRentals();
 		
-		System.out.println("End");
+		while (true){
+			um.getUsers(0, 25);
+		}
 	}
 	
 	public static void print(Object [] ol){

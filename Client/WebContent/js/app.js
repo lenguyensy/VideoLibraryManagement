@@ -1,3 +1,5 @@
+var REFRESH_RATE = 30000;
+
 var ENUM = {
 	STATE : [ {
 		name : 'ALABAMA',
@@ -198,8 +200,6 @@ var URL = {
 	ANON_CONTROLLER : "anonAjaxController.jsp"
 }
 
-
-
 var NavUtil = (function() {
 	return {
 		init : function(selNav) {
@@ -232,7 +232,7 @@ var FormUtil = (function() {
 			// populate user type
 			for ( var k in ENUM.USER_TYPE) {
 				if (ENUM.USER_TYPE.hasOwnProperty(k))
-					$('#userType').append(
+					$('#userType').prepend(
 							'<option>' + ENUM.USER_TYPE[k] + '</option>');
 			}
 

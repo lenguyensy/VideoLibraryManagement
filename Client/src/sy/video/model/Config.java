@@ -5,10 +5,9 @@ public class Config {
 	public static final Boolean CLOUD_MONGO_DEPLOY = Boolean.FALSE;
 	
 	// Local End Ppoint
-	public static final String ENDPOINT_USER = "http://localhost:8080/VideoLibraryServer/services/UserModel";
-	public static final String ENDPOINT_MOVIE = "http://localhost:8080/VideoLibraryServer/services/VideoModel";
-	public static final String ENDPOINT_RENTAL = "http://localhost:8080/VideoLibraryServer/services/RentalModel";
-
+	public static final String ENDPOINT_USER = "http://localhost:8080/VideoServer/services/UserModel";
+	public static final String ENDPOINT_MOVIE = "http://localhost:8080/VideoServer/services/VideoModel";
+	public static final String ENDPOINT_RENTAL = "http://localhost:8080/VideoServer/services/RentalModel";
 	
 	//Cloud-MySQL End Point.
 	public static final String ENDPOINT_MYSQL_USER_CLOUD = "http://videoserver.aws.af.cm/services/UserModel";
