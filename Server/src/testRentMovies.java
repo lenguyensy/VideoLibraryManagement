@@ -1,12 +1,10 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import sy.config.AppEnum;
 import sy.video.model.RentalModel;
 import sy.video.model.UserModel;
 import sy.video.model.VideoModel;
-import sy.video.valueobj.User;
 
 /**
  * unit test for server side code
@@ -14,7 +12,7 @@ import sy.video.valueobj.User;
  * @author Sy Le
  * 
  */
-public class unitTestRent {
+public class testRentMovies {
 	static UserModel um = new UserModel();
 	static VideoModel vm = new VideoModel();
 	static RentalModel rm = new RentalModel();
@@ -33,4 +31,4 @@ public class unitTestRent {
 		rm.rentMovie(3, 81);
 		assertEquals("rentMovie", rm.getMoviesRentalByUser(2).length, 2);
 	}
-}
+} 
