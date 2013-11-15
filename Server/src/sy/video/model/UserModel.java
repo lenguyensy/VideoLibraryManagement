@@ -41,13 +41,18 @@ public class UserModel {
 	 */
 	private boolean _isSSNUnique(String ssn) {
 		try {
-			con = MainConfig.getConnection();
-			PreparedStatement stmt = con
-					.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? LIMIT 0,1");
-			stmt.setString(1, ssn);
-			ResultSet rs = stmt.executeQuery();
-			rs.next();
-			return rs.getInt(1) == 0;
+			if (MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
+				PreparedStatement stmt = con
+						.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? LIMIT 0,1");
+				stmt.setString(1, ssn);
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				return rs.getInt(1) == 0;
+			} else {
+				return _isSSNUniqueMDB(ssn);
+			}
+
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
@@ -66,14 +71,18 @@ public class UserModel {
 	 */
 	private boolean _isSSNUnique(String ssn, String userId) {
 		try {
-			con = MainConfig.getConnection();
-			PreparedStatement stmt = con
-					.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? AND id != ? LIMIT 0,1");
-			stmt.setString(1, ssn);
-			stmt.setString(2, userId);
-			ResultSet rs = stmt.executeQuery();
-			rs.next();
-			return rs.getInt(1) == 0;
+			if (MainConfig.DB_MYSQL) {
+				con = MainConfig.getConnection();
+				PreparedStatement stmt = con
+						.prepareStatement("SELECT count(*) FROM users WHERE MembershipNo = ? AND id != ? LIMIT 0,1");
+				stmt.setString(1, ssn);
+				stmt.setString(2, userId);
+				ResultSet rs = stmt.executeQuery();
+				rs.next();
+				return rs.getInt(1) == 0;
+			} else {
+				return _isSSNUniqueMDB(ssn, userId);
+			}
 		} catch (Exception e) {
 			logger.log(e);
 		} finally {
@@ -311,9 +320,13 @@ public class UserModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_USER, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-				ret = rs.getInt(1);
+				if (MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					rs.next();
+					ret = rs.getInt(1);
+				} else {
+					ret = getUsersCountMDB();
+				}
 				Cache.set(Cache.REDIS_NAMESPACE_USER, key, String.valueOf(ret));
 			} else {
 				ret = Integer.parseInt(fromCache);
@@ -442,13 +455,23 @@ public class UserModel {
 	public String addUser(User u) {
 		try {
 			// check to see if ssn unique
-			if (!_isSSNUnique(u.getMembershipNo()))
-				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+			if (MainConfig.DB_MYSQL) {
+				if (!_isSSNUnique(u.getMembershipNo()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
 
-			if (!_isEmailUnique(u.getEmail()))
-				return "Your email address "
-						+ u.getEmail()
-						+ " has been registered. Please use another email address.";
+				if (!_isEmailUnique(u.getEmail()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			} else {
+				if (!_isSSNUniqueMDB(u.getMembershipNo()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
+				if (!_isEmailUniqueMDB(u.getEmail()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			}
 
 			con = MainConfig.getConnection();
 			PreparedStatement stmt = con
@@ -497,13 +520,28 @@ public class UserModel {
 	 */
 	public String saveUser(User u) {
 		try {
-			if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
-				return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
 
-			if (!_isEmailUnique(u.getEmail(), u.getUserId()))
-				return "Your email address "
-						+ u.getEmail()
-						+ " has been registered. Please use another email address.";
+			if (!_isModelChanged(u))
+				return "Save is not done, no change happens.";
+
+			if (MainConfig.DB_MYSQL) {
+				if (!_isSSNUnique(u.getMembershipNo(), u.getUserId()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
+				if (!_isEmailUnique(u.getEmail(), u.getUserId()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+
+			} else {
+				if (!_isSSNUniqueMDB(u.getMembershipNo(), u.getUserId()))
+					return "Your SSN has been registered in our database. Please use a different SSN or call customer support for help.";
+
+				if (!_isEmailUniqueMDB(u.getEmail(), u.getUserId()))
+					return "Your email address "
+							+ u.getEmail()
+							+ " has been registered. Please use another email address.";
+			}
 
 			if (!_isModelChanged(u))
 				return "Save is not done, no change happens.";
@@ -613,14 +651,56 @@ public class UserModel {
 		BasicDBObject query = new BasicDBObject("UserType", userType);
 		DBCursor cursor = users.find(query);
 
-		return getUsersListFromCursor(cursor, pageSize);
+		return getUsersListFromCursor(cursor, from, pageSize);
+	}
+
+	private boolean _isSSNUniqueMDB(String membershipNo) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("MembershipNo", membershipNo);
+		DBCursor cursor = users.find(query);
+
+		return cursor.count() == 0;
+	}
+
+	private boolean _isSSNUniqueMDB(String membershipNo, String userId) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("MembershipNo", membershipNo)
+				.append("Id", userId);
+		DBCursor cursor = users.find(query);
+
+		return cursor.count() == 0;
+	}
+
+	private boolean _isEmailUniqueMDB(String email) {
+
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("Email", email);
+		DBCursor cursor = users.find(query);
+
+		return cursor.count() == 0;
+	}
+
+	private boolean _isEmailUniqueMDB(String email, String userId) {
+		DBCollection users = mongoDB.getCollection("users");
+		BasicDBObject query = new BasicDBObject("Email", email).append("Id",
+				userId);
+		DBCursor cursor = users.find(query);
+
+		return cursor.count() == 0;
+	}
+
+	private int getUsersCountMDB() {
+		DBCollection users = mongoDB.getCollection("users");
+		DBCursor cursor = users.find();
+
+		return cursor.count();
 	}
 
 	private List<User> getUsersMDB(int from, int pageSize) {
 		DBCollection users = mongoDB.getCollection("users");
 		DBCursor cursor = users.find();
 
-		return getUsersListFromCursor(cursor, pageSize);
+		return getUsersListFromCursor(cursor, from, pageSize);
 	}
 
 	private List<User> getUserMDB(int userId) {
@@ -628,7 +708,7 @@ public class UserModel {
 		BasicDBObject query = new BasicDBObject("Id", userId);
 		DBCursor cursor = users.find(query);
 
-		return getUsersListFromCursor(cursor, 1);
+		return getUsersListFromCursor(cursor, 1, 1);
 	}
 
 	private List<User> authenticateUserMDB(String email, String password) {
@@ -637,7 +717,7 @@ public class UserModel {
 				"HashedPassword", MD5(password));
 
 		DBCursor cursor = users.find(query);
-		return getUsersListFromCursor(cursor, 1);
+		return getUsersListFromCursor(cursor, 0, 1);
 	}
 
 	private void deletUserMDB(int userId) {
@@ -707,33 +787,37 @@ public class UserModel {
 		users.update(query, updateObj);
 	}
 
-	private List<User> getUsersListFromCursor(DBCursor cursor, int pageSize) {
+	private List<User> getUsersListFromCursor(DBCursor cursor, int from,
+			int pageSize) {
 		int count = 0;
+		int lastIndex = from + pageSize;
 		List<User> userList = new ArrayList<User>();
 
-		while (cursor.hasNext() && count < pageSize) {
+		while (cursor.hasNext() && count < lastIndex) {
 			DBObject user = cursor.next();
-			count++;
-			User u = new User();
-			u.setFirstName((String) user.get("FirstName"));
-			u.setLastName((String) user.get("LastName"));
-			u.setAddress((String) user.get("Address"));
-			u.setCity((String) user.get("City"));
-			u.setState((String) user.get("State"));
-			u.setZipCode(String.valueOf(user.get("Zip")));
-			u.setBalance(Double.valueOf(String.valueOf(user.get("Balance"))));
-			u.setMembershipNo(String.valueOf(user.get("MembershipNo")));
-			u.setMonthlySubscriptionFee(Double.valueOf(String.valueOf(user
-					.get("MonthlySubscriptionFee"))));
-			u.setTotal(Double.valueOf(String.valueOf(user.get("Total"))));
-			u.setTotalOutstandingMovies((Integer) user
-					.get("TotalOutstandingMovies"));
-			u.setUserType((String) user.get("UserType"));
-			u.setEmail((String) user.get("Email"));
-			u.setUserId(String.valueOf(user.get("Id")));
+			if (count >= from) {
+				User u = new User();
+				u.setFirstName((String) user.get("FirstName"));
+				u.setLastName((String) user.get("LastName"));
+				u.setAddress((String) user.get("Address"));
+				u.setCity((String) user.get("City"));
+				u.setState((String) user.get("State"));
+				u.setZipCode(String.valueOf(user.get("Zip")));
+				u.setBalance(Double.valueOf(String.valueOf(user.get("Balance"))));
+				u.setMembershipNo(String.valueOf(user.get("MembershipNo")));
+				u.setMonthlySubscriptionFee(Double.valueOf(String.valueOf(user
+						.get("MonthlySubscriptionFee"))));
+				u.setTotal(Double.valueOf(String.valueOf(user.get("Total"))));
+				u.setTotalOutstandingMovies((Integer) user
+						.get("TotalOutstandingMovies"));
+				u.setUserType((String) user.get("UserType"));
+				u.setEmail((String) user.get("Email"));
+				u.setUserId(String.valueOf(user.get("Id")));
 
-			System.out.println("USER : " + user.get("FirstName"));
-			userList.add(u);
+				// System.out.println("USER : " + user.get("FirstName"));
+				userList.add(u);
+			}
+			count++;
 		}
 		return userList;
 	}
@@ -755,4 +839,5 @@ public class UserModel {
 	}
 
 	/* .......................... MongoDB: END ......................... */
+
 }

@@ -97,9 +97,13 @@ public class VideoModel {
 			String fromCache = Cache.get(Cache.REDIS_NAMESPACE_MOVIE, key);
 
 			if (fromCache == null) {
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-				ret = rs.getInt(1);
+				if ( MainConfig.DB_MYSQL) {
+					ResultSet rs = stmt.executeQuery();
+					rs.next();
+					ret = rs.getInt(1);
+				} else {
+					ret = getMoviesCountMDB();
+				}
 				Cache.set(Cache.REDIS_NAMESPACE_MOVIE, key, String.valueOf(ret));
 			} else {
 				ret = Integer.parseInt(fromCache);
@@ -439,21 +443,36 @@ public class VideoModel {
 		return "true";
 	}
 
+	
+	public static void main(String[] args) {
+		VideoModel v = new VideoModel();
+		v.getMovieMDB(1,  5);
+		System.out.println("-------------------------");
+		v.getMovieMDB(10,  12);
+		System.out.println("-------------------------");
+		v.getMovieMDB(100,  200);
+	}
 	/* .................... MongoDB : Begin ................... */
 
 	private List<Movie> getMovieMDB(int from, int pageSize) {
 		DBCollection movies = mongoDB.getCollection("movies");
 		DBCursor cursor = movies.find();
 
-		return getMovieListFromCursor(cursor, pageSize);
+		return getMovieListFromCursor(cursor, from, pageSize);
 	}
 
+	private int getMoviesCountMDB() {
+		DBCollection movies = mongoDB.getCollection("movies");
+		DBCursor cursor = movies.find();
+		return cursor.count();
+	}
+	
 	private List<Movie> getMoviesByGenreMDB(String genre, int from, int pageSize) {
 		DBCollection movies = mongoDB.getCollection("movies");
 		BasicDBObject query = new BasicDBObject("category", genre);
 		DBCursor cursor = movies.find(query);
 
-		return getMovieListFromCursor(cursor, pageSize);
+		return getMovieListFromCursor(cursor,from, pageSize);
 	}
 
 	private List<Movie> getMovieMDB(int movieId) {
@@ -461,7 +480,7 @@ public class VideoModel {
 		BasicDBObject query = new BasicDBObject("id", movieId);
 		DBCursor cursor = movies.find(query);
 
-		return getMovieListFromCursor(cursor, 1);
+		return getMovieListFromCursor(cursor, 1, 1);
 	}
 
 	private void addMovieMDB(Movie movie) {
@@ -513,34 +532,34 @@ public class VideoModel {
 		DBCollection movies = mongoDB.getCollection("movies");
 		DBCursor cursor = movies.find(query);
 
-		return getMovieListFromCursor(cursor, pageSize);
+		return getMovieListFromCursor(cursor, from, pageSize);
 	}
 
-	public static void main(String[] args) {
-		VideoModel v = new VideoModel();
-		v.getMoviesBySearchTerm("Casa", 1, 10);
-	}
 
-	private List<Movie> getMovieListFromCursor(DBCursor cursor, int pageSize) {
+	private List<Movie> getMovieListFromCursor(DBCursor cursor, int from, int pageSize) {
 		int count = 0;
+		int lastIndex = from + pageSize;
 		List<Movie> movieList = new ArrayList<Movie>();
-		while (cursor.hasNext() && count < pageSize) {
+		while (cursor.hasNext() && count < lastIndex) {
 			DBObject movie = cursor.next();
+			if ( count >= from) {
+				Movie m = new Movie();
+				m.setCategory((String) movie.get("category"));
+				m.setMovieName((String) movie.get("MovieName"));
+				m.setMovieBanner((String) movie.get("MovieBanner"));
+				m.setReleaseDate((Integer) movie.get("ReleaseDate"));
+				m.setRentAmount(Float.valueOf(String.valueOf(movie
+						.get("RentAmount"))));
+				m.setAvailableCopies((Integer) movie.get("AvailableCopies"));
+				m.setMovieId(String.valueOf(movie.get("id")));
+	
+				//System.out.println("Name : " + (String) movie.get("MovieName"));
+				movieList.add(m);
+			}
 			count++;
-			Movie m = new Movie();
-			m.setCategory((String) movie.get("category"));
-			m.setMovieName((String) movie.get("MovieName"));
-			m.setMovieBanner((String) movie.get("MovieBanner"));
-			m.setReleaseDate((Integer) movie.get("ReleaseDate"));
-			m.setRentAmount(Float.valueOf(String.valueOf(movie
-					.get("RentAmount"))));
-			m.setAvailableCopies((Integer) movie.get("AvailableCopies"));
-			m.setMovieId(String.valueOf(movie.get("id")));
-
-			System.out.println("Name : " + (String) movie.get("MovieName"));
-			movieList.add(m);
 		}
 		return movieList;
 	}
+
 	/* .......................... MongoDB : End ........................... */
 }
