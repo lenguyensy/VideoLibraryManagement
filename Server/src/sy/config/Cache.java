@@ -1,6 +1,7 @@
 package sy.config;
 
 import java.sql.PreparedStatement;
+import java.util.Set;
 
 import redis.clients.jedis.Jedis;
 
@@ -76,15 +77,7 @@ public class Cache {
 			jedis.expire(combinedKey, EXPIRED_SECONDS);
 
 			// append to namespace (update list of all previous cache)
-			String old = jedis.get(namespace);
-			if (old == null)
-				old = "";
-
-			if (old.indexOf(combinedKey) == -1) {
-				old += combinedKey + ",";
-
-				jedis.set(namespace, old);
-			}
+			jedis.sadd(namespace, combinedKey);
 		} catch (Exception e) {
 			// handle exception...
 		} finally {
@@ -102,13 +95,15 @@ public class Cache {
 
 		try {
 			System.out.println("CLEAR CACHE: " + namespace);
-			String old = jedis.get(namespace);
+			Set<String> sOld = jedis.smembers(namespace);
 			jedis.del(namespace);
-			String[] keys = old.split(",");
-			for (int i = 0; i < keys.length; i++)
-				jedis.del(keys[i]);
 
-			System.out.println(MainConfig.combine(keys, ", "));
+			for (String curKey : sOld) {
+				jedis.del(curKey);
+			}
+
+			System.out.println(MainConfig.combine((String[]) sOld.toArray(),
+					", "));
 		} catch (Exception ex) {
 
 		} finally {

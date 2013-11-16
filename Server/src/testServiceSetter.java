@@ -128,4 +128,9 @@ public class testServiceSetter {
 		 * assertEquals("rentMovie", rm.getUserByMovieId(9).length, 3);
 		 */
 	}
+	
+	@Test
+	public void returnRental(){
+		rm.returnRentals();
+	}
 }

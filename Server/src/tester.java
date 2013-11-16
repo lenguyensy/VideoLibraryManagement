@@ -1,10 +1,11 @@
 import java.io.BufferedReader;
-import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import redis.clients.jedis.Jedis;
+import sy.config.Cache;
 import sy.config.MainConfig;
 import sy.video.model.RentalModel;
 import sy.video.model.UserModel;
@@ -25,17 +26,18 @@ public class tester {
 
 	public static void main(String[] args) {
 		System.out.println("Start");
-		
-		//return rentals
-		//rm.returnRentals();
-		
-		while (true){
-			um.getUsers(0, 25);
-		}
+
+		// return rentals
+		// rm.returnRentals();
+
+		/*
+		 * while (true){ um.getUsers(0, 25); }
+		 */
+		Cache.clear("user.");
 	}
-	
-	public static void print(Object [] ol){
-		for (int i =0; i < ol.length; i++)
+
+	public static void print(Object[] ol) {
+		for (int i = 0; i < ol.length; i++)
 			System.out.println(ol[i]);
 	}
 
