@@ -326,16 +326,19 @@ public class RentalModel {
 			DBObject rs = cursor.next();
 			count++;
 			Rental r = new Rental();
-			r.setUserId((String) rs.get("UserId"));
-			r.setMovieId((String) rs.get("MovieId"));
+			r.setUserId(String.valueOf(rs.get("UserId")));
+			r.setMovieId(String.valueOf(rs.get("MovieId")));
 			r.setMovieName((String) rs.get("MovieName"));
-			r.setRentAmount(Double.valueOf((String) rs.get("RentAmount")));
-			r.setReleaseDate(Integer.valueOf((String) rs.get("RleaseDate")));
+			r.setRentAmount((Double)rs.get("RentAmount"));
+			r.setReleaseDate((Integer)((Double)rs.get("ReleaseDate")).intValue());
 			r.setRentedDate((Date) rs.get("RentedDate"));
-			r.setExpirationDate((Date) rs.get("ExpirationDate"));
+			//r.setExpirationDate((Date) rs.get("ExpirationDate"));
 
 			System.out.println("Name : " + (String) rs.get("MovieName"));
 			rentalList.add(r);
+		}
+		if ( rentalList.isEmpty()) {
+			rentalList.add(new Rental());
 		}
 		return rentalList;
 	}
