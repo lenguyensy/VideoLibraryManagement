@@ -70,6 +70,9 @@ public class UserModel {
 	 * @return
 	 */
 	private boolean _isSSNUnique(String ssn, String userId) {
+		if (1 == 1)
+			return true;
+		
 		try {
 			if (MainConfig.DB_MYSQL) {
 				con = MainConfig.getConnection();

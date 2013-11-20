@@ -45,6 +45,12 @@
 							success = false;
 					}
 				});
+				
+				if (isNaN(parseInt($('#zipCode').val()))){
+					alert('invalid zipcode');
+					success = false;
+				}
+					
 
 				if (success) {
 					//doing form submit
@@ -134,7 +140,7 @@
 		</div>
 		<div class="control-group">
 			<label class="control-label">Password:</label> <input
-				type="text" placeholder="Enter a password"
+				type="password" placeholder="Enter a password"
 				id="password" name="password"  /> <span
 				class="help-block text-error errorMsg">Required</span>
 		</div>
@@ -149,7 +155,7 @@
 				id="monthlySubscriptionFee" name="monthlySubscriptionFee"></select>
 		</div>
 
-		<div class="control-group simple">
+		<div class="control-group simple hide">
 			<label class="control-label">Balance:</label> <input type="text"
 				placeholder="Enter a Balance" id="balance" name="balance" value="{{balance}}" disabled="true"
 				maxlength="9" /> <span class="help-block text-error errorMsg">Required</span>

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import redis.clients.jedis.Jedis;
-import sy.config.Cache;
 import sy.config.MainConfig;
+import sy.video.background.RentalSubscriber;
 import sy.video.model.RentalModel;
 import sy.video.model.UserModel;
 import sy.video.model.VideoModel;
@@ -33,7 +33,10 @@ public class tester {
 		/*
 		 * while (true){ um.getUsers(0, 25); }
 		 */
-		Cache.clear("user.");
+		// Cache.clear("user.");
+
+		Jedis j = MainConfig.getRedisConnection();
+		j.subscribe(new RentalSubscriber(), "channel");
 	}
 
 	public static void print(Object[] ol) {

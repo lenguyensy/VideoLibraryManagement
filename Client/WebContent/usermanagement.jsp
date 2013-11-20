@@ -89,6 +89,17 @@
 										}
 									});
 						});
+		
+		
+		$('#searchTerm').keyup(function(){
+			$('.fname').each(function(){
+				if ($(this).html().indexOf($('#searchTerm').val()) >= 0 || $('#searchTerm').val() == "")
+					$(this).closest('tr').show();
+				else
+					$(this).closest('tr').hide();
+			});
+
+		});
 	})
 </script>
 
@@ -106,6 +117,13 @@
 			<option value="getpremiummembers">Premium Users</option>
 			<option value="getsimplecustomers">Simple Customers</option>
 		</select>
+
+		<div class="input-append pull-right">
+				<input class="input-xlarge" id="searchTerm" name="searchTerm"
+					placeholder="Type something to search" type="text" /> <input
+					type="submit" class="btn" value="Search" />
+			</form>
+		</div>
 	</div>
 
 	<h4>
@@ -142,7 +160,7 @@
 <tr>
 <td>{{membershipNo}}</td>
 <td class="name">{{email}}</td>
-<td>{{firstName}}</td>
+<td class="fname">{{firstName}}</td>
 <td>{{lastName}}</td>
 <td>{{state}}</td>
 <td>{{city}}</td>

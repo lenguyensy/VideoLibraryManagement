@@ -283,8 +283,12 @@
 		id="monthlyfee">{{monthlySubscriptionFee}}</span>
 </div>
 <div class="control-group">
-	<label class="control-label text-warning">Balance:</label> $ <span id="balance">{{balance}}</span>
+	<label class="control-label text-warning">Current Balance:</label> $ <span id="balance">{{balance}}</span>
 </div>
+<div class="control-group">
+	<label class="control-label text-warning">Total Spent:</label> $ <span id="total">{{total}}</span>
+</div>
+
 <div class="control-group">
 	<label class="control-label text-warning">Total Outstanding Movies:</label> <span
 		id="totalmovies">{{totalOutstandingMovies}}</span>
